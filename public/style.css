@@ -301,7 +301,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .stop {
   position: relative;
   display: grid;
-  grid-template-columns: 1.6rem 1fr auto;
+  grid-template-columns: 1.6rem 1fr auto 2.3rem;
   column-gap: .8rem;
   padding: .7rem 0;
 }
@@ -355,6 +355,25 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   color: var(--anil);
   font-weight: 700;
 }
+
+/* Campana: "avísame cuando esté cerca" */
+.stop__bell {
+  grid-column: 4;
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  padding: 0;
+  background: none;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+}
+.stop__bell:hover { border-color: var(--muted); color: var(--ink); }
+.stop__bell[aria-pressed="true"] { background: var(--maiz); border-color: var(--maiz); color: var(--anil); }
+.stop__bell:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
 
 .foot { margin: 1.6rem 0 0; color: var(--muted); font-size: .85rem; }
 

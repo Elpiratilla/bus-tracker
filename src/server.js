@@ -14,6 +14,9 @@ app.use("/api/telemetry", require("./routes/telemetry"));
 app.use("/api/buses", require("./routes/telemetry"));
 app.use("/api/routes", require("./routes/routes"));
 app.use("/api/rutas", require("./routes/rutas"));
+app.use("/api/alertas", require("./routes/alertas"));
+
+require("./alerts").startAlerts();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API lista en http://localhost:${PORT}`));

@@ -1,0 +1,9 @@
+{
+  "name": "go503: cuándo llega tu bus",
+  "short_name": "go503",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0C1130",
+  "theme_color": "#1B2559"
+}

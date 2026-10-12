@@ -1,7 +1,8 @@
 // go503: interfaz + mapa real (Leaflet + CARTO)
 
 const CONFIG = {
-  API_BASE: "",        // ej. "https://api.go503.com". Vacío = datos de ejemplo
+  API_BASE: "",        // ej. "https://api.go503.com". Vacío = el mismo servidor
+  USE_MOCK: false,     // true = datos de ejemplo, sin backend
   REFRESH_MS: 15000,   // cada cuánto se actualiza
   OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
   CENTER: [13.699, -89.205],               // San Salvador
@@ -10,7 +11,7 @@ const CONFIG = {
 
 /* Contrato esperado
 GET {API_BASE}/api/rutas            -> [ { "ruta": "101", "tipo": "autobus" }, ... ]
-                                       tipo: "autobus" o "microbus"
+                                      tipo: "autobus" o "microbus"
 GET {API_BASE}/api/rutas/101
 {
   "ruta": "101",
@@ -79,14 +80,14 @@ function mockRoute(ruta) {
 }
 
 async function getRutas() {
-  if (!CONFIG.API_BASE) return MOCK_RUTAS;
+  if (CONFIG.USE_MOCK) return MOCK_RUTAS;
   const res = await fetch(`${CONFIG.API_BASE}/api/rutas`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
 
 async function getRoute(ruta) {
-  if (!CONFIG.API_BASE) return mockRoute(ruta);
+  if (CONFIG.USE_MOCK) return mockRoute(ruta);
   const res = await fetch(`${CONFIG.API_BASE}/api/rutas/${encodeURIComponent(ruta)}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
@@ -259,6 +260,106 @@ async function drawMap(data, lastIdx, nextIdx) {
   }
 }
 
+// ---------- Avisos "tu bus está cerca" (Web Push) ----------
+const api = (path) => `${CONFIG.API_BASE}${path}`;
+const alertasOn = !CONFIG.USE_MOCK;
+const pushOk = alertasOn && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+const swReady = pushOk
+  ? navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).catch((err) => {
+      console.error(err);
+      return null;
+    })
+  : Promise.resolve(null);
+
+let misAlertas = new Set(); // "ruta|parada" con aviso activo en este dispositivo
+let alertaMin = 5;
+
+const postJSON = (path, body, method = "POST") =>
+  fetch(api(path), { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+
+// Clave pública VAPID (base64url) a bytes
+function b64ToBytes(b64) {
+  const s = atob((b64 + "=".repeat((4 - (b64.length % 4)) % 4)).replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from(s, (c) => c.charCodeAt(0));
+}
+
+// Suscripción push de este dispositivo. Con pedir=true pide permiso si hace falta.
+async function miSuscripcion(pedir) {
+  const reg = await swReady;
+  if (!reg) return null;
+  const sub = await reg.pushManager.getSubscription();
+  if (sub || !pedir) return sub;
+  if ((await Notification.requestPermission()) !== "granted") return null;
+  const res = await fetch(api("/api/alertas/clave"));
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const { clave, minutos } = await res.json();
+  alertaMin = minutos;
+  return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64ToBytes(clave) });
+}
+
+async function cargarAlertas() {
+  if (!pushOk) return;
+  try {
+    const sub = await miSuscripcion(false);
+    if (!sub) return;
+    const res = await postJSON("/api/alertas/mias", { endpoint: sub.endpoint });
+    if (res.ok) misAlertas = new Set((await res.json()).map((a) => `${a.ruta}|${a.parada}`));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function toggleAlerta(ruta, parada, nombre) {
+  if (!pushOk) {
+    setStatus(isIOS
+      ? "En iPhone: toca Compartir y luego “Agregar a inicio”. Abre go503 desde ahí para recibir avisos."
+      : "Este navegador no permite notificaciones.");
+    return;
+  }
+  const key = `${ruta}|${parada}`;
+  try {
+    const sub = await miSuscripcion(true);
+    if (!sub) {
+      setStatus("Activa las notificaciones de go503 para que te avisemos.");
+      return;
+    }
+    if (misAlertas.has(key)) {
+      await postJSON("/api/alertas", { endpoint: sub.endpoint, ruta, parada }, "DELETE");
+      misAlertas.delete(key);
+      setStatus("");
+    } else {
+      const res = await postJSON("/api/alertas", { suscripcion: sub.toJSON(), ruta, parada });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      misAlertas.add(key);
+      setStatus(`Listo: te avisamos cuando la ${ruta} esté a ${alertaMin} min de ${nombre}.`);
+    }
+    if (lastData) render(lastData);
+  } catch (err) {
+    console.error(err);
+    setStatus("No se pudo guardar el aviso. Intenta de nuevo.");
+  }
+}
+
+function bellButton(ruta, p) {
+  const on = misAlertas.has(`${ruta}|${p.id}`);
+  const label = on ? `Cancelar aviso de ${p.nombre}` : `Avisarme cuando la ${ruta} esté cerca de ${p.nombre}`;
+  const b = el("button", "stop__bell");
+  b.type = "button";
+  b.title = label;
+  b.setAttribute("aria-label", label);
+  b.setAttribute("aria-pressed", String(on));
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("class", "ico");
+  s.setAttribute("aria-hidden", "true");
+  const u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  u.setAttribute("href", "#i-bell");
+  s.append(u);
+  b.append(s);
+  b.addEventListener("click", () => toggleAlerta(ruta, p.id, p.nombre));
+  return b;
+}
+
 // ---------- Panel ----------
 function render(data) {
   const { ruta, actualizado, paradas } = data;
@@ -296,6 +397,7 @@ function render(data) {
         : p.etaA ? `${hhmm(p.etaA)} aprox.` : "Sin estimado";
 
       li.append(el("span", "stop__dot"), name, el("span", "stop__time", time));
+      if (alertasOn && state !== "done") li.append(bellButton(ruta, p));
       return li;
     })
   );
@@ -304,7 +406,8 @@ function render(data) {
 }
 
 // ---------- Carga y actualización ----------
-let current = "101";
+let current = new URLSearchParams(location.search).get("ruta") || "101"; // ?ruta= al abrir desde un aviso
+let lastData = null;
 
 function setStatus(msg) {
   const s = $("#status");
@@ -314,7 +417,10 @@ function setStatus(msg) {
 
 async function load() {
   try {
-    render(await getRoute(current));
+    const data = await getRoute(current);
+    await cargarAlertas();
+    lastData = data;
+    render(data);
     setStatus("");
   } catch (err) {
     console.error(err);
@@ -377,6 +483,7 @@ async function init() {
     rutas = [{ ruta: current, tipo: "autobus" }];
     setStatus("No se pudo cargar la lista de rutas.");
   }
+  if (rutas.length && !rutas.some((r) => r.ruta === current)) current = rutas[0].ruta;
   renderChips();
   load();
   setInterval(load, CONFIG.REFRESH_MS);

@@ -24,7 +24,7 @@ router.get("/:id", (req, res) => {
 
   // Sin sentido pedido: el del bus que se movió más reciente (así siempre se ve un bus si hay)
   const dir = pedido || pickDirection(route);
-  const { stops, legs, trip, lastIdx, times, current } = routeStatus(route, dir);
+  const { stops, legs, trip, lastIdx, times, current, signalLost, lastSignal } = routeStatus(route, dir);
 
   res.json({
     ruta: route.id,
@@ -32,6 +32,9 @@ router.get("/:id", (req, res) => {
     sentido: dir,
     sentidos: sentidos(route),
     actualizado: iso((trip && buses[trip.busId]?.updatedAt) || Date.now()),
+    // El bus dejó de transmitir (más de 2 min): no hay hora de llegada confiable
+    sinSenal: signalLost,
+    ultimaSenal: signalLost ? iso(lastSignal) : null,
     // Dónde va el bus: posición GPS real (enVivo) o null si no hay señal reciente
     bus: current && {
       lat: current.bus?.lat ?? null,

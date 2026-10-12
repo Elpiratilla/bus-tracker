@@ -516,7 +516,8 @@ function render(data) {
   const nextIdx = lastIdx + 1;
   const next = paradas[nextIdx];
   const eta = next && next.etaA ? minsTo(next.etaA) : null;
-  const etaLabel = eta === null ? "Sin estimado" : eta <= 0 ? "Llegando" : `Llega en ${eta} min`;
+  const etaLabel = data.sinSenal ? "Sin señal"
+    : eta === null ? "Sin estimado" : eta <= 0 ? "Llegando" : `Llega en ${eta} min`;
 
   // Sentido: "Hacia Zona Rosa" / "Hacia Terminal de Oriente"
   const actual = (data.sentidos || []).find((x) => x.id === data.sentido);
@@ -543,7 +544,9 @@ function render(data) {
         : [Object.assign(el("strong"), { textContent: etaLabel })]
       : [])
   );
-  $("#upd").textContent = `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
+  $("#upd").textContent = data.sinSenal
+    ? `La unidad no envía señal desde las ${hhmm(data.ultimaSenal)}. Su hora de llegada no es confiable.`
+    : `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
 
   $("#stops-title").textContent = `Paradas de la ruta ${ruta}${hacia ? ` hacia ${hacia}` : ""}`;
   $("#stops-list").replaceChildren(

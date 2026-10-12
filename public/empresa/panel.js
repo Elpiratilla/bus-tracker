@@ -534,7 +534,7 @@ function renderTramos(tramos) {
     const tr = el("tr");
     const th = el("th", null, `${t.desde} a ${t.hasta}`);
     th.scope = "row";
-    th.append(el("small", null, `Ruta ${t.ruta}, ${fmt(t.viajes)} viajes`));
+    th.append(el("small", null, `Ruta ${t.ruta}${t.hacia ? ` hacia ${t.hacia}` : ""}, ${fmt(t.viajes)} viajes`));
     tr.append(th);
     cols.forEach((h) => {
       const v = t.porHora[h];

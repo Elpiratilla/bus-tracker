@@ -27,6 +27,8 @@ function render(data) {
   const hasBus = Boolean(bus) && lastIdx >= 0 && next;
 
   $("b-ruta").textContent = ruta;
+  const hacia = (data.sentidos || []).find((x) => x.id === data.sentido)?.destino;
+  document.querySelector(".board__label").textContent = hacia ? `Siguiente parada, hacia ${hacia}` : "Siguiente parada";
   $("board-stop").textContent = hasBus ? next.nombre : paradas[0].nombre;
 
   // Minutos que faltan

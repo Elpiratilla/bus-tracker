@@ -279,18 +279,23 @@ router.get("/reportes", requireCompany, async (req, res, next) => {
       select(db.rpc("report_trips_per_day", args)),
     ]);
 
-    // Tramos en el orden de la ruta, con minutos promedio por hora del día
+    // Tramos en el orden de la ruta (ida y luego regreso), con minutos promedio por hora del día
     const tramos = [];
     for (const route of routes) {
-      route.stops.slice(1).forEach((stop, i) => {
-        const from = route.stops[i];
-        const rows = legs.filter((l) => l.route_id === route.id && l.from_stop === from.id && l.to_stop === stop.id);
-        if (!rows.length) return;
-        const viajes = rows.reduce((a, r) => a + r.trips, 0);
-        const porHora = Object.fromEntries(rows.map((r) => [r.hour, round1(r.avg_seconds / 60)]));
-        const promedio = rows.reduce((a, r) => a + r.avg_seconds * r.trips, 0) / viajes / 60;
-        tramos.push({ ruta: route.id, desde: from.name, hasta: stop.name, viajes, promedioMin: round1(promedio), porHora });
-      });
+      for (const dir of ["ida", "regreso"]) {
+        const stops = route.directions[dir];
+        stops.slice(1).forEach((stop, i) => {
+          const from = stops[i];
+          const rows = legs.filter((l) => l.route_id === route.id && l.direction === dir
+            && l.from_stop === from.id && l.to_stop === stop.id);
+          if (!rows.length) return;
+          const viajes = rows.reduce((a, r) => a + r.trips, 0);
+          const porHora = Object.fromEntries(rows.map((r) => [r.hour, round1(r.avg_seconds / 60)]));
+          const promedio = rows.reduce((a, r) => a + r.avg_seconds * r.trips, 0) / viajes / 60;
+          tramos.push({ ruta: route.id, sentido: dir, hacia: stops.at(-1).name, desde: from.name, hasta: stop.name,
+            viajes, promedioMin: round1(promedio), porHora });
+        });
+      }
     }
 
     const vueltas = myUnits(req).map((u) => ({

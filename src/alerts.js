@@ -30,28 +30,28 @@ function validSubscription(sub) {
   }
 }
 
-const alertKey = (endpoint, routeId, stopId) => `${endpoint}|${routeId}|${stopId}`;
+const alertKey = (endpoint, routeId, dir, stopId) => `${endpoint}|${routeId}|${dir}|${stopId}`;
 
 // Borra la alerta de memoria y de Supabase
 function dropAlert(key, alert) {
   alerts.delete(key);
   persist("borrar alerta", (db) => db.from("alerts").delete()
-    .match({ endpoint: alert.subscription.endpoint, route_id: alert.routeId, stop_id: alert.stopId }), key);
+    .match({ endpoint: alert.subscription.endpoint, route_id: alert.routeId, direction: alert.dir, stop_id: alert.stopId }), key);
 }
 
 // Minutos que faltan para que el bus llegue a la parada (null si no viene ninguno)
 function minutesTo(status, stopId, now) {
-  const idx = status.route.stops.findIndex((s) => s.id === stopId);
+  const idx = status.stops.findIndex((s) => s.id === stopId);
   if (status.lastIdx < 0 || idx <= status.lastIdx) return null;
   return (status.times[idx] - now) / 60000;
 }
 
 async function send(alert, route, stop, mins) {
   const payload = JSON.stringify({
-    title: `Tu ${route.id} está cerca`,
+    title: `Tu ${route.id} hacia ${route.directions[alert.dir].at(-1).name} está cerca`,
     body: mins < 1 ? `Está llegando a ${stop.name}` : `Llega a ${stop.name} en ${Math.ceil(mins)} min`,
     tag: `go503-${route.id}-${stop.id}`,
-    url: `/mapa.html?ruta=${encodeURIComponent(route.id)}`,
+    url: `/mapa.html?ruta=${encodeURIComponent(route.id)}&sentido=${alert.dir}`,
   });
   try {
     await webpush.sendNotification(alert.subscription, payload, { TTL: 120 });
@@ -69,9 +69,10 @@ async function checkAlerts() {
     if (now - alert.createdAt > EXPIRE_MS) { dropAlert(key, alert); continue; }
     const route = routes.find((r) => r.id === alert.routeId);
     if (!route) { dropAlert(key, alert); continue; }
-    if (!statuses.has(route.id)) statuses.set(route.id, routeStatus(route, now));
+    const sk = `${route.id}|${alert.dir}`;
+    if (!statuses.has(sk)) statuses.set(sk, routeStatus(route, alert.dir, now));
 
-    const mins = minutesTo(statuses.get(route.id), alert.stopId, now);
+    const mins = minutesTo(statuses.get(sk), alert.stopId, now);
     if (mins === null || mins > ALERT_MIN) continue;
 
     dropAlert(key, alert); // se avisa una sola vez
@@ -79,18 +80,18 @@ async function checkAlerts() {
   }
 }
 
-function addAlert(subscription, routeId, stopId) {
+function addAlert(subscription, routeId, dir, stopId) {
   const createdAt = Date.now();
-  const key = alertKey(subscription.endpoint, routeId, stopId);
-  alerts.set(key, { subscription, routeId, stopId, createdAt });
+  const key = alertKey(subscription.endpoint, routeId, dir, stopId);
+  alerts.set(key, { subscription, routeId, dir, stopId, createdAt });
   persist("alerta", (db) => db.from("alerts").upsert({ endpoint: subscription.endpoint, subscription,
-    route_id: routeId, stop_id: stopId, created_at: new Date(createdAt).toISOString() },
-  { onConflict: "endpoint,route_id,stop_id" }), key); // misma cola que el borrado: van en orden
+    route_id: routeId, direction: dir, stop_id: stopId, created_at: new Date(createdAt).toISOString() },
+  { onConflict: "endpoint,route_id,direction,stop_id" }), key); // misma cola que el borrado: van en orden
   checkAlerts(); // si el bus ya está a menos de 5 min, avisa de una vez
 }
 
-function removeAlert(endpoint, routeId, stopId) {
-  const key = alertKey(endpoint, routeId, stopId);
+function removeAlert(endpoint, routeId, dir, stopId) {
+  const key = alertKey(endpoint, routeId, dir, stopId);
   const alert = alerts.get(key);
   if (!alert) return false;
   dropAlert(key, alert);
@@ -99,7 +100,7 @@ function removeAlert(endpoint, routeId, stopId) {
 
 const listAlerts = (endpoint) => [...alerts.values()]
   .filter((a) => a.subscription.endpoint === endpoint)
-  .map((a) => ({ ruta: a.routeId, parada: a.stopId }));
+  .map((a) => ({ ruta: a.routeId, sentido: a.dir, parada: a.stopId }));
 
 function startAlerts() {
   setInterval(checkAlerts, CHECK_MS);

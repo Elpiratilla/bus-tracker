@@ -7,9 +7,12 @@ router.get("/", (_req, res) => res.json(routes));
 router.get("/:id/summary", (req, res) => {
   const route = routes.find((r) => r.id === req.params.id);
   if (!route) return res.status(404).json({ error: "Ruta no existe" });
-  const result = route.stops.slice(1).map((stop, i) => {
-    const from = route.stops[i];
-    const list = segments.filter((s) => s.routeId === route.id && s.from === from.id && s.to === stop.id);
+  const dir = req.query.sentido === "regreso" ? "regreso" : "ida";
+  const stops = route.directions[dir];
+  const result = stops.slice(1).map((stop, i) => {
+    const from = stops[i];
+    const list = segments.filter((s) => s.routeId === route.id && (s.dir || "ida") === dir
+      && s.from === from.id && s.to === stop.id);
     const avg = list.length ? list.reduce((a, s) => a + s.seconds, 0) / list.length : null;
     return { from: from.name, to: stop.name, trips: list.length,
       avgSeconds: avg && Math.round(avg), lastSeconds: list.length ? list[list.length - 1].seconds : null };

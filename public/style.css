@@ -161,6 +161,28 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .search input::placeholder { color: var(--muted); }
 .search input::-webkit-search-cancel-button { cursor: pointer; }
 
+/* Volver al inicio */
+.home {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: .4rem;
+  height: 2.4rem;
+  padding: 0 .75rem;
+  margin-left: -.7rem; /* la barra tiene más margen a la izquierda */
+  background: var(--paper);
+  border-radius: 999px;
+  color: var(--ink);
+  font: 700 .9rem/1 var(--sans);
+  text-decoration: none;
+}
+.home:hover { color: var(--torogoz); }
+.home:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+@media (max-width: 640px) {
+  .home { width: 2.4rem; padding: 0; justify-content: center; }
+  .home__text { display: none; }
+}
+
 /* Botón de modo claro/oscuro */
 .theme {
   display: grid;
@@ -365,6 +387,33 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   border-left: 4px solid var(--maiz);
   font-weight: 600;
 }
+
+/* Sentido de la ruta: "Hacia Zona Rosa" / "Hacia Terminal de Oriente" */
+.dir {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.1rem;
+  padding: 4px;
+  background: var(--paper);
+  border-radius: 999px;
+}
+.dir button {
+  flex: 1;
+  min-width: 0;
+  padding: .55rem .7rem;
+  overflow: hidden;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  color: var(--muted);
+  font: 700 .88rem/1.2 var(--sans);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.dir button:hover { color: var(--ink); }
+.dir button[aria-pressed="true"] { background: var(--anil); color: #fff; }
+.dir button:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
 
 /* Próxima parada */
 .next {

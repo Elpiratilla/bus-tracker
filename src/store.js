@@ -25,10 +25,14 @@ const routes = [
   ]},
 ];
 
+// Cada ruta tiene dos sentidos. Sin datos propios, el regreso son las mismas paradas al revés.
+// route.stops queda como la lista de ida (y sirve para buscar cualquier parada de la ruta).
+for (const r of routes) r.directions = { ida: r.stops, regreso: [...r.stops].reverse() };
+
 // geofence: en qué parada está cada bus ahora mismo (null si va entre paradas)
-// trips: hora en que el bus pasó por cada parada en su vuelta actual
+// trips: vuelta actual de cada bus: sentido, hora de paso por cada parada y de salida de la última
 // alerts: avisos "tu bus está cerca" pendientes (src/alerts.js)
 // buses: estado en vivo que manda el sensor (posición, velocidad, motor...)
 // units: unidades registradas por una empresa (dueño, placa, clave del sensor, km y horas de motor)
 // retired: unidades eliminadas; si su sensor sigue transmitiendo se rechaza (no se vuelve a crear)
-module.exports = { routes, lastPass: {}, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map() };
+module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map() };

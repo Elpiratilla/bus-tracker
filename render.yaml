@@ -1,0 +1,29 @@
+# Configuración para publicar go503 gratis en Render (https://render.com)
+# Render lee este archivo al crear el servicio con "New > Blueprint".
+# Las claves (sync: false) NO van aquí: Render te las pide al crear el servicio.
+services:
+  - type: web
+    name: go503
+    runtime: node
+    plan: free
+    region: virginia            # cerca de Supabase (us-east-1)
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/rutas
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        sync: false
+      - key: BUS_API_KEY        # clave para sensores no registrados; en producción, ponla siempre
+        sync: false

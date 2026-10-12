@@ -88,7 +88,8 @@ async function getRutas() {
 
 async function getRoute(ruta) {
   if (CONFIG.USE_MOCK) return mockRoute(ruta);
-  const res = await fetch(`${CONFIG.API_BASE}/api/rutas/${encodeURIComponent(ruta)}`);
+  const q = sentido ? `?sentido=${sentido}` : ""; // sin sentido: el servidor escoge donde hay bus
+  const res = await fetch(`${CONFIG.API_BASE}/api/rutas/${encodeURIComponent(ruta)}${q}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -263,7 +264,7 @@ let vehicle = null;
 
 // target: { leg, legIdx, legMs, progress, tipo, ruta, doneLine } o null si no hay bus
 function trackVehicle(target) {
-  const key = target && `${target.ruta}|${target.tipo}`;
+  const key = target && `${target.ruta}|${target.tipo}|${target.sentido}`; // otro sentido = otro bus
   if (!target || (vehicle && vehicle.key !== key)) {
     if (vehicle) {
       cancelAnimationFrame(vehicle.raf);
@@ -361,7 +362,7 @@ async function drawMap(data, lastIdx, nextIdx) {
     const progress = data.bus && data.bus.progreso != null
       ? data.bus.progreso
       : (Date.now() - new Date(paradas[lastIdx].pasoA)) / legMs;
-    target = { leg: legs[lastIdx], legIdx: lastIdx, legMs, progress, tipo: data.tipo, ruta };
+    target = { leg: legs[lastIdx], legIdx: lastIdx, legMs, progress, tipo: data.tipo, ruta, sentido: data.sentido };
   } else if (lastIdx >= paradas.length - 1) {
     doneLegs = legs;
   }
@@ -420,7 +421,7 @@ const swReady = pushOk
     })
   : Promise.resolve(null);
 
-let misAlertas = new Set(); // "ruta|parada" con aviso activo en este dispositivo
+let misAlertas = new Set(); // "ruta|sentido|parada" con aviso activo en este dispositivo
 let alertaMin = 5;
 
 const postJSON = (path, body, method = "POST") =>
@@ -452,20 +453,20 @@ async function cargarAlertas() {
     const sub = await miSuscripcion(false);
     if (!sub) return;
     const res = await postJSON("/api/alertas/mias", { endpoint: sub.endpoint });
-    if (res.ok) misAlertas = new Set((await res.json()).map((a) => `${a.ruta}|${a.parada}`));
+    if (res.ok) misAlertas = new Set((await res.json()).map((a) => `${a.ruta}|${a.sentido}|${a.parada}`));
   } catch (err) {
     console.error(err);
   }
 }
 
-async function toggleAlerta(ruta, parada, nombre) {
+async function toggleAlerta(ruta, dir, hacia, parada, nombre) {
   if (!pushOk) {
     setStatus(isIOS
       ? "En iPhone: toca Compartir y luego “Agregar a inicio”. Abre go503 desde ahí para recibir avisos."
       : "Este navegador no permite notificaciones.");
     return;
   }
-  const key = `${ruta}|${parada}`;
+  const key = `${ruta}|${dir}|${parada}`;
   try {
     const sub = await miSuscripcion(true);
     if (!sub) {
@@ -473,14 +474,14 @@ async function toggleAlerta(ruta, parada, nombre) {
       return;
     }
     if (misAlertas.has(key)) {
-      await postJSON("/api/alertas", { endpoint: sub.endpoint, ruta, parada }, "DELETE");
+      await postJSON("/api/alertas", { endpoint: sub.endpoint, ruta, sentido: dir, parada }, "DELETE");
       misAlertas.delete(key);
       setStatus("");
     } else {
-      const res = await postJSON("/api/alertas", { suscripcion: sub.toJSON(), ruta, parada });
+      const res = await postJSON("/api/alertas", { suscripcion: sub.toJSON(), ruta, sentido: dir, parada });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       misAlertas.add(key);
-      setStatus(`Listo: te avisamos cuando la ${ruta} esté a ${alertaMin} min de ${nombre}.`);
+      setStatus(`Listo: te avisamos cuando la ${ruta}${hacia ? ` hacia ${hacia}` : ""} esté a ${alertaMin} min de ${nombre}.`);
     }
     if (lastData) render(lastData);
   } catch (err) {
@@ -489,8 +490,8 @@ async function toggleAlerta(ruta, parada, nombre) {
   }
 }
 
-function bellButton(ruta, p) {
-  const on = misAlertas.has(`${ruta}|${p.id}`);
+function bellButton(ruta, dir, hacia, p) {
+  const on = misAlertas.has(`${ruta}|${dir}|${p.id}`);
   const label = on ? `Cancelar aviso de ${p.nombre}` : `Avisarme cuando la ${ruta} esté cerca de ${p.nombre}`;
   const b = el("button", "stop__bell");
   b.type = "button";
@@ -504,7 +505,7 @@ function bellButton(ruta, p) {
   u.setAttribute("href", "#i-bell");
   s.append(u);
   b.append(s);
-  b.addEventListener("click", () => toggleAlerta(ruta, p.id, p.nombre));
+  b.addEventListener("click", () => toggleAlerta(ruta, dir, hacia, p.id, p.nombre));
   return b;
 }
 
@@ -516,6 +517,21 @@ function render(data) {
   const next = paradas[nextIdx];
   const eta = next && next.etaA ? minsTo(next.etaA) : null;
   const etaLabel = eta === null ? "Sin estimado" : eta <= 0 ? "Llegando" : `Llega en ${eta} min`;
+
+  // Sentido: "Hacia Zona Rosa" / "Hacia Terminal de Oriente"
+  const actual = (data.sentidos || []).find((x) => x.id === data.sentido);
+  const hacia = actual?.destino || null;
+  const dirBox = $("#sentidos");
+  dirBox.hidden = !data.sentidos;
+  if (data.sentidos) {
+    dirBox.replaceChildren(...data.sentidos.map((x) => {
+      const b = el("button", null, `Hacia ${x.destino}`);
+      b.type = "button";
+      b.setAttribute("aria-pressed", String(x.id === data.sentido));
+      b.addEventListener("click", () => { if (x.id !== data.sentido) { sentido = x.id; load(); } });
+      return b;
+    }));
+  }
 
   $("#fascia").textContent = ruta;
   $("#fascia").setAttribute("aria-label", `Ruta ${ruta}`);
@@ -529,7 +545,7 @@ function render(data) {
   );
   $("#upd").textContent = `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
 
-  $("#stops-title").textContent = `Paradas de la ruta ${ruta}`;
+  $("#stops-title").textContent = `Paradas de la ruta ${ruta}${hacia ? ` hacia ${hacia}` : ""}`;
   $("#stops-list").replaceChildren(
     ...paradas.map((p, i) => {
       const state = i <= lastIdx ? "done" : i === nextIdx ? "next" : "todo";
@@ -545,7 +561,7 @@ function render(data) {
         : p.etaA ? `${hhmm(p.etaA)} aprox.` : "Sin estimado";
 
       li.append(el("span", "stop__dot"), name, el("span", "stop__time", time));
-      if (alertasOn && state !== "done") li.append(bellButton(ruta, p));
+      if (alertasOn && state !== "done") li.append(bellButton(ruta, data.sentido || "ida", hacia, p));
       return li;
     })
   );
@@ -554,7 +570,9 @@ function render(data) {
 }
 
 // ---------- Carga y actualización ----------
-let current = new URLSearchParams(location.search).get("ruta") || "101"; // ?ruta= al abrir desde un aviso
+const params = new URLSearchParams(location.search);
+let current = params.get("ruta") || "101"; // ?ruta=&sentido= al abrir desde un aviso
+let sentido = ["ida", "regreso"].includes(params.get("sentido")) ? params.get("sentido") : null; // null = automático
 let lastData = null;
 
 function setStatus(msg) {
@@ -618,6 +636,7 @@ function renderChips() {
       b.append(icono(r.tipo), r.ruta);
       b.addEventListener("click", () => {
         current = r.ruta;
+        sentido = null;
         renderChips();
         load();
       });
@@ -629,6 +648,7 @@ function renderChips() {
 
 function selectRuta(ruta) {
   current = ruta;
+  sentido = null;
   renderChips();
   load();
 }
@@ -650,6 +670,7 @@ document.querySelectorAll(".seg button").forEach((b) => {
     const visibles = renderChips();
     if (visibles.length && !visibles.some((r) => r.ruta === current)) {
       current = visibles[0].ruta;
+      sentido = null;
       renderChips();
       load();
     }

@@ -1,12 +1,13 @@
 // Simula sensores GPS de buses. Con el servidor encendido: npm run simulate (Node 18+)
-// Cada bus avanza en línea recta entre paradas y manda su posición cada TICK_S segundos.
+// Cada bus va y regresa por su ruta en línea recta entre paradas y manda su posición cada TICK_S segundos.
 // Velocidad normal:  npm run simulate          (20 km/h, tramos de 3 a 12 min)
 // Más rápido:        SIM_SPEED_KMH=120 npm run simulate
 // Unidad registrada en el panel:  SIM_BUS=U-XXXXXX SIM_KEY=go503_... SIM_ROUTE=101 npm run simulate
 require("dotenv").config();
 const { distanceM } = require("../src/geo");
 
-const API = `http://localhost:${process.env.PORT || 3000}/api`;
+// A la página publicada: SIM_API=https://go503.onrender.com/api npm run simulate
+const API = process.env.SIM_API || `http://localhost:${process.env.PORT || 3000}/api`;
 const TICK_S = 2;          // cada cuánto manda posición el sensor
 const DWELL_TICKS = 10;    // mensajes que se queda quieto en cada parada (~20 s)
 const NOISE = 0.00005;     // ~5 m de error de GPS
@@ -37,7 +38,13 @@ function buildPath(stops, speedKmh) {
 }
 
 function runBus(busId, route, speedKmh) {
-  const path = buildPath(route.stops, speedKmh);
+  // Ida completa y luego el regreso (sin repetir la terminal donde da la vuelta); al final vuelve a empezar
+  const { ida, regreso } = route.directions || { ida: route.stops, regreso: [...route.stops].reverse() };
+  const sameStop = (a, b) => a && b && a.id === b.id;
+  const loop = [...ida, ...(sameStop(ida.at(-1), regreso[0]) ? regreso.slice(1) : regreso)];
+  if (sameStop(loop.at(-1), loop[0])) loop.pop(); // la terminal inicial ya está al principio
+  loop.push(loop[0]);                              // y cierra la vuelta para seguir sin saltos
+  const path = buildPath(loop, speedKmh).slice(0, -DWELL_TICKS);
   let i = 0;
   let fuel = 70 + Math.random() * 25;  // baja poco a poco
   let temp = 86;                        // se mueve suave alrededor de 88 °C

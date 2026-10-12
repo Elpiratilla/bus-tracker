@@ -48,24 +48,30 @@ async function loadState() {
   if (!db) return;
 
   const routes = await select(db.from("routes")
-    .select("id, name, type, route_stops(position, stops(id, name, lat, lng))")
+    .select("id, name, type, route_stops(direction, position, stops(id, name, lat, lng))")
     .eq("active", true).order("sort"));
-  store.routes.splice(0, store.routes.length, ...routes.map((r) => ({
-    id: r.id, name: r.name, type: r.type,
-    stops: r.route_stops.sort((a, b) => a.position - b.position).map((rs) => rs.stops),
-  })));
+  store.routes.splice(0, store.routes.length, ...routes.map((r) => {
+    const dir = (d) => r.route_stops.filter((rs) => rs.direction === d)
+      .sort((a, b) => a.position - b.position).map((rs) => rs.stops);
+    const ida = dir("ida");
+    const regreso = dir("regreso");
+    // stops: todas las paradas de la ruta (las de ida y las que solo están en el regreso)
+    const stops = [...ida, ...regreso.filter((s) => !ida.some((x) => x.id === s.id))];
+    return { id: r.id, name: r.name, type: r.type, stops,
+      directions: { ida, regreso: regreso.length ? regreso : [...ida].reverse() } };
+  }));
 
   const segments = await select(db.from("recent_segments").select("*").order("ts"));
   store.segments.splice(0, store.segments.length, ...segments.map((s) => ({
-    busId: s.bus_id, routeId: s.route_id, from: s.from_stop, to: s.to_stop, seconds: s.seconds, ts: ms(s.ts),
+    busId: s.bus_id, routeId: s.route_id, dir: s.direction, from: s.from_stop, to: s.to_stop, seconds: s.seconds, ts: ms(s.ts),
   })));
 
   for (const t of await select(db.from("bus_trips").select("*"))) {
     const k = `${t.bus_id}:${t.route_id}`;
     store.geofence[k] = t.geofence_stop;
     if (t.last_stop_id) {
-      store.lastPass[k] = { stopId: t.last_stop_id, ts: t.passes[t.last_stop_id] };
-      store.trips[k] = { busId: t.bus_id, passes: t.passes, lastStopId: t.last_stop_id, updatedAt: ms(t.updated_at) };
+      store.trips[k] = { busId: t.bus_id, dir: t.direction, passes: t.passes, lastStopId: t.last_stop_id,
+        leftStop: t.left_stop, leftAt: ms(t.left_at), updatedAt: ms(t.updated_at) };
     }
   }
 
@@ -76,8 +82,8 @@ async function loadState() {
   }
 
   for (const a of await select(db.from("alerts").select("*"))) {
-    store.alerts.set(`${a.endpoint}|${a.route_id}|${a.stop_id}`,
-      { subscription: a.subscription, routeId: a.route_id, stopId: a.stop_id, createdAt: ms(a.created_at) });
+    store.alerts.set(`${a.endpoint}|${a.route_id}|${a.direction}|${a.stop_id}`,
+      { subscription: a.subscription, routeId: a.route_id, dir: a.direction, stopId: a.stop_id, createdAt: ms(a.created_at) });
   }
 
   console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `

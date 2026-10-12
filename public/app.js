@@ -3,7 +3,7 @@
 const CONFIG = {
   API_BASE: "",        // ej. "https://api.go503.com". Vacío = el mismo servidor
   USE_MOCK: false,     // true = datos de ejemplo, sin backend
-  REFRESH_MS: 15000,   // cada cuánto se actualiza
+  REFRESH_MS: 5000,   // cada cuánto se actualiza
   OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
   CENTER: [13.699, -89.205],               // San Salvador
   CARTO_KEY: "cb1_483z_1_4a6102fca3ea19c0048a0ded",       // pega aquí tu llave gratis de https://carto.com/basemaps/apikey/

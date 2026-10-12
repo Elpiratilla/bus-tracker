@@ -1,7 +1,8 @@
 // go503: interfaz + mapa real (Leaflet + CARTO)
 
 const CONFIG = {
-  API_BASE: "",        // ej. "https://api.go503.com". Vacío = datos de ejemplo
+  API_BASE: "",        // ej. "https://api.go503.com". Vacío = el mismo servidor
+  USE_MOCK: false,     // true = datos de ejemplo, sin backend
   REFRESH_MS: 15000,   // cada cuánto se actualiza
   OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
   CENTER: [13.699, -89.205],               // San Salvador
@@ -61,7 +62,7 @@ function mockRoute(ruta) {
 }
 
 async function getRoute(ruta) {
-  if (!CONFIG.API_BASE) return mockRoute(ruta);
+  if (CONFIG.USE_MOCK) return mockRoute(ruta);
   const res = await fetch(`${CONFIG.API_BASE}/api/rutas/${encodeURIComponent(ruta)}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();

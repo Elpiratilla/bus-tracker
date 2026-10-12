@@ -1,4 +1,4 @@
-const { lastPass, segments, geofence } = require("./store");
+const { lastPass, segments, geofence, trips } = require("./store");
 const { nearestStop } = require("./geo");
 
 // Qué tan cerca (en metros) debe estar el bus para contar que pasó por la parada
@@ -22,6 +22,13 @@ function registerPass(busId, route, stopId, now) {
       seconds: Math.round((now - prev.ts) / 1000), ts: now });
   }
   lastPass[key] = { stopId, ts: now };
+
+  // Si vuelve a una parada anterior (o a la misma), empezó una vuelta nueva
+  const trip = trips[key];
+  if (!trip || order(stopId) <= order(trip.lastStopId)) trips[key] = { busId, passes: {} };
+  trips[key].passes[stopId] = now;
+  trips[key].lastStopId = stopId;
+  trips[key].updatedAt = now;
 }
 
 // Recibe una posición GPS y detecta si el bus acaba de entrar a una parada.

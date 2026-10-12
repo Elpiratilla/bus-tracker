@@ -6,6 +6,7 @@ const API = `http://localhost:${process.env.PORT || 3000}/api`;
 const TICK_S = 2;          // cada cuánto manda posición el sensor
 const DWELL_TICKS = 3;     // mensajes que se queda quieto en cada parada
 const NOISE = 0.00005;     // ~5 m de error de GPS
+const SEGMENT_S = Number(process.env.SIM_SEGMENT_S) || 120; // segundos por tramo (bájalo para probar rápido)
 
 const post = (url, body) =>
   fetch(API + url, { method: "POST", headers: { "Content-Type": "application/json", "x-api-key": process.env.BUS_API_KEY || "" }, body: JSON.stringify(body) })
@@ -53,8 +54,6 @@ function runBus(busId, route, secondsPerSegment) {
 
 (async () => {
   const routes = await fetch(API + "/routes").then((r) => r.json());
-  const route = routes.find((r) => r.id === "101");
-  runBus("BUS-01", route, 20);
-  runBus("BUS-02", route, 30);
-  console.log("Simulando BUS-01 y BUS-02 en la ruta 101 con GPS...");
+  routes.forEach((route, i) => runBus(`BUS-${route.id}`, route, SEGMENT_S * (1 + i * 0.25)));
+  console.log(`Simulando un bus por ruta (${routes.map((r) => r.id).join(", ")}), ~${SEGMENT_S}s por tramo...`);
 })();

@@ -13,6 +13,7 @@ app.use("/api/checkpoints", require("./routes/checkpoints"));
 app.use("/api/telemetry", require("./routes/telemetry"));
 app.use("/api/buses", require("./routes/telemetry"));
 app.use("/api/routes", require("./routes/routes"));
+app.use("/api/rutas", require("./routes/rutas"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API lista en http://localhost:${PORT}`));

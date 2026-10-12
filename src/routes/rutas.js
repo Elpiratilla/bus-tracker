@@ -6,7 +6,10 @@ const { routeStatus } = require("../eta");
 const iso = (t) => (t == null ? null : new Date(t).toISOString());
 
 // Lista de rutas para los botones del frontend
-router.get("/", (_req, res) => res.json(routes.map((r) => ({ ruta: r.id, tipo: r.type }))));
+// (incluye los nombres de las paradas para que el buscador encuentre rutas por parada)
+router.get("/", (_req, res) => res.json(routes.map((r) => ({
+  ruta: r.id, tipo: r.type, nombre: r.name, paradas: r.stops.map((s) => s.name),
+}))));
 
 router.get("/:id", (req, res) => {
   const route = routes.find((r) => r.id === req.params.id);

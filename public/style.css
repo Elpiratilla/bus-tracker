@@ -19,8 +19,9 @@
   color-scheme: light dark;
 }
 
+/* Modo oscuro: el del teléfono, salvo que la persona elija otro con el botón (data-theme) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --paper: #0C1130;
     --card: #141B42;
     --ink: #EEF1FF;
@@ -28,7 +29,32 @@
     --line: #27305F;
     --track: #34407A;
     --route-todo: rgba(190, 200, 240, .5);
+    color-scheme: dark;
   }
+  :root:not([data-theme="light"]) .logo--claro { display: none; }
+  :root:not([data-theme="light"]) .logo--oscuro { display: block; }
+}
+:root[data-theme="dark"] {
+  --paper: #0C1130;
+  --card: #141B42;
+  --ink: #EEF1FF;
+  --muted: #A3ACD0;
+  --line: #27305F;
+  --track: #34407A;
+  --route-todo: rgba(190, 200, 240, .5);
+  color-scheme: dark;
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] .logo--claro { display: none; }
+:root[data-theme="dark"] .logo--oscuro { display: block; }
+.logo--oscuro { display: none; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -109,13 +135,78 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 }
 .seg button:focus-visible, .chip:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
 
-/* Rutas del tipo elegido, flotando sobre el mapa */
-.chips {
+/* Buscador de rutas y paradas */
+.search {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: .5rem;
+  min-width: 0;
+  padding: 0 .9rem;
+  background: var(--paper);
+  border-radius: 999px;
+  color: var(--muted);
+}
+.search:focus-within { box-shadow: 0 0 0 2px var(--torogoz); }
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 2.4rem;
+  background: none;
+  border: 0;
+  outline: none;
+  color: var(--ink);
+  font: 500 .95rem/1 var(--sans);
+}
+.search input::placeholder { color: var(--muted); }
+.search input::-webkit-search-cancel-button { cursor: pointer; }
+
+/* Botón de modo claro/oscuro */
+.theme {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 2.4rem;
+  height: 2.4rem;
+  background: var(--paper);
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  cursor: pointer;
+}
+.theme:hover { color: var(--torogoz); }
+.theme:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+
+/* Segunda fila: tipo de unidad + rutas, flotando sobre el mapa */
+.row2 {
   position: absolute;
   z-index: 999;
-  top: 4.5rem;
+  top: 4.4rem;
   left: .7rem;
   right: .7rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.row2 .seg {
+  flex: none;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  box-shadow: 0 2px 10px rgba(12, 17, 48, .25);
+}
+.chips__empty {
+  padding: .45rem .85rem;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(12, 17, 48, .25);
+  color: var(--muted);
+  font: 600 .9rem/1.2 var(--sans);
+  white-space: nowrap;
+}
+
+/* Rutas del tipo elegido */
+.chips {
+  flex: 1;
+  min-width: 0;
   display: flex;
   gap: .4rem;
   padding: .2rem 0 .5rem;

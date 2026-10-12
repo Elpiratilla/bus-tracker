@@ -113,12 +113,16 @@ function el(tag, cls, text) {
 const map = L.map("map", { zoomControl: false }).setView(CONFIG.CENTER, 13);
 L.control.zoom({ position: "bottomright" }).addTo(map);
 
+// Tema: el del teléfono, salvo que la persona elija otro con el botón (se recuerda)
 const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+const root = document.documentElement;
+const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : darkQuery.matches);
+
 let tiles;
 function setTiles() {
   if (tiles) tiles.remove();
   if (CONFIG.CARTO_KEY) {
-    const style = darkQuery.matches ? "dark_all" : "light_all";
+    const style = isDark() ? "dark_all" : "light_all";
     tiles = L.tileLayer(
       `https://basemaps.cartocdn.com/rastertiles/${style}/{z}/{x}/{y}.png?key=${CONFIG.CARTO_KEY}`,
       {
@@ -135,8 +139,22 @@ function setTiles() {
   }
   tiles.addTo(map);
 }
-setTiles();
-darkQuery.addEventListener("change", setTiles);
+function applyTheme() {
+  setTiles();
+  const dark = isDark();
+  const btn = $("#tema");
+  btn.setAttribute("aria-label", dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+  btn.title = dark ? "Modo claro" : "Modo oscuro";
+  btn.querySelector("use").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#0C1130" : "#1B2559";
+}
+$("#tema").addEventListener("click", () => {
+  root.dataset.theme = isDark() ? "light" : "dark";
+  try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
+  applyTheme();
+});
+applyTheme();
+darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
 
 const overlay = L.layerGroup().addTo(map);
 
@@ -572,8 +590,25 @@ function icono(t) {
   return s;
 }
 
+// Búsqueda por número de ruta o nombre de parada, sin importar acentos ni mayúsculas
+let query = "";
+const norm = (t) => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+const compact = (t) => norm(t).replace(/[^a-z0-9]/g, "");
+
+function matches(r) {
+  if (!query) return true;
+  const q = norm(query);
+  return compact(r.ruta).startsWith(compact(q))
+    || norm(r.nombre || "").includes(q)
+    || (r.paradas || []).some((p) => norm(p).includes(q));
+}
+
 function renderChips() {
-  const visibles = rutas.filter((r) => tipo === "todos" || r.tipo === tipo);
+  const visibles = rutas.filter((r) => (tipo === "todos" || r.tipo === tipo) && matches(r));
+  if (!visibles.length && query) {
+    $("#chips").replaceChildren(el("p", "chips__empty", `No hay rutas con “${query}”`));
+    return visibles;
+  }
   $("#chips").replaceChildren(
     ...visibles.map((r) => {
       const b = el("button", `chip${r.tipo === "microbus" ? " chip--micro" : ""}`);
@@ -591,6 +626,22 @@ function renderChips() {
   );
   return visibles;
 }
+
+function selectRuta(ruta) {
+  current = ruta;
+  renderChips();
+  load();
+}
+
+const buscar = $("#buscar");
+buscar.addEventListener("input", () => { query = buscar.value; renderChips(); });
+buscar.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const first = rutas.find((r) => (tipo === "todos" || r.tipo === tipo) && matches(r));
+    if (first) { selectRuta(first.ruta); buscar.blur(); }
+  }
+  if (e.key === "Escape") { buscar.value = ""; query = ""; renderChips(); }
+});
 
 document.querySelectorAll(".seg button").forEach((b) => {
   b.addEventListener("click", () => {

@@ -6,6 +6,8 @@
   <title>go503: cuándo llega tu bus</title>
   <meta name="description" content="Mira cuánto tarda tu bus entre cada parada, en tiempo real.">
   <meta name="theme-color" content="#1B2559">
+  <!-- Tema elegido por la persona (claro/oscuro), antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
@@ -30,6 +32,17 @@
       <circle cx="16" cy="14.5" r="1.3" fill="currentColor"/>
       <path d="M6.5 18v3M17.5 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M15.5 15.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
     <symbol id="i-bell" viewBox="0 0 24 24">
       <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -46,14 +59,27 @@
 
     <section class="stage">
       <header class="top">
-        <a class="logo" href="/" aria-label="go503, inicio"><picture><source srcset="/img/go503-logo-oscuro.svg" media="(prefers-color-scheme: dark)"><img src="/img/go503-logo-claro.svg" alt="go503" width="28" height="32"></picture></a>
+        <a class="logo" href="/" aria-label="go503, inicio">
+          <img class="logo--claro" src="/img/go503-logo-claro.svg" alt="" width="28" height="32">
+          <img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="" width="28" height="32">
+        </a>
+        <div class="search" role="search">
+          <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+          <label class="visually-hidden" for="buscar">Buscar ruta o parada</label>
+          <input id="buscar" type="search" placeholder="Busca tu ruta o parada" autocomplete="off" spellcheck="false" enterkeyhint="search">
+        </div>
+        <button class="theme" id="tema" type="button" aria-label="Cambiar a modo oscuro">
+          <svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
+      </header>
+      <div class="row2">
         <div class="seg" role="group" aria-label="Tipo de unidad">
           <button type="button" data-tipo="todos" aria-pressed="true">Todos</button>
           <button type="button" data-tipo="autobus" aria-pressed="false">Autobús</button>
           <button type="button" data-tipo="microbus" aria-pressed="false">Microbús</button>
         </div>
-      </header>
-      <nav class="chips" id="chips" aria-label="Rutas"></nav>
+        <nav class="chips" id="chips" aria-label="Rutas"></nav>
+      </div>
       <!-- Mapa real: Leaflet + mosaicos de CARTO. app.js dibuja aquí -->
       <div id="map" role="region" aria-label="Mapa de la ruta"></div>
     </section>

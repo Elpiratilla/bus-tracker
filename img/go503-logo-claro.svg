@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 64" width="224" height="256" role="img" aria-label="go503">
+  <rect x="11" y="48" width="8" height="12" rx="3" fill="#0E1F3D"/>
+  <rect x="37" y="48" width="8" height="12" rx="3" fill="#0E1F3D"/>
+  <rect x="6" y="4" width="44" height="48" rx="10" fill="#1E4FBF"/>
+  <rect x="10" y="11" width="36" height="20" rx="4" fill="#FFFFFF"/>
+  <text x="28" y="24.5" text-anchor="middle" font-family="Sora, 'Segoe UI', sans-serif" font-weight="800" font-size="9.5" letter-spacing="-0.3"><tspan fill="#F2B230">Go</tspan><tspan fill="#0E1F3D">503</tspan></text>
+  <circle cx="16" cy="41" r="3.5" fill="#F2B230"/>
+  <circle cx="40" cy="41" r="3.5" fill="#F2B230"/>
+</svg>

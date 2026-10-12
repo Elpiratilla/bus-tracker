@@ -58,7 +58,10 @@ function runBus(busId, route, speedKmh) {
 }
 
 (async () => {
-  const routes = await fetch(API + "/routes").then((r) => r.json());
+  const routes = await fetch(API + "/routes").then((r) => r.json()).catch(() => {
+    console.error(`No hay servidor en ${API}. Enciéndelo primero con: npm run dev`);
+    process.exit(1);
+  });
   routes.forEach((route) => runBus(`BUS-${route.id}`, route, SPEED_KMH));
   console.log(`Simulando un bus por ruta (${routes.map((r) => r.id).join(", ")}) a ${SPEED_KMH} km/h...`);
 })();

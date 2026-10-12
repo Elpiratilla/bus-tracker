@@ -7,7 +7,6 @@ const RECENT_TRIPS = 10;                 // promedio con los últimos N pasos po
 const FALLBACK_SPEED_MS = 20 / 3.6;      // 20 km/h si un tramo aún no tiene mediciones
 const STALE_MS = 2 * 60 * 60 * 1000;     // vuelta sin actividad en 2 h = no hay bus
 const LIVE_MS = 60 * 1000;               // GPS sin reportar en 1 min = estimar por tiempo
-const LOST_MS = 2 * 60 * 1000;           // sin señal en 2 min = ya no se da hora de llegada
 
 // Segundos estimados de cada tramo de un sentido (índice i = de la parada i-1 a la i)
 function legSeconds(route, dir, stops) {
@@ -88,20 +87,16 @@ function routeStatus(route, dir = "ida", now = Date.now()) {
     if (times[i] == null) times[i] = times[i + 1] - legs[i + 1] * 1000;
   }
 
-  // Si el bus dejó de transmitir hace rato, una hora de llegada sería inventada: no se da
-  const lastSignal = trip ? buses[trip.busId]?.updatedAt ?? trip.updatedAt : null;
-  const signalLost = Boolean(trip) && now - lastSignal > LOST_MS;
-
   // ETA progresiva: lo que falta del tramo actual + los tramos siguientes
   let current = null;
-  if (!signalLost && lastIdx >= 0 && lastIdx < stops.length - 1) {
+  if (lastIdx >= 0 && lastIdx < stops.length - 1) {
     const legMs = legs[lastIdx + 1] * 1000;
     current = legProgress(route, stops, trip, lastIdx, legMs, times[lastIdx], now);
     times[lastIdx + 1] = now + (1 - current.progress) * legMs;
     for (let i = lastIdx + 2; i < stops.length; i++) times[i] = times[i - 1] + legs[i] * 1000;
   }
 
-  return { route, dir, stops, legs, trip, lastIdx, times, current, signalLost, lastSignal };
+  return { route, dir, stops, legs, trip, lastIdx, times, current };
 }
 
 module.exports = { routeStatus, pickDirection };

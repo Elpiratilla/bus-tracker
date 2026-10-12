@@ -38,9 +38,6 @@ function render(data) {
     const m = minsTo(next.etaA);
     if (m <= 0) eta.append(el("span", "board__num", "Llegando"));
     else eta.append(el("span", "board__num", String(m)), el("span", "board__unit", "min"));
-  } else if (data.sinSenal) {
-    const mins = Math.round((Date.now() - new Date(data.ultimaSenal)) / 60000);
-    eta.append(el("span", "board__note", `La unidad dejó de enviar señal hace ${mins} min. Prueba otra ruta.`));
   } else {
     eta.append(el("span", "board__note", "No hay unidades en esta ruta ahora. Prueba otra ruta."));
   }
@@ -67,8 +64,7 @@ function render(data) {
 
   // Estado de la conexión
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
-  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo" : `Actualizado hace ${secs} s`)
-    : data.sinSenal ? "Sin señal" : "Sin unidades en ruta";
+  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo" : `Actualizado hace ${secs} s`) : "Sin unidades en ruta";
   document.querySelector(".live").classList.toggle("live--off", !hasBus);
 }
 

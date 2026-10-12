@@ -1,0 +1,307 @@
+/* go503: añil, maíz y torogoz */
+
+:root {
+  --anil: #1B2559;        /* tinte de añil: el color de la marca */
+  --anil-2: #243070;
+  --agua: #173B73;
+  --maiz: #F2B22E;        /* maíz: próxima parada y unidad */
+  --torogoz: #0FA39C;     /* turquesa del torogoz: tramo recorrido */
+
+  --paper: #F6F8FC;
+  --card: #FFFFFF;
+  --ink: #141B3D;
+  --muted: #5A6488;
+  --line: #DDE2F0;
+  --track: #C9D0E6;
+
+  --serif: "Young Serif", Georgia, serif;
+  --sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --top-h: 4.4rem;
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0C1130;
+    --card: #141B42;
+    --ink: #EEF1FF;
+    --muted: #A3ACD0;
+    --line: #27305F;
+    --track: #34407A;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Hilo azul, blanco, azul: la bandera, en silencio */
+body::before {
+  content: "";
+  display: block;
+  height: 9px;
+  background: linear-gradient(var(--anil) 0 3px, #fff 3px 6px, var(--anil) 6px);
+}
+
+a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
+
+/* ---------- Encabezado ---------- */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: var(--top-h);
+  padding: 0 1.1rem;
+}
+
+.logo {
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.routes { display: flex; gap: .4rem; }
+.routes a {
+  min-width: 2.9rem;
+  padding: .6rem .85rem;
+  border: 1.5px solid var(--track);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  text-decoration: none;
+}
+.routes a[aria-current="page"] {
+  background: var(--anil);
+  border-color: var(--anil);
+  color: #fff;
+}
+
+/* ---------- Mapa: protagonista, de borde a borde ---------- */
+.map { background: var(--anil); line-height: 0; }
+.map svg { display: block; width: 100%; height: auto; }
+
+.m-block  { fill: var(--anil-2); opacity: .55; }
+.m-volcan { fill: var(--anil-2); }
+.m-water  { fill: none; stroke: var(--agua); stroke-width: 26; stroke-linecap: round; }
+
+.route {
+  fill: none;
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.route--todo { stroke: rgba(255, 255, 255, .28); }
+.route--done { stroke: var(--torogoz); }
+
+/* Checkpoints */
+.cp { stroke-width: 4; }
+.cp--done { fill: var(--torogoz); stroke: var(--anil); }
+.cp--todo { fill: var(--anil);    stroke: #C9D0F0; }
+.cp--next { fill: var(--maiz);    stroke: var(--anil); }
+
+.pulse {
+  fill: var(--maiz);
+  opacity: .5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pulse 2.2s ease-out infinite;
+}
+@keyframes pulse {
+  from { transform: scale(1);   opacity: .5; }
+  to   { transform: scale(2.4); opacity: 0;  }
+}
+
+/* Unidad */
+.bus rect { fill: var(--maiz); stroke: var(--anil); stroke-width: 3; }
+.bus text { fill: var(--anil); font: 12px var(--serif); }
+
+/* Textos del mapa */
+.m-t {
+  paint-order: stroke;
+  stroke: var(--anil);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.m-name { fill: #fff;     font: 600 13px var(--sans); }
+.m-leg  { fill: #AEB8EA;  font: 600 11px var(--sans); }
+
+/* ---------- Panel inferior ---------- */
+.panel {
+  position: relative;
+  margin-top: -28px;
+  padding: 1.4rem 1.2rem 2rem;
+  background: var(--card);
+  border-radius: 26px 26px 0 0;
+  box-shadow: 0 -10px 30px rgba(12, 17, 48, .22);
+}
+
+.status {
+  margin: 0 0 1rem;
+  padding: .6rem .9rem;
+  background: var(--paper);
+  border-left: 4px solid var(--maiz);
+  font-weight: 600;
+}
+
+/* Próxima parada */
+.next {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: .3rem 1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+.next__stop {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.1;
+}
+.next__eta { margin: .4rem 0 0; color: var(--muted); }
+.next__eta strong {
+  margin-left: .15em;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  font-weight: 400;
+  line-height: 1;
+}
+.next__upd {
+  grid-column: 1 / -1;
+  margin: .5rem 0 0;
+  color: var(--muted);
+  font-size: .85rem;
+}
+
+/* Número de ruta, como rótulo pintado en el bus */
+.fascia {
+  display: grid;
+  place-items: center;
+  min-width: 4.4rem;
+  height: 3.6rem;
+  padding: 0 .9rem;
+  background: var(--anil);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 3px var(--anil), inset 0 0 0 4.5px var(--maiz);
+  color: var(--maiz);
+  font-family: var(--serif);
+  font-size: 1.9rem;
+}
+
+/* ---------- Paradas ---------- */
+.stops h2 {
+  margin: 1.2rem 0 .3rem;
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+}
+.stops ol { margin: 0; padding: 0; list-style: none; }
+
+.stop {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.6rem 1fr auto;
+  column-gap: .8rem;
+  padding: .7rem 0;
+}
+
+/* Conector entre paradas */
+.stop::before {
+  content: "";
+  position: absolute;
+  left: calc(.8rem - 2px);
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--track);
+}
+.stop:first-child::before { top: 50%; }
+.stop:last-child::before  { bottom: 50%; }
+.stop--done::before { background: var(--torogoz); }
+.stop--next::before {
+  background: linear-gradient(var(--torogoz) 50%, var(--track) 50%);
+}
+
+.stop__dot {
+  position: relative;
+  z-index: 1;
+  align-self: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 4px solid var(--card);
+  border-radius: 50%;
+  background: var(--torogoz);
+}
+.stop--todo .stop__dot { background: var(--card); border-color: var(--muted); }
+.stop--next .stop__dot {
+  background: var(--maiz);
+  border-color: var(--anil);
+  transform: scale(1.2);
+}
+
+.stop__name { font-weight: 700; }
+.stop--done .stop__name { color: var(--muted); font-weight: 600; }
+.stop__leg {
+  display: block;
+  color: var(--muted);
+  font-size: .85rem;
+  font-weight: 500;
+}
+.stop__time {
+  align-self: center;
+  font-size: .95rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.stop--next .stop__time {
+  padding: .25rem .7rem;
+  background: var(--maiz);
+  border-radius: 999px;
+  color: var(--anil);
+  font-weight: 700;
+}
+
+.foot { margin: 1.6rem 0 0; color: var(--muted); font-size: .85rem; }
+
+/* ---------- Pantallas grandes: mapa fijo a la izquierda ---------- */
+@media (min-width: 900px) {
+  .app {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr);
+  }
+  .map {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    display: grid;
+    place-items: center;
+    height: calc(100vh - var(--top-h) - 9px);
+  }
+  .panel {
+    margin-top: 0;
+    padding: 2rem 2.4rem;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .next__stop { font-size: 2.1rem; }
+  .next__eta strong { font-size: 3.2rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none; }
+}

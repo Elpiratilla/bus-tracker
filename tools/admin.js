@@ -38,7 +38,7 @@ function saveEnv(key, value) {
   let user = await findUser();
   if (!user) {
     if (process.argv[2]) {
-      console.error(`${email} no tiene cuenta. Que se registre primero en /empresa/ o usa: npm run admin`);
+      console.error(`${email} no tiene cuenta. Que se registre primero en /login.html o usa: npm run admin`);
       process.exit(1);
     }
     const password = crypto.randomBytes(12).toString("base64url");
@@ -59,7 +59,7 @@ function saveEnv(key, value) {
     if (error) throw error;
     console.log(`Empresa "go503" creada como administradora para ${email}.`);
   }
-  console.log("Entra en http://localhost:3000/empresa/");
+  console.log("Entra en http://localhost:3000/login.html");
 })().catch((err) => {
   console.error(`No se pudo: ${err.message}`);
   process.exit(1);

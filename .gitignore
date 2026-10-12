@@ -1,2 +1,9 @@
 node_modules/
 .env
+
+# Claves reales del sensor (se copia de config_ejemplo.h)
+firmware/go503_sensor/config.h
+
+# Archivos de macOS y de herramientas locales
+.DS_Store
+.claude/

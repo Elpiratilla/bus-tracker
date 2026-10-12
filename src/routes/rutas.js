@@ -1,4 +1,4 @@
-// Formato que usa el frontend (public/app.js): GET /api/rutas y GET /api/rutas/:id?sentido=ida|regreso
+// Formato que usa el frontend (public/js/mapa.js): GET /api/rutas y GET /api/rutas/:id?sentido=ida|regreso
 const router = require("express").Router();
 const { routes, buses } = require("../store");
 const { routeStatus, pickDirection } = require("../eta");

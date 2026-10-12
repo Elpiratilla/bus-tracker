@@ -415,7 +415,7 @@ const alertasOn = !CONFIG.USE_MOCK;
 const pushOk = alertasOn && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
 const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
 const swReady = pushOk
-  ? navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).catch((err) => {
+  ? navigator.serviceWorker.register("/sw.js").then(() => navigator.serviceWorker.ready).catch((err) => {
       console.error(err);
       return null;
     })

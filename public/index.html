@@ -9,35 +9,24 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style  .css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header class="top">
-    <a class="logo" href="/" aria-label="go503, inicio">go503</a>
-    <nav class="routes" aria-label="Rutas">
-      <a href="#" data-ruta="101" aria-current="page">101</a>
-      <a href="#" data-ruta="42">42</a>
-      <a href="#" data-ruta="29">29</a>
-    </nav>
-  </header>
-
   <main class="app">
 
-    <!-- Mapa esquemático: app.js dibuja dentro de #layer -->
-    <section class="map" aria-label="Mapa de la ruta">
-      <svg id="map-svg" viewBox="0 0 360 320" role="img" aria-label="Mapa de la ruta">
-        <defs>
-          <pattern id="blocks" width="85" height="75" patternUnits="userSpaceOnUse">
-            <rect class="m-block" x="5" y="5" width="75" height="65" rx="10"/>
-          </pattern>
-        </defs>
-        <rect width="360" height="320" fill="url(#blocks)"/>
-        <!-- Volcán de San Salvador, de fondo -->
-        <path class="m-volcan" d="M150 320 L218 236 Q226 228 236 236 L246 244 L262 232 Q270 228 278 236 L350 320 Z"/>
-        <path class="m-water" d="M-10 215 C 80 190, 150 250, 230 225 S 330 180, 370 200"/>
-        <g id="layer"></g>
-      </svg>
+    <section class="stage">
+      <header class="top">
+        <a class="logo" href="/" aria-label="go503, inicio">go503</a>
+        <nav class="routes" aria-label="Rutas">
+          <a href="#" data-ruta="101" aria-current="page">101</a>
+          <a href="#" data-ruta="42">42</a>
+          <a href="#" data-ruta="29">29</a>
+        </nav>
+      </header>
+      <!-- Mapa real: Leaflet + mosaicos de CARTO. app.js dibuja aquí -->
+      <div id="map" role="region" aria-label="Mapa de la ruta"></div>
     </section>
 
     <div class="panel">
@@ -62,6 +51,7 @@
 
   </main>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js" defer></script>
 </body>
 </html>

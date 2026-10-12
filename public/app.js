@@ -1,8 +1,11 @@
-// go503: conecta la interfaz con la API (o con datos de ejemplo)
+// go503: interfaz + mapa real (Leaflet + CARTO)
 
 const CONFIG = {
   API_BASE: "",        // ej. "https://api.go503.com". Vacío = datos de ejemplo
   REFRESH_MS: 15000,   // cada cuánto se actualiza
+  OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
+  CENTER: [13.699, -89.205],               // San Salvador
+  CARTO_KEY: "cb1_483z_1_4a6102fca3ea19c0048a0ded",       // pega aquí tu llave gratis de https://carto.com/basemaps/apikey/
 };
 
 /* Contrato esperado: GET {API_BASE}/api/rutas/101
@@ -10,39 +13,36 @@ const CONFIG = {
   "ruta": "101",
   "actualizado": "2026-10-12T08:16:00-06:00",
   "paradas": [               // en orden de recorrido
-    { "id": 1, "nombre": "Terminal Oriente", "tramoMin": null,
-      "pasoA": "2026-10-12T08:02:00-06:00",  // null si el bus aún no pasa
-      "etaA": null }                         // hora estimada si aún no pasa
+    { "id": 1, "nombre": "Terminal de Oriente", "lat": 13.71, "lng": -89.16,
+      "tramoMin": null,                       // minutos desde la parada anterior
+      "pasoA": "2026-10-12T08:02:00-06:00",   // null si el bus aún no pasa
+      "etaA": null }                          // hora estimada si aún no pasa
   ]
 } */
 
-// ---------- Posición de cada parada en el mapa esquemático ----------
-// name y leg = [desplazamiento x, desplazamiento y, alineación]
-const LAYOUT = {
+// ---------- Datos de ejemplo (coordenadas aproximadas, solo para probar) ----------
+const MOCK = {
   "101": [
-    { x: 40,  y: 280, name: [14, 4, "start"] },
-    { x: 40,  y: 200, name: [14, 4, "start"],   leg: [14, 4, "start"] },
-    { x: 120, y: 120, name: [-8, -20, "end"],   leg: [16, 10, "start"] },
-    { x: 240, y: 120, name: [0, 28, "middle"],  leg: [25, -16, "middle"] },
-    { x: 320, y: 40,  name: [0, -18, "end"],    leg: [12, 20, "start"] },
+    ["Terminal de Oriente", 13.7126, -89.1643],
+    ["Centro Histórico",    13.6989, -89.1914],
+    ["Parque Infantil",     13.7030, -89.2030],
+    ["Metrocentro",         13.7059, -89.2123],
+    ["Zona Rosa",           13.6935, -89.2362],
   ],
-};
-
-// Si una ruta no tiene diseño propio, se acomoda en diagonal
-function autoLayout(n) {
-  return Array.from({ length: n }, (_, i) => ({
-    x: 40 + (280 * i) / (n - 1),
-    y: 280 - (240 * i) / (n - 1),
-    name: i === n - 1 ? [0, -18, "end"] : [14, 18, "start"],
-    leg: [-10, -4, "end"],
-  }));
-}
-
-// ---------- Datos de ejemplo (se usan si API_BASE está vacío) ----------
-const MOCK_NAMES = {
-  "101": ["Terminal Oriente", "Parque Infantil", "Centro Histórico", "Metrocentro", "Zona Rosa"],
-  "42":  ["Mejicanos", "Zacamil", "Plaza Mundo", "UCA", "Antiguo Cuscatlán"],
-  "29":  ["Soyapango", "Ilopango", "San Bartolo", "Terminal", "Tonacatepeque"],
+  "42": [
+    ["Mejicanos",                   13.7415, -89.2145],
+    ["Zacamil",                     13.7290, -89.2090],
+    ["Universidad de El Salvador",  13.7188, -89.2044],
+    ["Colonia Escalón",             13.7010, -89.2380],
+    ["Antiguo Cuscatlán",           13.6740, -89.2420],
+  ],
+  "29": [
+    ["Soyapango",           13.7100, -89.1530],
+    ["Terminal de Oriente", 13.7126, -89.1643],
+    ["Centro Histórico",    13.6989, -89.1914],
+    ["Hospital Rosales",    13.7045, -89.2028],
+    ["Merliot",             13.6765, -89.2630],
+  ],
 };
 const T0 = Date.now();
 
@@ -54,8 +54,8 @@ function mockRoute(ruta) {
   return {
     ruta,
     actualizado: new Date().toISOString(),
-    paradas: MOCK_NAMES[ruta].map((nombre, i) => ({
-      id: i + 1, nombre, tramoMin: tramos[i], pasoA: at(pasos[i]), etaA: at(etas[i]),
+    paradas: MOCK[ruta].map(([nombre, lat, lng], i) => ({
+      id: i + 1, nombre, lat, lng, tramoMin: tramos[i], pasoA: at(pasos[i]), etaA: at(etas[i]),
     })),
   };
 }
@@ -69,7 +69,6 @@ async function getRoute(ruta) {
 
 // ---------- Utilidades ----------
 const $ = (sel) => document.querySelector(sel);
-const NS = "http://www.w3.org/2000/svg";
 
 const hhmm = (iso) =>
   new Date(iso).toLocaleTimeString("es-SV", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -81,32 +80,165 @@ function el(tag, cls, text) {
   if (text) n.textContent = text;
   return n;
 }
-function svg(tag, attrs = {}, text) {
-  const n = document.createElementNS(NS, tag);
-  for (const k in attrs) n.setAttribute(k, attrs[k]);
-  if (text) n.textContent = text;
-  return n;
+
+// ---------- Mapa ----------
+const map = L.map("map", { zoomControl: false }).setView(CONFIG.CENTER, 13);
+L.control.zoom({ position: "bottomright" }).addTo(map);
+
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+let tiles;
+function setTiles() {
+  if (tiles) tiles.remove();
+  if (CONFIG.CARTO_KEY) {
+    const style = darkQuery.matches ? "dark_all" : "light_all";
+    tiles = L.tileLayer(
+      `https://basemaps.cartocdn.com/rastertiles/${style}/{z}/{x}/{y}.png?key=${CONFIG.CARTO_KEY}`,
+      {
+        maxZoom: 20,
+        detectRetina: true,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      }
+    );
+  } else {
+    tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    });
+  }
+  tiles.addTo(map);
+}
+setTiles();
+darkQuery.addEventListener("change", setTiles);
+
+const overlay = L.layerGroup().addTo(map);
+
+// Geometría de cada tramo siguiendo las calles (si falla, línea recta)
+const legCache = new Map();
+function legPath(a, b) {
+  const key = `${a.lng},${a.lat};${b.lng},${b.lat}`;
+  if (!legCache.has(key)) {
+    legCache.set(key, (async () => {
+      const straight = [[a.lat, a.lng], [b.lat, b.lng]];
+      try {
+        const r = await fetch(`${CONFIG.OSRM}/route/v1/driving/${key}?overview=full&geometries=geojson`);
+        if (!r.ok) return straight;
+        const j = await r.json();
+        const c = j.routes && j.routes[0] && j.routes[0].geometry.coordinates;
+        return c ? c.map(([x, y]) => [y, x]) : straight;
+      } catch {
+        return straight;
+      }
+    })());
+  }
+  return legCache.get(key);
 }
 
-// ---------- Dibujo ----------
-function render({ ruta, actualizado, paradas }) {
-  const L = LAYOUT[ruta] || autoLayout(paradas.length);
+const dist = (a, b) => Math.hypot(b[0] - a[0], (b[1] - a[1]) * Math.cos((a[0] * Math.PI) / 180));
+
+// Divide una línea en la fracción p (0 a 1) de su longitud
+function splitAt(pts, p) {
+  const segs = [];
+  let total = 0;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const d = dist(pts[i], pts[i + 1]);
+    segs.push(d);
+    total += d;
+  }
+  let acc = 0;
+  for (let i = 0; i < segs.length; i++) {
+    if (acc + segs[i] >= total * p) {
+      const t = segs[i] ? (total * p - acc) / segs[i] : 0;
+      const pt = [
+        pts[i][0] + (pts[i + 1][0] - pts[i][0]) * t,
+        pts[i][1] + (pts[i + 1][1] - pts[i][1]) * t,
+      ];
+      return { head: [...pts.slice(0, i + 1), pt], pt };
+    }
+    acc += segs[i];
+  }
+  const last = pts[pts.length - 1];
+  return { head: pts, pt: last };
+}
+
+const icon = (html, size, cls = "cp-wrap") => L.divIcon({ className: cls, html, iconSize: size });
+const line = (pts, cls, weight) =>
+  L.polyline(pts, { className: cls, weight, lineCap: "round", lineJoin: "round", interactive: false });
+
+let mapToken = 0;
+let fittedRoute = null;
+
+async function drawMap(data, lastIdx, nextIdx) {
+  const { ruta, paradas } = data;
+  const token = ++mapToken;
+  const legs = await Promise.all(paradas.slice(1).map((p, i) => legPath(paradas[i], p)));
+  if (token !== mapToken) return; // llegó otra actualización más nueva
+
+  overlay.clearLayers();
+
+  // Posición del bus dentro del tramo actual
+  let bus = null;
+  let doneLegs = legs.slice(0, Math.max(lastIdx, 0));
+  if (lastIdx >= 0 && nextIdx < paradas.length) {
+    const mins = (Date.now() - new Date(paradas[lastIdx].pasoA)) / 60000;
+    const p = Math.min(0.95, Math.max(0.05, mins / (paradas[nextIdx].tramoMin || 5)));
+    const s = splitAt(legs[lastIdx], p);
+    doneLegs = [...doneLegs, s.head];
+    bus = s.pt;
+  } else if (lastIdx >= paradas.length - 1) {
+    doneLegs = legs;
+  }
+
+  // Ruta: borde blanco, tramo pendiente y tramo recorrido
+  legs.forEach((pts) => overlay.addLayer(line(pts, "route-case", 11)));
+  legs.forEach((pts) => overlay.addLayer(line(pts, "route route--todo", 7)));
+  doneLegs.forEach((pts) => overlay.addLayer(line(pts, "route route--done", 7)));
+
+  // Minutos entre paradas
+  legs.forEach((pts, i) => {
+    const m = paradas[i + 1].tramoMin;
+    if (!m) return;
+    const mid = splitAt(pts, 0.5).pt;
+    overlay.addLayer(L.marker(mid, { icon: icon(`<span class="leg">${m} min</span>`, [0, 0]), interactive: false, keyboard: false }));
+  });
+
+  // Checkpoints con nombre
+  paradas.forEach((p, i) => {
+    const state = i <= lastIdx ? "done" : i === nextIdx ? "next" : "todo";
+    const html = (state === "next" ? '<span class="pulse"></span>' : "") + `<span class="cp cp--${state}"></span>`;
+    const m = L.marker([p.lat, p.lng], { icon: icon(html, [22, 22]), keyboard: false, title: p.nombre });
+    m.bindTooltip(p.nombre, {
+      permanent: true,
+      direction: i % 2 ? "bottom" : "top",
+      offset: [0, i % 2 ? 12 : -12],
+      className: state === "next" ? "stop-tip stop-tip--next" : "stop-tip",
+    });
+    overlay.addLayer(m);
+  });
+
+  // Bus
+  if (bus) {
+    overlay.addLayer(L.marker(bus, {
+      icon: icon(`<span class="busmk">${ruta}</span>`, [46, 28]),
+      zIndexOffset: 1000, keyboard: false, title: `Bus ${ruta}`,
+    }));
+  }
+
+  // Encuadre: solo al abrir o cambiar de ruta
+  if (fittedRoute !== ruta) {
+    fittedRoute = ruta;
+    map.fitBounds(L.latLngBounds(legs.flat()), { paddingTopLeft: [30, 70], paddingBottomRight: [30, 50] });
+  }
+}
+
+// ---------- Panel ----------
+function render(data) {
+  const { ruta, actualizado, paradas } = data;
   const lastIdx = paradas.map((p) => Boolean(p.pasoA)).lastIndexOf(true);
   const nextIdx = lastIdx + 1;
   const next = paradas[nextIdx];
   const eta = next && next.etaA ? minsTo(next.etaA) : null;
   const etaLabel = eta === null ? "Sin estimado" : eta <= 0 ? "Llegando" : `Llega en ${eta} min`;
 
-  // Posición del bus entre la última parada y la siguiente
-  let bus = null;
-  if (next && lastIdx >= 0) {
-    const mins = (Date.now() - new Date(paradas[lastIdx].pasoA)) / 60000;
-    const p = Math.min(0.95, Math.max(0.05, mins / (next.tramoMin || 5)));
-    const a = L[lastIdx], b = L[nextIdx];
-    bus = { x: a.x + (b.x - a.x) * p, y: a.y + (b.y - a.y) * p };
-  }
-
-  // Tablero de próxima parada
   $("#fascia").textContent = ruta;
   $("#fascia").setAttribute("aria-label", `Ruta ${ruta}`);
   $("#next-stop").textContent = next ? next.nombre : "Recorrido terminado";
@@ -119,53 +251,6 @@ function render({ ruta, actualizado, paradas }) {
   );
   $("#upd").textContent = `Actualizado a las ${hhmm(actualizado)}`;
 
-  // Mapa
-  const pts = L.map((p) => `${p.x} ${p.y}`);
-  const path = (arr) => "M" + arr.join(" L");
-  const layer = $("#layer");
-  layer.replaceChildren(svg("path", { class: "route route--todo", d: path(pts) }));
-
-  const done = lastIdx >= 0 ? pts.slice(0, lastIdx + 1) : [];
-  if (bus) done.push(`${bus.x} ${bus.y}`);
-  if (done.length > 1) layer.append(svg("path", { class: "route route--done", d: path(done) }));
-
-  paradas.forEach((p, i) => {
-    const state = i <= lastIdx ? "done" : i === nextIdx ? "next" : "todo";
-    const { x, y } = L[i];
-    if (state === "next") layer.append(svg("circle", { class: "pulse", cx: x, cy: y, r: 13 }));
-    layer.append(svg("circle", { class: `cp cp--${state}`, cx: x, cy: y, r: state === "next" ? 13 : 9 }));
-  });
-
-  if (bus) {
-    layer.append(
-      svg("g", { class: "bus", transform: `translate(${bus.x} ${bus.y})` }),
-    );
-    const g = layer.lastChild;
-    g.append(
-      svg("rect", { x: -19, y: -12, width: 38, height: 24, rx: 8 }),
-      svg("text", { y: 4, "text-anchor": "middle" }, ruta)
-    );
-  }
-
-  paradas.forEach((p, i) => {
-    const { x, y, name } = L[i];
-    layer.append(svg("text", { class: "m-t m-name", x: x + name[0], y: y + name[1], "text-anchor": name[2] }, p.nombre));
-    if (i > 0 && p.tramoMin && L[i].leg) {
-      const a = L[i - 1], [dx, dy, anchor] = L[i].leg;
-      layer.append(svg("text", {
-        class: "m-t m-leg", x: (a.x + x) / 2 + dx, y: (a.y + y) / 2 + dy, "text-anchor": anchor,
-      }, `${p.tramoMin} min`));
-    }
-  });
-
-  $("#map-svg").setAttribute(
-    "aria-label",
-    next && lastIdx >= 0
-      ? `Ruta ${ruta}: el bus está entre ${paradas[lastIdx].nombre} y ${next.nombre}.`
-      : `Mapa de la ruta ${ruta}.`
-  );
-
-  // Lista de paradas
   $("#stops-title").textContent = `Paradas de la ruta ${ruta}`;
   $("#stops-list").replaceChildren(
     ...paradas.map((p, i) => {
@@ -185,6 +270,8 @@ function render({ ruta, actualizado, paradas }) {
       return li;
     })
   );
+
+  drawMap(data, lastIdx, nextIdx);
 }
 
 // ---------- Carga y actualización ----------

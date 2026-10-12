@@ -20,4 +20,5 @@ const routes = [
   ]},
 ];
 
-module.exports = { routes, lastPass: {}, segments: [], buses: {} };
+// geofence: en qué parada está cada bus ahora mismo (null si va entre paradas)
+module.exports = { routes, lastPass: {}, segments: [], buses: {}, geofence: {} };

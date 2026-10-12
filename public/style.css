@@ -1,9 +1,7 @@
-/* go503: añil, maíz y torogoz */
+/* go503: añil, maíz y torogoz, sobre un mapa real */
 
 :root {
   --anil: #1B2559;        /* tinte de añil: el color de la marca */
-  --anil-2: #243070;
-  --agua: #173B73;
   --maiz: #F2B22E;        /* maíz: próxima parada y unidad */
   --torogoz: #0FA39C;     /* turquesa del torogoz: tramo recorrido */
 
@@ -13,10 +11,10 @@
   --muted: #5A6488;
   --line: #DDE2F0;
   --track: #C9D0E6;
+  --route-todo: rgba(27, 37, 89, .42);
 
   --serif: "Young Serif", Georgia, serif;
   --sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --top-h: 4.4rem;
 
   color-scheme: light dark;
 }
@@ -29,6 +27,7 @@
     --muted: #A3ACD0;
     --line: #27305F;
     --track: #34407A;
+    --route-todo: rgba(190, 200, 240, .5);
   }
 }
 
@@ -53,28 +52,45 @@ body::before {
 
 a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
-/* ---------- Encabezado ---------- */
+/* ---------- Escenario: mapa con barra flotante ---------- */
+.stage { position: relative; isolation: isolate; }
+
+#map {
+  height: 62vh;
+  min-height: 340px;
+  background: var(--paper);
+  font-family: var(--sans);
+}
+
 .top {
+  position: absolute;
+  z-index: 1000;
+  top: .7rem;
+  left: .7rem;
+  right: .7rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  height: var(--top-h);
-  padding: 0 1.1rem;
+  padding: .35rem .4rem .35rem 1.1rem;
+  background: color-mix(in srgb, var(--card) 90%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 999px;
+  box-shadow: 0 2px 14px rgba(12, 17, 48, .22);
 }
 
 .logo {
   font-family: var(--serif);
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   color: var(--ink);
   text-decoration: none;
 }
 
-.routes { display: flex; gap: .4rem; }
+.routes { display: flex; gap: .3rem; }
 .routes a {
-  min-width: 2.9rem;
-  padding: .6rem .85rem;
-  border: 1.5px solid var(--track);
+  min-width: 2.7rem;
+  padding: .5rem .8rem;
   border-radius: 999px;
   color: var(--ink);
   font-weight: 700;
@@ -82,64 +98,91 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   text-align: center;
   text-decoration: none;
 }
-.routes a[aria-current="page"] {
-  background: var(--anil);
-  border-color: var(--anil);
-  color: #fff;
+.routes a[aria-current="page"] { background: var(--anil); color: #fff; }
+
+/* ---------- Capas del mapa ---------- */
+.route-case { stroke: var(--card); stroke-opacity: 1; }
+.route--todo { stroke: var(--route-todo); stroke-opacity: 1; }
+.route--done { stroke: var(--torogoz); stroke-opacity: 1; }
+
+.cp-wrap { position: relative; background: none; border: 0; }
+
+.cp {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 5px rgba(12, 17, 48, .4);
 }
-
-/* ---------- Mapa: protagonista, de borde a borde ---------- */
-.map { background: var(--anil); line-height: 0; }
-.map svg { display: block; width: 100%; height: auto; }
-
-.m-block  { fill: var(--anil-2); opacity: .55; }
-.m-volcan { fill: var(--anil-2); }
-.m-water  { fill: none; stroke: var(--agua); stroke-width: 26; stroke-linecap: round; }
-
-.route {
-  fill: none;
-  stroke-width: 9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.route--todo { stroke: rgba(255, 255, 255, .28); }
-.route--done { stroke: var(--torogoz); }
-
-/* Checkpoints */
-.cp { stroke-width: 4; }
-.cp--done { fill: var(--torogoz); stroke: var(--anil); }
-.cp--todo { fill: var(--anil);    stroke: #C9D0F0; }
-.cp--next { fill: var(--maiz);    stroke: var(--anil); }
+.cp--done { background: var(--torogoz); }
+.cp--todo { background: #fff; border-color: var(--anil); }
+.cp--next { background: var(--maiz); border-color: var(--anil); transform: scale(1.25); }
 
 .pulse {
-  fill: var(--maiz);
-  opacity: .5;
-  transform-box: fill-box;
-  transform-origin: center;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--maiz);
+  opacity: .55;
   animation: pulse 2.2s ease-out infinite;
 }
 @keyframes pulse {
-  from { transform: scale(1);   opacity: .5; }
-  to   { transform: scale(2.4); opacity: 0;  }
+  from { transform: scale(1);   opacity: .55; }
+  to   { transform: scale(2.8); opacity: 0;   }
 }
 
-/* Unidad */
-.bus rect { fill: var(--maiz); stroke: var(--anil); stroke-width: 3; }
-.bus text { fill: var(--anil); font: 12px var(--serif); }
-
-/* Textos del mapa */
-.m-t {
-  paint-order: stroke;
-  stroke: var(--anil);
-  stroke-width: 4px;
-  stroke-linejoin: round;
+.busmk {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 28px;
+  background: var(--maiz);
+  border: 3px solid var(--anil);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(12, 17, 48, .4);
+  color: var(--anil);
+  font: 12px var(--serif);
 }
-.m-name { fill: #fff;     font: 600 13px var(--sans); }
-.m-leg  { fill: #AEB8EA;  font: 600 11px var(--sans); }
+
+.leg {
+  display: block;
+  width: max-content;
+  padding: .12rem .5rem;
+  background: var(--anil);
+  border-radius: 999px;
+  color: #fff;
+  font: 600 11px var(--sans);
+  transform: translate(-50%, -50%);
+}
+
+.stop-tip {
+  padding: .2rem .55rem;
+  background: var(--card);
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 1px 6px rgba(12, 17, 48, .28);
+  color: var(--ink);
+  font: 700 12px var(--sans);
+}
+.stop-tip::before { display: none; }
+.stop-tip--next { background: var(--maiz); color: var(--anil); }
+
+/* Controles de Leaflet, ajustados al tema */
+.leaflet-bottom { margin-bottom: 30px; }
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--card) 80%, transparent) !important;
+  color: var(--muted);
+  font-size: 10px;
+}
+.leaflet-control-attribution a { color: var(--ink); }
+.leaflet-bar a { background: var(--card); color: var(--ink); border-color: var(--line); }
 
 /* ---------- Panel inferior ---------- */
 .panel {
   position: relative;
+  z-index: 2;
   margin-top: -28px;
   padding: 1.4rem 1.2rem 2rem;
   background: var(--card);
@@ -219,7 +262,6 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   padding: .7rem 0;
 }
 
-/* Conector entre paradas */
 .stop::before {
   content: "";
   position: absolute;
@@ -232,9 +274,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .stop:first-child::before { top: 50%; }
 .stop:last-child::before  { bottom: 50%; }
 .stop--done::before { background: var(--torogoz); }
-.stop--next::before {
-  background: linear-gradient(var(--torogoz) 50%, var(--track) 50%);
-}
+.stop--next::before { background: linear-gradient(var(--torogoz) 50%, var(--track) 50%); }
 
 .stop__dot {
   position: relative;
@@ -247,11 +287,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   background: var(--torogoz);
 }
 .stop--todo .stop__dot { background: var(--card); border-color: var(--muted); }
-.stop--next .stop__dot {
-  background: var(--maiz);
-  border-color: var(--anil);
-  transform: scale(1.2);
-}
+.stop--next .stop__dot { background: var(--maiz); border-color: var(--anil); transform: scale(1.2); }
 
 .stop__name { font-weight: 700; }
 .stop--done .stop__name { color: var(--muted); font-weight: 600; }
@@ -280,24 +316,11 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
 /* ---------- Pantallas grandes: mapa fijo a la izquierda ---------- */
 @media (min-width: 900px) {
-  .app {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(380px, 1fr);
-  }
-  .map {
-    position: sticky;
-    top: 0;
-    align-self: start;
-    display: grid;
-    place-items: center;
-    height: calc(100vh - var(--top-h) - 9px);
-  }
-  .panel {
-    margin-top: 0;
-    padding: 2rem 2.4rem;
-    border-radius: 0;
-    box-shadow: none;
-  }
+  .app { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(380px, 1fr); }
+  .stage { position: sticky; top: 0; align-self: start; }
+  #map { height: calc(100vh - 9px); }
+  .leaflet-bottom { margin-bottom: 0; }
+  .panel { margin-top: 0; padding: 2rem 2.4rem; border-radius: 0; box-shadow: none; }
   .next__stop { font-size: 2.1rem; }
   .next__eta strong { font-size: 3.2rem; }
 }

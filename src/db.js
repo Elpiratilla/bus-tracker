@@ -1,0 +1,76 @@
+// Conexión a Supabase. El servidor trabaja en memoria (rápido) y guarda cada cambio aquí;
+// al arrancar carga todo de vuelta. Sin SUPABASE_URL y SUPABASE_SECRET_KEY funciona solo en memoria.
+const { createClient } = require("@supabase/supabase-js");
+const store = require("./store");
+
+const url = process.env.SUPABASE_URL;
+const key = process.env.SUPABASE_SECRET_KEY;
+const db = url && key
+  ? createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } })
+  : null;
+
+if (!db) console.warn("Sin Supabase: los datos solo viven en memoria (faltan SUPABASE_URL y SUPABASE_SECRET_KEY en .env)");
+
+// Guarda en segundo plano: un error de la base no debe tumbar la respuesta al sensor.
+// Con `queue`, las escrituras de la misma cola van en orden (una vieja no pisa a una nueva).
+const queues = new Map();
+function persist(label, query, queue) {
+  if (!db) return;
+  const run = () => query(db)
+    .then(({ error }) => { if (error) console.error(`Supabase (${label}): ${error.message}`); })
+    .catch((err) => console.error(`Supabase (${label}): ${err.message}`));
+  if (!queue) return void run();
+  const next = (queues.get(queue) || Promise.resolve()).then(run);
+  queues.set(queue, next);
+  next.then(() => { if (queues.get(queue) === next) queues.delete(queue); });
+}
+
+const ms = (t) => (t ? new Date(t).getTime() : null);
+
+async function select(query) {
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+// Carga el estado guardado en los objetos de store.js (los mismos que usa el resto del código)
+async function loadState() {
+  if (!db) return;
+
+  const routes = await select(db.from("routes")
+    .select("id, name, type, route_stops(position, stops(id, name, lat, lng))")
+    .eq("active", true).order("sort"));
+  store.routes.splice(0, store.routes.length, ...routes.map((r) => ({
+    id: r.id, name: r.name, type: r.type,
+    stops: r.route_stops.sort((a, b) => a.position - b.position).map((rs) => rs.stops),
+  })));
+
+  const segments = await select(db.from("recent_segments").select("*").order("ts"));
+  store.segments.splice(0, store.segments.length, ...segments.map((s) => ({
+    busId: s.bus_id, routeId: s.route_id, from: s.from_stop, to: s.to_stop, seconds: s.seconds, ts: ms(s.ts),
+  })));
+
+  for (const t of await select(db.from("bus_trips").select("*"))) {
+    const k = `${t.bus_id}:${t.route_id}`;
+    store.geofence[k] = t.geofence_stop;
+    if (t.last_stop_id) {
+      store.lastPass[k] = { stopId: t.last_stop_id, ts: t.passes[t.last_stop_id] };
+      store.trips[k] = { busId: t.bus_id, passes: t.passes, lastStopId: t.last_stop_id, updatedAt: ms(t.updated_at) };
+    }
+  }
+
+  for (const b of await select(db.from("buses").select("*"))) {
+    store.buses[b.id] = { ...b.data, busId: b.id, routeId: b.route_id, lat: b.lat, lng: b.lng,
+      atStop: b.at_stop, updatedAt: ms(b.updated_at) };
+  }
+
+  for (const a of await select(db.from("alerts").select("*"))) {
+    store.alerts.set(`${a.endpoint}|${a.route_id}|${a.stop_id}`,
+      { subscription: a.subscription, routeId: a.route_id, stopId: a.stop_id, createdAt: ms(a.created_at) });
+  }
+
+  console.log(`Supabase: ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
+    + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas`);
+}
+
+module.exports = { db, persist, loadState };

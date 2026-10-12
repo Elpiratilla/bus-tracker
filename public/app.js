@@ -193,24 +193,41 @@ const line = (pts, cls, weight) =>
   L.polyline(pts, { className: cls, weight, lineCap: "round", lineJoin: "round", interactive: false });
 
 // ---------- Unidad en el mapa: vista desde arriba, gira con la calle (como Uber) ----------
-// Dibujadas mirando hacia arriba (norte); se giran con CSS según la dirección
+// Dibujadas mirando hacia arriba (norte); se giran según la dirección de la calle
 const VEHICULOS = {
-  autobus: `<svg viewBox="-3 0 28 50" width="25" height="45" aria-hidden="true">
-    <rect class="v-dark" x="-2" y="6" width="3" height="4" rx="1"/>
-    <rect class="v-dark" x="21" y="6" width="3" height="4" rx="1"/>
-    <rect class="v-body" x="1" y="1" width="20" height="48" rx="4"/>
-    <rect class="v-dark" x="3.5" y="3.5" width="15" height="6" rx="2"/>
-    <rect class="v-roof" x="5" y="14" width="12" height="8" rx="2"/>
-    <rect class="v-roof" x="5" y="27" width="12" height="8" rx="2"/>
-    <rect class="v-dark v-rear" x="5" y="44" width="12" height="2.5" rx="1"/>
+  autobus: `<svg viewBox="-4 -1 34 62" width="27" height="50" aria-hidden="true">
+    <defs><linearGradient id="v-roof-bus" x1="0" x2="1">
+      <stop offset="0" stop-color="var(--v-side)"/><stop offset=".5" stop-color="var(--v-top)"/><stop offset="1" stop-color="var(--v-side)"/>
+    </linearGradient></defs>
+    <path class="v-dark" d="M2 9L-2.5 6.5V10.5L2 12ZM24 9L28.5 6.5V10.5L24 12Z"/>
+    <rect x="1" y="0" width="24" height="60" rx="5" fill="url(#v-roof-bus)" class="v-edge"/>
+    <path class="v-glass" d="M3.5 7Q3.5 2.5 8 2.5H18Q22.5 2.5 22.5 7V9.5H3.5Z"/>
+    <rect class="v-glass" x="2.2" y="13" width="1.6" height="40" rx=".8"/>
+    <rect class="v-glass" x="22.2" y="13" width="1.6" height="40" rx=".8"/>
+    <rect class="v-unit" x="7" y="15" width="12" height="9" rx="2"/>
+    <path class="v-grill" d="M9 17.5H17M9 19.5H17M9 21.5H17"/>
+    <rect class="v-unit" x="7" y="36" width="12" height="9" rx="2"/>
+    <path class="v-grill" d="M9 38.5H17M9 40.5H17M9 42.5H17"/>
+    <rect class="v-hatch" x="9.5" y="28" width="7" height="5" rx="1"/>
+    <rect class="v-glass" x="6" y="55.5" width="14" height="2" rx="1"/>
+    <rect class="v-head" x="3" y=".6" width="4" height="1.4" rx=".7"/><rect class="v-head" x="19" y=".6" width="4" height="1.4" rx=".7"/>
+    <rect class="v-tail" x="2.5" y="58.2" width="3.5" height="1.3" rx=".6"/><rect class="v-tail" x="20" y="58.2" width="3.5" height="1.3" rx=".6"/>
   </svg>`,
-  microbus: `<svg viewBox="-3 0 28 38" width="25" height="34" aria-hidden="true">
-    <rect class="v-dark" x="-2" y="8" width="3" height="4" rx="1"/>
-    <rect class="v-dark" x="21" y="8" width="3" height="4" rx="1"/>
-    <path class="v-body" d="M1 10Q1 1 11 1Q21 1 21 10V34Q21 37 18 37H4Q1 37 1 34Z"/>
-    <path class="v-dark" d="M4 11Q4 5 11 5Q18 5 18 11V13H4Z"/>
-    <rect class="v-roof" x="5" y="17" width="12" height="11" rx="2.5"/>
-    <rect class="v-dark v-rear" x="5" y="32.5" width="12" height="2" rx="1"/>
+  microbus: `<svg viewBox="-4 -1 34 44" width="27" height="35" aria-hidden="true">
+    <defs><linearGradient id="v-roof-micro" x1="0" x2="1">
+      <stop offset="0" stop-color="var(--v-side)"/><stop offset=".5" stop-color="var(--v-top)"/><stop offset="1" stop-color="var(--v-side)"/>
+    </linearGradient></defs>
+    <path class="v-dark" d="M2 10L-2.5 7.5V11.5L2 13ZM24 10L28.5 7.5V11.5L24 13Z"/>
+    <path d="M1 11Q1 0 13 0Q25 0 25 11V38Q25 42 21 42H5Q1 42 1 38Z" fill="url(#v-roof-micro)" class="v-edge"/>
+    <path class="v-glass" d="M4 12Q4 4 13 4Q22 4 22 12V13.5H4Z"/>
+    <rect class="v-glass" x="2.2" y="16" width="1.6" height="20" rx=".8"/>
+    <rect class="v-glass" x="22.2" y="16" width="1.6" height="20" rx=".8"/>
+    <rect class="v-unit" x="7" y="18" width="12" height="13" rx="3"/>
+    <path class="v-grill" d="M9.5 21.5H16.5M9.5 24.5H16.5M9.5 27.5H16.5"/>
+    <rect class="v-glass" x="6" y="37" width="14" height="2" rx="1"/>
+    <rect class="v-head" x="4.5" y="1.6" width="4" height="1.4" rx=".7" transform="rotate(-18 6.5 2.3)"/>
+    <rect class="v-head" x="17.5" y="1.6" width="4" height="1.4" rx=".7" transform="rotate(18 19.5 2.3)"/>
+    <rect class="v-tail" x="2.5" y="40.2" width="3.5" height="1.3" rx=".6"/><rect class="v-tail" x="20" y="40.2" width="3.5" height="1.3" rx=".6"/>
   </svg>`,
 };
 
@@ -221,47 +238,90 @@ function bearing(a, b) {
 }
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
-let vehicle = null; // marcador fuera de overlay para poder moverlo sin redibujarlo
 
-function showVehicle(pos, angle, tipo, ruta) {
-  const key = `${ruta}|${tipo}`;
-  if (!pos || (vehicle && vehicle.key !== key)) {
-    if (vehicle) vehicle.marker.remove();
+// Estado de la unidad animada. El servidor da la posición cada REFRESH_MS;
+// entre actualizaciones se predice dónde va (como Uber) y se avanza suave sobre la calle.
+let vehicle = null;
+
+// target: { leg, legIdx, legMs, progress, tipo, ruta, doneLine } o null si no hay bus
+function trackVehicle(target) {
+  const key = target && `${target.ruta}|${target.tipo}`;
+  if (!target || (vehicle && vehicle.key !== key)) {
+    if (vehicle) {
+      cancelAnimationFrame(vehicle.raf);
+      vehicle.marker.remove();
+      vehicle.raf = 0;
+    }
     vehicle = null;
   }
-  if (!pos) return;
+  if (!target) return;
 
+  const progress = Math.min(0.98, Math.max(0, target.progress));
   if (!vehicle) {
-    const html = `<span class="veh" style="transform: rotate(${angle}deg)">${VEHICULOS[tipo] || VEHICULOS.autobus}</span>`
-      + `<span class="veh__tag">${ruta}</span>`;
-    const marker = L.marker(pos, {
+    const html = `<span class="veh">${VEHICULOS[target.tipo] || VEHICULOS.autobus}</span>`
+      + `<span class="veh__tag">${target.ruta}</span>`;
+    const marker = L.marker(splitAt(target.leg, progress).pt, {
       icon: L.divIcon({ className: "veh-wrap", html, iconSize: [0, 0] }),
       zIndexOffset: 1000, keyboard: false, interactive: false,
     }).addTo(map);
-    vehicle = { marker, key, angle };
-  } else {
-    slide(vehicle.marker, pos);
+    vehicle = { marker, key, p: progress, angle: null, lastT: 0, rate: null, history: [] };
+  } else if (target.legIdx !== vehicle.legIdx) {
+    vehicle.p = 0; // pasó a la siguiente parada: empieza el tramo nuevo desde su inicio
+    vehicle.history = [];
   }
 
-  // Gira por el camino más corto (de 350° a 10° son 20°, no 340°)
-  vehicle.angle += ((angle - vehicle.angle + 540) % 360) - 180;
-  const body = vehicle.marker.getElement()?.querySelector(".veh");
-  if (body) body.style.transform = `rotate(${vehicle.angle}deg)`;
+  // Velocidad real (parte del tramo por ms) con las últimas 4 posiciones del servidor en este tramo.
+  // Si el bus se detiene, la animación también.
+  const now = Date.now();
+  vehicle.history = [...vehicle.history, [now, progress]].slice(-4);
+  const [t0, p0] = vehicle.history[0];
+  vehicle.rate = now - t0 > 2000 ? Math.max(0, (progress - p0) / (now - t0))
+    : progress < 0.01 ? 0 // está en la parada y aún no se sabe si arrancó: no lo muevas
+    : null;               // sin medición: usar la velocidad promedio del tramo
+
+  Object.assign(vehicle, {
+    leg: target.leg, legIdx: target.legIdx, legMs: target.legMs, doneLine: target.doneLine,
+    base: progress, baseAt: now,
+  });
+  if (!vehicle.raf) vehicle.raf = requestAnimationFrame(animateVehicle);
 }
 
-// Desliza el marcador hasta su nueva posición en vez de saltar
-function slide(marker, to, ms = 1000) {
-  cancelAnimationFrame(marker._slide);
-  const from = marker.getLatLng();
-  if (reduceMotion.matches) return marker.setLatLng(to);
-  const t0 = performance.now();
-  const step = (t) => {
-    const k = Math.min(1, (t - t0) / ms);
-    const e = k * (2 - k); // frena al final
-    marker.setLatLng([from.lat + (to[0] - from.lat) * e, from.lng + (to[1] - from.lng) * e]);
-    if (k < 1) marker._slide = requestAnimationFrame(step);
-  };
-  marker._slide = requestAnimationFrame(step);
+function animateVehicle(t) {
+  const v = vehicle;
+  if (!v) return;
+  // Volvió después de una pausa (otra pestaña, app en segundo plano): salta directo a donde va
+  const resumed = !v.lastT || t - v.lastT > 1000;
+  const dt = resumed ? 0 : t - v.lastT;
+  v.lastT = t;
+
+  // Predicción: lo último que dijo el servidor + lo que avanzó desde entonces, a la velocidad
+  // medida (o la promedio del tramo si aún no hay medición). Tope de +30 % del tramo.
+  const rate = v.rate ?? 1 / v.legMs;
+  const pred = Math.min(0.98, v.base + (Date.now() - v.baseAt) * rate, v.base + 0.3);
+  const k = reduceMotion.matches || resumed ? 1 : 1 - Math.exp(-dt / 2000); // las correcciones se reparten en ~2 s
+  let p = v.p + (pred - v.p) * k;
+  if (p < v.p && v.p - p < 0.03) p = v.p; // no retroceder por correcciones pequeñas
+  // Al ponerse al día nunca va a más del doble de su velocidad normal (sin acelerones)
+  const maxStep = 2 * Math.max(rate, 1 / v.legMs) * dt;
+  if (!reduceMotion.matches && !resumed && p > v.p + maxStep) p = v.p + maxStep;
+  v.p = p;
+
+  const s = splitAt(v.leg, p);
+  v.marker.setLatLng(s.pt);
+  v.doneLine.setLatLngs(s.head);
+
+  // Gira hacia donde va la calle unos metros adelante, sin girar de golpe
+  const ahead = splitAt(v.leg, Math.min(1, p + 0.015)).pt;
+  if (dist(s.pt, ahead) > 1e-6) {
+    const target = bearing(s.pt, ahead);
+    if (v.angle === null) v.angle = target;
+    const delta = ((target - v.angle + 540) % 360) - 180; // por el lado más corto
+    v.angle += delta * (reduceMotion.matches || resumed ? 1 : 1 - Math.exp(-dt / 250));
+  }
+  const body = v.marker.getElement()?.querySelector(".veh");
+  if (body && v.angle !== null) body.style.transform = `rotate(${v.angle}deg)`;
+
+  v.raf = requestAnimationFrame(animateVehicle);
 }
 
 let mapToken = 0;
@@ -275,19 +335,15 @@ async function drawMap(data, lastIdx, nextIdx) {
 
   overlay.clearLayers();
 
-  // Posición del bus dentro del tramo actual
-  let bus = null;
-  let busAngle = 0;
+  // Tramo donde va el bus y qué parte lleva (la del GPS o, si no viene, estimada por tiempo)
+  let target = null;
   let doneLegs = legs.slice(0, Math.max(lastIdx, 0));
   if (lastIdx >= 0 && nextIdx < paradas.length) {
-    // Parte del tramo recorrida: la del GPS (backend) o, si no viene, estimada por tiempo
-    const mins = (Date.now() - new Date(paradas[lastIdx].pasoA)) / 60000;
-    const raw = data.bus && data.bus.progreso != null ? data.bus.progreso : mins / (paradas[nextIdx].tramoMin || 5);
-    const p = Math.min(0.98, Math.max(0.02, raw));
-    const s = splitAt(legs[lastIdx], p);
-    doneLegs = [...doneLegs, s.head];
-    bus = s.pt;
-    busAngle = bearing(s.pt, splitAt(legs[lastIdx], Math.min(1, p + 0.02)).pt);
+    const legMs = (paradas[nextIdx].tramoMin || 5) * 60000;
+    const progress = data.bus && data.bus.progreso != null
+      ? data.bus.progreso
+      : (Date.now() - new Date(paradas[lastIdx].pasoA)) / legMs;
+    target = { leg: legs[lastIdx], legIdx: lastIdx, legMs, progress, tipo: data.tipo, ruta };
   } else if (lastIdx >= paradas.length - 1) {
     doneLegs = legs;
   }
@@ -296,6 +352,11 @@ async function drawMap(data, lastIdx, nextIdx) {
   legs.forEach((pts) => overlay.addLayer(line(pts, "route-case", 11)));
   legs.forEach((pts) => overlay.addLayer(line(pts, "route route--todo", 7)));
   doneLegs.forEach((pts) => overlay.addLayer(line(pts, "route route--done", 7)));
+  // Tramo actual recorrido: lo alarga la animación conforme avanza el bus
+  if (target) {
+    target.doneLine = line([], "route route--done", 7);
+    overlay.addLayer(target.doneLine);
+  }
 
   // Minutos entre paradas
   legs.forEach((pts, i) => {
@@ -320,7 +381,7 @@ async function drawMap(data, lastIdx, nextIdx) {
   });
 
   // Unidad
-  showVehicle(bus, busAngle, data.tipo, ruta);
+  trackVehicle(target);
 
   // Encuadre: solo al abrir o cambiar de ruta
   if (fittedRoute !== ruta) {

@@ -3,6 +3,7 @@
 const webpush = require("web-push");
 const { routes, alerts } = require("./store");
 const { routeStatus } = require("./eta");
+const { persist } = require("./db");
 
 const ALERT_MIN = 5;                     // avisar cuando falten 5 min o menos
 const CHECK_MS = 10 * 1000;              // cada cuánto se revisan las alertas
@@ -31,6 +32,13 @@ function validSubscription(sub) {
 
 const alertKey = (endpoint, routeId, stopId) => `${endpoint}|${routeId}|${stopId}`;
 
+// Borra la alerta de memoria y de Supabase
+function dropAlert(key, alert) {
+  alerts.delete(key);
+  persist("borrar alerta", (db) => db.from("alerts").delete()
+    .match({ endpoint: alert.subscription.endpoint, route_id: alert.routeId, stop_id: alert.stopId }), key);
+}
+
 // Minutos que faltan para que el bus llegue a la parada (null si no viene ninguno)
 function minutesTo(status, stopId, now) {
   const idx = status.route.stops.findIndex((s) => s.id === stopId);
@@ -58,26 +66,36 @@ async function checkAlerts() {
   const statuses = new Map(); // un cálculo por ruta, no uno por alerta
 
   for (const [key, alert] of alerts) {
-    if (now - alert.createdAt > EXPIRE_MS) { alerts.delete(key); continue; }
+    if (now - alert.createdAt > EXPIRE_MS) { dropAlert(key, alert); continue; }
     const route = routes.find((r) => r.id === alert.routeId);
-    if (!route) { alerts.delete(key); continue; }
+    if (!route) { dropAlert(key, alert); continue; }
     if (!statuses.has(route.id)) statuses.set(route.id, routeStatus(route, now));
 
     const mins = minutesTo(statuses.get(route.id), alert.stopId, now);
     if (mins === null || mins > ALERT_MIN) continue;
 
-    alerts.delete(key); // se avisa una sola vez
+    dropAlert(key, alert); // se avisa una sola vez
     send(alert, route, route.stops.find((s) => s.id === alert.stopId), mins);
   }
 }
 
 function addAlert(subscription, routeId, stopId) {
-  alerts.set(alertKey(subscription.endpoint, routeId, stopId),
-    { subscription, routeId, stopId, createdAt: Date.now() });
+  const createdAt = Date.now();
+  const key = alertKey(subscription.endpoint, routeId, stopId);
+  alerts.set(key, { subscription, routeId, stopId, createdAt });
+  persist("alerta", (db) => db.from("alerts").upsert({ endpoint: subscription.endpoint, subscription,
+    route_id: routeId, stop_id: stopId, created_at: new Date(createdAt).toISOString() },
+  { onConflict: "endpoint,route_id,stop_id" }), key); // misma cola que el borrado: van en orden
   checkAlerts(); // si el bus ya está a menos de 5 min, avisa de una vez
 }
 
-const removeAlert = (endpoint, routeId, stopId) => alerts.delete(alertKey(endpoint, routeId, stopId));
+function removeAlert(endpoint, routeId, stopId) {
+  const key = alertKey(endpoint, routeId, stopId);
+  const alert = alerts.get(key);
+  if (!alert) return false;
+  dropAlert(key, alert);
+  return true;
+}
 
 const listAlerts = (endpoint) => [...alerts.values()]
   .filter((a) => a.subscription.endpoint === endpoint)

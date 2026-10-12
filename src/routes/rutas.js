@@ -22,7 +22,7 @@ router.get("/:id", (req, res) => {
     bus: current && {
       lat: current.bus?.lat ?? null,
       lng: current.bus?.lng ?? null,
-      progreso: Math.round(current.progress * 100) / 100, // parte del tramo actual ya recorrida
+      progreso: Math.round(current.progress * 1000) / 1000, // parte del tramo actual ya recorrida
       enVivo: current.live,
     },
     paradas: route.stops.map((stop, i) => ({

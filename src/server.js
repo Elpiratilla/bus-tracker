@@ -16,7 +16,15 @@ app.use("/api/routes", require("./routes/routes"));
 app.use("/api/rutas", require("./routes/rutas"));
 app.use("/api/alertas", require("./routes/alertas"));
 
-require("./alerts").startAlerts();
-
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`API lista en http://localhost:${PORT}`));
+
+// Primero carga lo guardado en Supabase; si falla, no arranca vacío (pisaría los datos guardados)
+require("./db").loadState()
+  .then(() => {
+    require("./alerts").startAlerts();
+    app.listen(PORT, () => console.log(`API lista en http://localhost:${PORT}`));
+  })
+  .catch((err) => {
+    console.error(`No se pudo cargar Supabase: ${err.message}`);
+    process.exit(1);
+  });

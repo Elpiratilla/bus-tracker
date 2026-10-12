@@ -186,7 +186,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   left: 0;
   top: 0;
   transform-origin: 0 0;
-  transition: transform .8s ease;
+  will-change: transform;
 }
 .veh svg {
   position: absolute;
@@ -196,10 +196,18 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   overflow: visible;
   filter: drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 .6px #fff); /* contorno blanco, se ve en mapa claro y oscuro */
 }
-.v-body { fill: var(--maiz); stroke: var(--anil); stroke-width: 1.6; }
+.veh {
+  --v-top: #FFD36B;   /* centro del techo, más claro: da volumen */
+  --v-side: #E09A12;  /* orillas del techo */
+}
+.v-edge { stroke: var(--anil); stroke-width: 1.4; }
 .v-dark { fill: var(--anil); }
-.v-rear { opacity: .6; }
-.v-roof { fill: none; stroke: var(--anil); stroke-width: 1.2; opacity: .45; }
+.v-glass { fill: var(--anil); opacity: .85; }
+.v-unit { fill: var(--v-top); stroke: var(--anil); stroke-width: .9; stroke-opacity: .55; }
+.v-grill { fill: none; stroke: var(--anil); stroke-width: .7; stroke-opacity: .45; stroke-linecap: round; }
+.v-hatch { fill: none; stroke: var(--anil); stroke-width: .8; stroke-opacity: .4; }
+.v-head { fill: #FFF8DC; }
+.v-tail { fill: #E5484D; }
 
 /* Número de ruta: no gira, siempre se lee */
 .veh__tag {
@@ -415,7 +423,6 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .pulse { animation: none; }
-  .veh { transition: none; }
 }
 
 @media (max-width: 360px) {

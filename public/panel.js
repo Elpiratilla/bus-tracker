@@ -621,7 +621,7 @@ $("#f-codigo").addEventListener("submit", async (e) => {
 $("#logout").addEventListener("click", async () => {
   const sb = await supa();
   await sb.auth.signOut();
-  location.replace("/empresa/");
+  location.replace("/login.html");
 });
 
 $("#f-activar").addEventListener("submit", async (e) => {
@@ -636,7 +636,7 @@ $("#f-activar").addEventListener("submit", async (e) => {
   try {
     const sb = await supa();
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) return location.replace("/empresa/");
+    if (!session) return location.replace("/login.html");
 
     let yo = await api("/yo");
     // Primera vez después de registrarse: activar con el código que puso al crear la cuenta

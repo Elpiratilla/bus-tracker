@@ -78,7 +78,7 @@ $("#f-crear").addEventListener("submit", (e) => {
     const sb = await supa();
     const { data, error } = await sb.auth.signUp({
       email, password,
-      options: { data: { empresa, codigo }, emailRedirectTo: `${location.origin}/empresa/panel.html` },
+      options: { data: { empresa, codigo }, emailRedirectTo: `${location.origin}/panel.html` },
     });
     if (error) return showMsg(msg, authMessage(error));
     if (data.session) return location.replace("panel.html"); // sin confirmación de correo
@@ -94,7 +94,7 @@ $("#f-olvide").addEventListener("submit", (e) => {
   if (!email) return showMsg(msg, "Escribe tu correo.");
   busy(e.target, "Enviando…", async () => {
     const sb = await supa();
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: `${location.origin}/empresa/` });
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: `${location.origin}/login.html` });
     if (error) return showMsg(msg, authMessage(error));
     showMsg(msg, `Si ${email} tiene cuenta, te llegará un enlace en unos minutos.`, "ok");
   });

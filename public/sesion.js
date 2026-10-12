@@ -19,7 +19,7 @@ async function api(path, { method = "GET", body } = {}) {
   const sb = await supa();
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
-    location.replace("/empresa/");
+    location.replace("/login.html");
     throw new Error("Sin sesión");
   }
   const res = await fetch(`/api/empresa${path}`, {
@@ -30,7 +30,7 @@ async function api(path, { method = "GET", body } = {}) {
   const data = await res.json().catch(() => ({}));
   if (res.status === 401) {
     await sb.auth.signOut();
-    location.replace("/empresa/");
+    location.replace("/login.html");
   }
   if (!res.ok) {
     const err = new Error(data.error || `Error ${res.status}`);

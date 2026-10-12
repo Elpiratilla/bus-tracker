@@ -405,6 +405,7 @@ async function drawMap(data, lastIdx, nextIdx) {
   // Encuadre: solo al abrir o cambiar de ruta
   if (fittedRoute !== ruta) {
     fittedRoute = ruta;
+    map.invalidateSize(); // medir de nuevo: si midió antes de que la página se acomodara, encuadra en zoom máximo
     map.fitBounds(L.latLngBounds(legs.flat()), { paddingTopLeft: [30, 120], paddingBottomRight: [30, 50] });
   }
 }

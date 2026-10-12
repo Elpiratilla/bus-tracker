@@ -87,18 +87,60 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   text-decoration: none;
 }
 
-.routes { display: flex; gap: .3rem; }
-.routes a {
-  min-width: 2.7rem;
-  padding: .5rem .8rem;
+/* Apartado: autobús o microbús */
+.seg {
+  display: flex;
+  padding: 3px;
+  background: var(--paper);
   border-radius: 999px;
-  color: var(--ink);
-  font-weight: 700;
-  line-height: 1.1;
-  text-align: center;
-  text-decoration: none;
 }
-.routes a[aria-current="page"] { background: var(--anil); color: #fff; }
+.seg button {
+  padding: .4rem .7rem;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  color: var(--muted);
+  font: 700 .85rem/1.2 var(--sans);
+  cursor: pointer;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--anil);
+  color: #fff;
+}
+.seg button:focus-visible, .chip:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+
+/* Rutas del tipo elegido, flotando sobre el mapa */
+.chips {
+  position: absolute;
+  z-index: 999;
+  top: 4.5rem;
+  left: .7rem;
+  right: .7rem;
+  display: flex;
+  gap: .4rem;
+  padding: .2rem 0 .5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: .35rem;
+  padding: .45rem .85rem .45rem .65rem;
+  background: color-mix(in srgb, var(--card) 94%, transparent);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 2px 10px rgba(12, 17, 48, .25);
+  color: var(--ink);
+  font: 700 .95rem/1.1 var(--sans);
+  cursor: pointer;
+}
+.chip--micro { border-radius: 10px; } /* el microbús se distingue también por la forma */
+.chip[aria-current="true"] { background: var(--anil); color: #fff; }
+.ico { width: 1.15rem; height: 1.15rem; }
 
 /* ---------- Capas del mapa ---------- */
 .route-case { stroke: var(--card); stroke-opacity: 1; }
@@ -145,6 +187,8 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   color: var(--anil);
   font: 12px var(--serif);
 }
+
+.busmk.busmk--micro { width: 38px; height: 24px; border-radius: 999px; }
 
 .leg {
   display: block;
@@ -327,4 +371,9 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .pulse { animation: none; }
+}
+
+@media (max-width: 360px) {
+  .logo { font-size: 1.2rem; }
+  .seg button { padding: .4rem .5rem; font-size: .8rem; }
 }

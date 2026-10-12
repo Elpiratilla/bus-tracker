@@ -10,21 +10,39 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+  <!-- Iconos de unidad -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-bus" viewBox="0 0 24 24">
+      <rect x="3" y="3" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M3 11h18" fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="8" cy="14.5" r="1.3" fill="currentColor"/>
+      <circle cx="16" cy="14.5" r="1.3" fill="currentColor"/>
+      <path d="M6.5 18v3M17.5 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-micro" viewBox="0 0 24 24">
+      <path d="M2 16V8a2 2 0 0 1 2-2h9l5 5h2a2 2 0 0 1 2 2v3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M13 6v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="7" cy="17.5" r="2.2" fill="currentColor"/>
+      <circle cx="17" cy="17.5" r="2.2" fill="currentColor"/>
+    </symbol>
+  </svg>
 
   <main class="app">
 
     <section class="stage">
       <header class="top">
         <a class="logo" href="/" aria-label="go503, inicio">go503</a>
-        <nav class="routes" aria-label="Rutas">
-          <a href="#" data-ruta="101" aria-current="page">101</a>
-          <a href="#" data-ruta="42">42</a>
-          <a href="#" data-ruta="29">29</a>
-        </nav>
+        <div class="seg" role="group" aria-label="Tipo de unidad">
+          <button type="button" data-tipo="todos" aria-pressed="true">Todos</button>
+          <button type="button" data-tipo="autobus" aria-pressed="false">Autobús</button>
+          <button type="button" data-tipo="microbus" aria-pressed="false">Microbús</button>
+        </div>
       </header>
+      <nav class="chips" id="chips" aria-label="Rutas"></nav>
       <!-- Mapa real: Leaflet + mosaicos de CARTO. app.js dibuja aquí -->
       <div id="map" role="region" aria-label="Mapa de la ruta"></div>
     </section>

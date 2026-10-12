@@ -1,17 +1,20 @@
 // go503: interfaz + mapa real (Leaflet + CARTO)
 
 const CONFIG = {
-  API_BASE: "",        // ej. "https://api.go503.com". Vacío = el mismo servidor
-  USE_MOCK: false,     // true = datos de ejemplo, sin backend
+  API_BASE: "",        // ej. "https://api.go503.com". Vacío = datos de ejemplo
   REFRESH_MS: 15000,   // cada cuánto se actualiza
   OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
   CENTER: [13.699, -89.205],               // San Salvador
   CARTO_KEY: "cb1_483z_1_4a6102fca3ea19c0048a0ded",       // pega aquí tu llave gratis de https://carto.com/basemaps/apikey/
 };
 
-/* Contrato esperado: GET {API_BASE}/api/rutas/101
+/* Contrato esperado
+GET {API_BASE}/api/rutas            -> [ { "ruta": "101", "tipo": "autobus" }, ... ]
+                                       tipo: "autobus" o "microbus"
+GET {API_BASE}/api/rutas/101
 {
   "ruta": "101",
+  "tipo": "autobus",
   "actualizado": "2026-10-12T08:16:00-06:00",
   "paradas": [               // en orden de recorrido
     { "id": 1, "nombre": "Terminal de Oriente", "lat": 13.71, "lng": -89.16,
@@ -45,6 +48,19 @@ const MOCK = {
     ["Merliot",             13.6765, -89.2630],
   ],
 };
+const MOCK_RUTAS = [
+  { ruta: "101", tipo: "autobus" },
+  { ruta: "42",  tipo: "autobus" },
+  { ruta: "29",  tipo: "microbus" },
+  { ruta: "52",  tipo: "microbus" },
+];
+MOCK["52"] = [
+  ["Zacamil",                    13.7290, -89.2090],
+  ["Universidad de El Salvador", 13.7188, -89.2044],
+  ["Parque Infantil",            13.7030, -89.2030],
+  ["Centro Histórico",           13.6989, -89.1914],
+  ["Terminal de Oriente",        13.7126, -89.1643],
+];
 const T0 = Date.now();
 
 function mockRoute(ruta) {
@@ -54,6 +70,7 @@ function mockRoute(ruta) {
   const etas   = [null, null, null, 4, 9];
   return {
     ruta,
+    tipo: MOCK_RUTAS.find((r) => r.ruta === ruta).tipo,
     actualizado: new Date().toISOString(),
     paradas: MOCK[ruta].map(([nombre, lat, lng], i) => ({
       id: i + 1, nombre, lat, lng, tramoMin: tramos[i], pasoA: at(pasos[i]), etaA: at(etas[i]),
@@ -61,8 +78,15 @@ function mockRoute(ruta) {
   };
 }
 
+async function getRutas() {
+  if (!CONFIG.API_BASE) return MOCK_RUTAS;
+  const res = await fetch(`${CONFIG.API_BASE}/api/rutas`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
 async function getRoute(ruta) {
-  if (CONFIG.USE_MOCK) return mockRoute(ruta);
+  if (!CONFIG.API_BASE) return mockRoute(ruta);
   const res = await fetch(`${CONFIG.API_BASE}/api/rutas/${encodeURIComponent(ruta)}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
@@ -70,6 +94,8 @@ async function getRoute(ruta) {
 
 // ---------- Utilidades ----------
 const $ = (sel) => document.querySelector(sel);
+
+const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 
 const hhmm = (iso) =>
   new Date(iso).toLocaleTimeString("es-SV", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -219,7 +245,9 @@ async function drawMap(data, lastIdx, nextIdx) {
   // Bus
   if (bus) {
     overlay.addLayer(L.marker(bus, {
-      icon: icon(`<span class="busmk">${ruta}</span>`, [46, 28]),
+      icon: data.tipo === "microbus"
+        ? icon(`<span class="busmk busmk--micro">${ruta}</span>`, [38, 24])
+        : icon(`<span class="busmk">${ruta}</span>`, [46, 28]),
       zIndexOffset: 1000, keyboard: false, title: `Bus ${ruta}`,
     }));
   }
@@ -227,7 +255,7 @@ async function drawMap(data, lastIdx, nextIdx) {
   // Encuadre: solo al abrir o cambiar de ruta
   if (fittedRoute !== ruta) {
     fittedRoute = ruta;
-    map.fitBounds(L.latLngBounds(legs.flat()), { paddingTopLeft: [30, 70], paddingBottomRight: [30, 50] });
+    map.fitBounds(L.latLngBounds(legs.flat()), { paddingTopLeft: [30, 120], paddingBottomRight: [30, 50] });
   }
 }
 
@@ -250,7 +278,7 @@ function render(data) {
         : [Object.assign(el("strong"), { textContent: etaLabel })]
       : [])
   );
-  $("#upd").textContent = `Actualizado a las ${hhmm(actualizado)}`;
+  $("#upd").textContent = `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
 
   $("#stops-title").textContent = `Paradas de la ruta ${ruta}`;
   $("#stops-list").replaceChildren(
@@ -294,15 +322,64 @@ async function load() {
   }
 }
 
-document.querySelectorAll(".routes a").forEach((a) => {
-  a.addEventListener("click", (e) => {
-    e.preventDefault();
-    current = a.dataset.ruta;
-    document.querySelectorAll(".routes a").forEach((x) => x.removeAttribute("aria-current"));
-    a.setAttribute("aria-current", "page");
-    load();
+// ---------- Selector de tipo y rutas ----------
+let rutas = [];
+let tipo = "todos";
+
+function icono(t) {
+  const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  s.setAttribute("class", "ico");
+  s.setAttribute("aria-hidden", "true");
+  const u = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  u.setAttribute("href", t === "microbus" ? "#i-micro" : "#i-bus");
+  s.append(u);
+  return s;
+}
+
+function renderChips() {
+  const visibles = rutas.filter((r) => tipo === "todos" || r.tipo === tipo);
+  $("#chips").replaceChildren(
+    ...visibles.map((r) => {
+      const b = el("button", `chip${r.tipo === "microbus" ? " chip--micro" : ""}`);
+      b.type = "button";
+      b.setAttribute("aria-current", String(r.ruta === current));
+      b.setAttribute("aria-label", `Ruta ${r.ruta}, ${TIPOS[r.tipo]}`);
+      b.append(icono(r.tipo), r.ruta);
+      b.addEventListener("click", () => {
+        current = r.ruta;
+        renderChips();
+        load();
+      });
+      return b;
+    })
+  );
+  return visibles;
+}
+
+document.querySelectorAll(".seg button").forEach((b) => {
+  b.addEventListener("click", () => {
+    tipo = b.dataset.tipo;
+    document.querySelectorAll(".seg button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    const visibles = renderChips();
+    if (visibles.length && !visibles.some((r) => r.ruta === current)) {
+      current = visibles[0].ruta;
+      renderChips();
+      load();
+    }
   });
 });
 
-load();
-setInterval(load, CONFIG.REFRESH_MS);
+async function init() {
+  try {
+    rutas = await getRutas();
+  } catch (err) {
+    console.error(err);
+    rutas = [{ ruta: current, tipo: "autobus" }];
+    setStatus("No se pudo cargar la lista de rutas.");
+  }
+  renderChips();
+  load();
+  setInterval(load, CONFIG.REFRESH_MS);
+}
+
+init();

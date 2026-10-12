@@ -192,6 +192,78 @@ const icon = (html, size, cls = "cp-wrap") => L.divIcon({ className: cls, html, 
 const line = (pts, cls, weight) =>
   L.polyline(pts, { className: cls, weight, lineCap: "round", lineJoin: "round", interactive: false });
 
+// ---------- Unidad en el mapa: vista desde arriba, gira con la calle (como Uber) ----------
+// Dibujadas mirando hacia arriba (norte); se giran con CSS según la dirección
+const VEHICULOS = {
+  autobus: `<svg viewBox="-3 0 28 50" width="25" height="45" aria-hidden="true">
+    <rect class="v-dark" x="-2" y="6" width="3" height="4" rx="1"/>
+    <rect class="v-dark" x="21" y="6" width="3" height="4" rx="1"/>
+    <rect class="v-body" x="1" y="1" width="20" height="48" rx="4"/>
+    <rect class="v-dark" x="3.5" y="3.5" width="15" height="6" rx="2"/>
+    <rect class="v-roof" x="5" y="14" width="12" height="8" rx="2"/>
+    <rect class="v-roof" x="5" y="27" width="12" height="8" rx="2"/>
+    <rect class="v-dark v-rear" x="5" y="44" width="12" height="2.5" rx="1"/>
+  </svg>`,
+  microbus: `<svg viewBox="-3 0 28 38" width="25" height="34" aria-hidden="true">
+    <rect class="v-dark" x="-2" y="8" width="3" height="4" rx="1"/>
+    <rect class="v-dark" x="21" y="8" width="3" height="4" rx="1"/>
+    <path class="v-body" d="M1 10Q1 1 11 1Q21 1 21 10V34Q21 37 18 37H4Q1 37 1 34Z"/>
+    <path class="v-dark" d="M4 11Q4 5 11 5Q18 5 18 11V13H4Z"/>
+    <rect class="v-roof" x="5" y="17" width="12" height="11" rx="2.5"/>
+    <rect class="v-dark v-rear" x="5" y="32.5" width="12" height="2" rx="1"/>
+  </svg>`,
+};
+
+// Dirección de a hacia b en grados (0 = norte, sentido horario)
+function bearing(a, b) {
+  const dx = (b[1] - a[1]) * Math.cos((a[0] * Math.PI) / 180);
+  return (Math.atan2(dx, b[0] - a[0]) * 180) / Math.PI;
+}
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+let vehicle = null; // marcador fuera de overlay para poder moverlo sin redibujarlo
+
+function showVehicle(pos, angle, tipo, ruta) {
+  const key = `${ruta}|${tipo}`;
+  if (!pos || (vehicle && vehicle.key !== key)) {
+    if (vehicle) vehicle.marker.remove();
+    vehicle = null;
+  }
+  if (!pos) return;
+
+  if (!vehicle) {
+    const html = `<span class="veh" style="transform: rotate(${angle}deg)">${VEHICULOS[tipo] || VEHICULOS.autobus}</span>`
+      + `<span class="veh__tag">${ruta}</span>`;
+    const marker = L.marker(pos, {
+      icon: L.divIcon({ className: "veh-wrap", html, iconSize: [0, 0] }),
+      zIndexOffset: 1000, keyboard: false, interactive: false,
+    }).addTo(map);
+    vehicle = { marker, key, angle };
+  } else {
+    slide(vehicle.marker, pos);
+  }
+
+  // Gira por el camino más corto (de 350° a 10° son 20°, no 340°)
+  vehicle.angle += ((angle - vehicle.angle + 540) % 360) - 180;
+  const body = vehicle.marker.getElement()?.querySelector(".veh");
+  if (body) body.style.transform = `rotate(${vehicle.angle}deg)`;
+}
+
+// Desliza el marcador hasta su nueva posición en vez de saltar
+function slide(marker, to, ms = 1000) {
+  cancelAnimationFrame(marker._slide);
+  const from = marker.getLatLng();
+  if (reduceMotion.matches) return marker.setLatLng(to);
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / ms);
+    const e = k * (2 - k); // frena al final
+    marker.setLatLng([from.lat + (to[0] - from.lat) * e, from.lng + (to[1] - from.lng) * e]);
+    if (k < 1) marker._slide = requestAnimationFrame(step);
+  };
+  marker._slide = requestAnimationFrame(step);
+}
+
 let mapToken = 0;
 let fittedRoute = null;
 
@@ -205,13 +277,17 @@ async function drawMap(data, lastIdx, nextIdx) {
 
   // Posición del bus dentro del tramo actual
   let bus = null;
+  let busAngle = 0;
   let doneLegs = legs.slice(0, Math.max(lastIdx, 0));
   if (lastIdx >= 0 && nextIdx < paradas.length) {
+    // Parte del tramo recorrida: la del GPS (backend) o, si no viene, estimada por tiempo
     const mins = (Date.now() - new Date(paradas[lastIdx].pasoA)) / 60000;
-    const p = Math.min(0.95, Math.max(0.05, mins / (paradas[nextIdx].tramoMin || 5)));
+    const raw = data.bus && data.bus.progreso != null ? data.bus.progreso : mins / (paradas[nextIdx].tramoMin || 5);
+    const p = Math.min(0.98, Math.max(0.02, raw));
     const s = splitAt(legs[lastIdx], p);
     doneLegs = [...doneLegs, s.head];
     bus = s.pt;
+    busAngle = bearing(s.pt, splitAt(legs[lastIdx], Math.min(1, p + 0.02)).pt);
   } else if (lastIdx >= paradas.length - 1) {
     doneLegs = legs;
   }
@@ -243,15 +319,8 @@ async function drawMap(data, lastIdx, nextIdx) {
     overlay.addLayer(m);
   });
 
-  // Bus
-  if (bus) {
-    overlay.addLayer(L.marker(bus, {
-      icon: data.tipo === "microbus"
-        ? icon(`<span class="busmk busmk--micro">${ruta}</span>`, [38, 24])
-        : icon(`<span class="busmk">${ruta}</span>`, [46, 28]),
-      zIndexOffset: 1000, keyboard: false, title: `Bus ${ruta}`,
-    }));
-  }
+  // Unidad
+  showVehicle(bus, busAngle, data.tipo, ruta);
 
   // Encuadre: solo al abrir o cambiar de ruta
   if (fittedRoute !== ruta) {

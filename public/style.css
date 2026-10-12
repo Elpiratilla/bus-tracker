@@ -175,20 +175,45 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   to   { transform: scale(2.8); opacity: 0;   }
 }
 
-.busmk {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 28px;
-  background: var(--maiz);
-  border: 3px solid var(--anil);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(12, 17, 48, .4);
-  color: var(--anil);
-  font: 12px var(--serif);
+/* Unidad vista desde arriba: gira con la calle */
+.veh-wrap {
+  background: none;
+  border: 0;
+  filter: drop-shadow(0 2px 3px rgba(12, 17, 48, .45));
 }
+.veh {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  transition: transform .8s ease;
+}
+.veh svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  filter: drop-shadow(0 0 1.2px #fff) drop-shadow(0 0 .6px #fff); /* contorno blanco, se ve en mapa claro y oscuro */
+}
+.v-body { fill: var(--maiz); stroke: var(--anil); stroke-width: 1.6; }
+.v-dark { fill: var(--anil); }
+.v-rear { opacity: .6; }
+.v-roof { fill: none; stroke: var(--anil); stroke-width: 1.2; opacity: .45; }
 
-.busmk.busmk--micro { width: 38px; height: 24px; border-radius: 999px; }
+/* Número de ruta: no gira, siempre se lee */
+.veh__tag {
+  position: absolute;
+  left: 0;
+  top: 25px;
+  transform: translateX(-50%);
+  padding: .05rem .45rem;
+  background: var(--anil);
+  border-radius: 6px;
+  color: var(--maiz);
+  font: 11px/1.4 var(--serif);
+  white-space: nowrap;
+}
 
 .leg {
   display: block;
@@ -390,6 +415,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   .pulse { animation: none; }
+  .veh { transition: none; }
 }
 
 @media (max-width: 360px) {

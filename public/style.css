@@ -69,12 +69,6 @@ body {
 }
 
 /* Hilo azul, blanco, azul: la bandera, en silencio */
-body::before {
-  content: "";
-  display: block;
-  height: 9px;
-  background: linear-gradient(var(--anil) 0 3px, #fff 3px 6px, var(--anil) 6px);
-}
 
 a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
@@ -554,7 +548,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 @media (min-width: 900px) {
   .app { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(380px, 1fr); }
   .stage { position: sticky; top: 0; align-self: start; }
-  #map { height: calc(100vh - 9px); }
+  #map { height: 100vh; }
   .leaflet-bottom { margin-bottom: 0; }
   .panel { margin-top: 0; padding: 2rem 2.4rem; border-radius: 0; box-shadow: none; }
   .next__stop { font-size: 2.1rem; }

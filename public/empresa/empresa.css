@@ -4,7 +4,7 @@
 .auth {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 32rem);
-  min-height: calc(100vh - 9px);
+  min-height: 100vh;
 }
 .auth__side {
   position: relative;
@@ -88,7 +88,7 @@
 .msg[hidden] { display: none; }
 
 /* ---------- Panel ---------- */
-.shell { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-height: calc(100vh - 9px); }
+.shell { display: grid; grid-template-columns: 15.5rem minmax(0, 1fr); min-height: 100vh; }
 
 .side {
   position: sticky;
@@ -96,7 +96,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  height: calc(100vh - 9px);
+  height: 100vh;
   padding: 1.6rem 1rem 1.2rem;
   background: var(--noche);
   color: #C9D0EE;

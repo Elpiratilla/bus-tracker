@@ -42,11 +42,6 @@ img, svg { display: block; }
 
 :focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
-/* Franja azul, blanco, azul: la bandera, en silencio */
-.flag {
-  height: 9px;
-  background: linear-gradient(var(--anil) 0 3px, #fff 3px 6px, var(--anil) 6px);
-}
 
 .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
 

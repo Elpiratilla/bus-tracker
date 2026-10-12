@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de empresas: go503</title>
+  <meta name="description" content="Entra al panel de go503 para seguir tu flota, su mantenimiento y sus tiempos.">
+  <meta name="theme-color" content="#0E1438">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../base.css">
+  <link rel="stylesheet" href="empresa.css">
+</head>
+<body>
+  <div class="flag"></div>
+
+  <div class="auth">
+    <aside class="auth__side">
+      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <div class="auth__pitch">
+        <h1>Tu flota, a la vista</h1>
+        <p>Dónde va cada unidad, cuántos kilómetros lleva y cuándo le toca el cambio de aceite. Todo desde aquí.</p>
+      </div>
+      <div>
+        <div class="auth__route" aria-hidden="true">
+          <i class="on"></i><b></b><i class="on"></i><b></b><i class="next"></i><b class="off"></b><i></i>
+        </div>
+        <p class="auth__note">¿Aún no tienes código de invitación? Lo recibes al contratar el sensor go503.</p>
+      </div>
+    </aside>
+
+    <main class="auth__main">
+      <a class="auth__back" href="/">Volver al inicio</a>
+
+      <div class="auth__box">
+        <div class="tabs" role="tablist" aria-label="Acceso" id="tabs">
+          <button type="button" role="tab" id="tab-entrar" aria-selected="true" aria-controls="v-entrar">Entrar</button>
+          <button type="button" role="tab" id="tab-crear" aria-selected="false" aria-controls="v-crear">Crear cuenta</button>
+        </div>
+
+        <p class="msg" id="msg" role="alert" hidden></p>
+
+        <!-- Entrar -->
+        <section id="v-entrar" role="tabpanel" aria-labelledby="tab-entrar">
+          <h2>Bienvenido de vuelta</h2>
+          <form class="form" id="f-entrar" novalidate>
+            <div class="field">
+              <label for="e-email">Correo</label>
+              <input class="input" id="e-email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="e-pass">Contraseña</label>
+              <input class="input" id="e-pass" type="password" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn--anil" type="submit">Entrar</button>
+            <button class="link" type="button" id="go-olvide">Olvidé mi contraseña</button>
+          </form>
+        </section>
+
+        <!-- Crear cuenta -->
+        <section id="v-crear" role="tabpanel" aria-labelledby="tab-crear" hidden>
+          <h2>Registra tu empresa</h2>
+          <p>Necesitas el código de invitación que recibiste con tu sensor.</p>
+          <form class="form" id="f-crear" novalidate>
+            <div class="field">
+              <label for="c-codigo">Código de invitación</label>
+              <input class="input input--code" id="c-codigo" placeholder="GO503-XXXX-XXXX" autocomplete="off" spellcheck="false" required>
+            </div>
+            <div class="field">
+              <label for="c-empresa">Nombre de la empresa</label>
+              <input class="input" id="c-empresa" autocomplete="organization" maxlength="80" required>
+            </div>
+            <div class="field">
+              <label for="c-email">Correo</label>
+              <input class="input" id="c-email" type="email" autocomplete="email" required>
+            </div>
+            <div class="field">
+              <label for="c-pass">Contraseña</label>
+              <input class="input" id="c-pass" type="password" autocomplete="new-password" minlength="8" required>
+              <small>Al menos 8 caracteres.</small>
+            </div>
+            <button class="btn btn--anil" type="submit">Crear cuenta</button>
+          </form>
+        </section>
+
+        <!-- Olvidé mi contraseña -->
+        <section id="v-olvide" hidden>
+          <h2>Recupera tu acceso</h2>
+          <p>Te enviamos un enlace para crear una contraseña nueva.</p>
+          <form class="form" id="f-olvide" novalidate>
+            <div class="field">
+              <label for="o-email">Correo</label>
+              <input class="input" id="o-email" type="email" autocomplete="email" required>
+            </div>
+            <button class="btn btn--anil" type="submit">Enviar enlace</button>
+            <button class="link" type="button" data-back>Volver a entrar</button>
+          </form>
+        </section>
+
+        <!-- Nueva contraseña (llega desde el enlace del correo) -->
+        <section id="v-nueva" hidden>
+          <h2>Crea tu contraseña nueva</h2>
+          <form class="form" id="f-nueva" novalidate>
+            <div class="field">
+              <label for="n-pass">Contraseña nueva</label>
+              <input class="input" id="n-pass" type="password" autocomplete="new-password" minlength="8" required>
+              <small>Al menos 8 caracteres.</small>
+            </div>
+            <button class="btn btn--anil" type="submit">Guardar contraseña</button>
+          </form>
+        </section>
+
+        <!-- Revisa tu correo -->
+        <section id="v-correo" hidden>
+          <h2>Revisa tu correo</h2>
+          <p id="correo-texto">Te enviamos un enlace para confirmar tu cuenta. Ábrelo y después entra con tu correo y contraseña.</p>
+          <div class="form"><button class="btn btn--anil" type="button" data-back>Ir a entrar</button></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+  <script src="sesion.js"></script>
+  <script src="acceso.js"></script>
+</body>
+</html>

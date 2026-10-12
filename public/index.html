@@ -3,87 +3,148 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>go503: cuándo llega tu bus</title>
-  <meta name="description" content="Mira cuánto tarda tu bus entre cada parada, en tiempo real.">
-  <meta name="theme-color" content="#1B2559">
+  <title>go503: cuándo pasa tu bus</title>
+  <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
+  <meta name="theme-color" content="#0E1438">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="go503">
-  <link rel="icon" href="go503-favicon.svg" type="image/svg+xml">
-
-<picture>
-  <source srcset="go503-logo-oscuro.svg" media="(prefers-color-scheme: dark)">
-  <img src="go503-logo-claro.svg" alt="go503" height="64">
-</picture>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="landing.css">
 </head>
 <body>
 
-  <!-- Iconos de unidad -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="i-bus" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
-      <path d="M3 11h18" fill="none" stroke="currentColor" stroke-width="2"/>
-      <circle cx="8" cy="14.5" r="1.3" fill="currentColor"/>
-      <circle cx="16" cy="14.5" r="1.3" fill="currentColor"/>
-      <path d="M6.5 18v3M17.5 18v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </symbol>
     <symbol id="i-bell" viewBox="0 0 24 24">
       <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
-    <symbol id="i-micro" viewBox="0 0 24 24">
-      <path d="M2 16V8a2 2 0 0 1 2-2h9l5 5h2a2 2 0 0 1 2 2v3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M13 6v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="7" cy="17.5" r="2.2" fill="currentColor"/>
-      <circle cx="17" cy="17.5" r="2.2" fill="currentColor"/>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
     </symbol>
   </svg>
 
-  <main class="app">
+  <div class="flag"></div>
 
-    <section class="stage">
-      <header class="top">
-        <a class="logo" href="/" aria-label="go503, inicio">go503</a>
-        <div class="seg" role="group" aria-label="Tipo de unidad">
-          <button type="button" data-tipo="todos" aria-pressed="true">Todos</button>
-          <button type="button" data-tipo="autobus" aria-pressed="false">Autobús</button>
-          <button type="button" data-tipo="microbus" aria-pressed="false">Microbús</button>
+  <!-- Portada: tablero en vivo con datos reales de la API -->
+  <header class="hero">
+    <nav class="top wrap" aria-label="Principal">
+      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <div class="top__links">
+        <a href="mapa.html">Mapa en vivo</a>
+        <a href="#empresas">Para empresas</a>
+        <a class="btn btn--line top__cta" href="empresa/">Entrar al panel</a>
+      </div>
+    </nav>
+
+    <div class="hero__body wrap">
+      <div class="hero__copy">
+        <h1>¿Cuándo pasa tu&nbsp;bus?</h1>
+        <p class="hero__lead">go503 te dice dónde va la unidad y en cuántos minutos llega a tu parada. Sin adivinar y sin esperar de más en la esquina.</p>
+        <div class="hero__actions">
+          <a class="btn btn--maiz" href="mapa.html">Ver el mapa</a>
+          <a class="btn btn--line" href="mapa.html">
+            <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
+            Avísame cuando venga
+          </a>
         </div>
-      </header>
-      <nav class="chips" id="chips" aria-label="Rutas"></nav>
-      <!-- Mapa real: Leaflet + mosaicos de CARTO. app.js dibuja aquí -->
-      <div id="map" role="region" aria-label="Mapa de la ruta"></div>
+      </div>
+
+      <section class="board" aria-labelledby="board-stop" aria-live="polite">
+        <div class="board__head">
+          <span class="fascia" id="b-ruta">101</span>
+          <div class="board__next">
+            <p class="board__label">Siguiente parada</p>
+            <h2 class="board__stop" id="board-stop">Cargando…</h2>
+          </div>
+        </div>
+
+        <p class="board__eta" id="b-eta"><span class="board__num">–</span></p>
+
+        <div class="strip" id="b-strip" aria-hidden="true">
+          <div class="strip__line"><div class="strip__done" id="b-done"></div></div>
+          <div class="strip__stops" id="b-stops"></div>
+          <div class="strip__bus" id="b-bus">
+            <svg viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+          </div>
+        </div>
+
+        <div class="board__foot">
+          <p class="board__upd"><span class="live" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
+          <div class="board__routes" id="b-routes" role="group" aria-label="Cambiar de ruta"></div>
+        </div>
+      </section>
+    </div>
+  </header>
+
+  <main>
+    <!-- Cómo funciona: es una secuencia real, por eso va como paradas de una ruta -->
+    <section class="how wrap" aria-labelledby="how-title">
+      <h2 id="how-title">Del sensor a tu teléfono</h2>
+      <ol class="how__route">
+        <li>
+          <span class="how__stop" aria-hidden="true">1</span>
+          <h3>Un sensor en cada unidad</h3>
+          <p>Un GPS instalado en el bus reporta su ubicación cada 5 segundos.</p>
+        </li>
+        <li>
+          <span class="how__stop" aria-hidden="true">2</span>
+          <h3>go503 calcula la llegada</h3>
+          <p>Con lo que de verdad tarda cada tramo a esa hora, no con horarios de papel.</p>
+        </li>
+        <li>
+          <span class="how__stop how__stop--you" aria-hidden="true">3</span>
+          <h3>Tú sabes cuándo salir</h3>
+          <p>Y si quieres, te mandamos un aviso cuando tu bus esté a 5 minutos.</p>
+        </li>
+      </ol>
     </section>
 
-    <div class="panel">
-      <p id="status" class="status" role="status" hidden></p>
-
-      <section class="next" aria-labelledby="next-stop">
-        <div>
-          <h1 class="next__stop" id="next-stop">Cargando...</h1>
-          <p class="next__eta" id="next-eta"></p>
+    <!-- Para empresas -->
+    <section class="biz" id="empresas" aria-labelledby="biz-title">
+      <div class="biz__inner wrap">
+        <div class="biz__copy">
+          <h2 id="biz-title">Tu flota, a la vista</h2>
+          <p class="biz__lead">Instala el sensor go503 en tus unidades y síguelas desde un panel: dónde va cada una, cuántos kilómetros lleva y cuándo le toca el cambio de aceite.</p>
+          <dl class="biz__list">
+            <div><dt>Ubicación en vivo</dt><dd>Todas tus unidades en un mapa, con su velocidad y su última señal.</dd></div>
+            <div><dt>Mantenimiento por kilómetro</dt><dd>El panel cuenta los kilómetros y las horas de motor, y te avisa antes del cambio de aceite.</dd></div>
+            <div><dt>Tiempos por tramo</dt><dd>Cuánto tardan tus unidades en cada tramo según la hora, y cuántas vueltas dan al día.</dd></div>
+            <div><dt>Un sensor, una clave</dt><dd>Cada sensor transmite con su propia clave. Si pierdes uno, lo desactivas desde el panel.</dd></div>
+          </dl>
+          <div class="biz__actions">
+            <a class="btn btn--maiz" href="empresa/">Entrar al panel</a>
+            <a class="btn btn--line" href="mailto:ventas@go503.sv?subject=Quiero%20el%20sensor%20go503">Pedir el sensor</a>
+          </div>
         </div>
-        <span class="fascia" id="fascia">101</span>
-        <p class="next__upd" id="upd"></p>
-      </section>
 
-      <section class="stops" aria-labelledby="stops-title">
-        <h2 id="stops-title">Paradas de la ruta</h2>
-        <ol id="stops-list"></ol>
-      </section>
-
-      <p class="foot">Hecho en El Salvador</p>
-    </div>
-
+        <!-- Vista del panel (ilustrativa) -->
+        <figure class="preview" aria-label="Vista del panel de empresas">
+          <div class="preview__bar"><span class="logo"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="23" height="26"></span><span>Transportes Cuscatlán</span></div>
+          <table class="preview__table">
+            <thead><tr><th>Unidad</th><th>Estado</th><th>Velocidad</th><th>Aceite</th></tr></thead>
+            <tbody>
+              <tr><td><b>Unidad 7</b><small>Ruta 101</small></td><td><span class="dot dot--on"></span>En ruta</td><td>34 km/h</td><td><span class="meter"><span style="width:42%"></span></span></td></tr>
+              <tr><td><b>Unidad 12</b><small>Ruta 101</small></td><td><span class="dot dot--on"></span>En Metrocentro</td><td>0 km/h</td><td><span class="meter meter--soon"><span style="width:93%"></span></span></td></tr>
+              <tr><td><b>Unidad 3</b><small>Ruta 42</small></td><td><span class="dot"></span>Sin señal</td><td>–</td><td><span class="meter"><span style="width:18%"></span></span></td></tr>
+            </tbody>
+          </table>
+        </figure>
+      </div>
+    </section>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="app.js" defer></script>
+  <footer class="foot wrap">
+    <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"></a>
+    <p>Hecho en El Salvador, para la gente que se mueve en bus.</p>
+    <nav aria-label="Pie de página"><a href="mapa.html">Mapa en vivo</a><a href="empresa/">Panel de empresas</a></nav>
+  </footer>
+
+  <script src="landing.js" defer></script>
 </body>
 </html>

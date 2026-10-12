@@ -2,8 +2,25 @@
   "name": "go503: cuándo llega tu bus",
   "short_name": "go503",
   "lang": "es",
-  "start_url": "/",
+  "start_url": "/mapa.html",
   "display": "standalone",
   "background_color": "#0C1130",
-  "theme_color": "#1B2559"
+  "theme_color": "#1B2559",
+  "icons": [
+    {
+      "src": "/img/icono-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/icono-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/img/go503-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
 }

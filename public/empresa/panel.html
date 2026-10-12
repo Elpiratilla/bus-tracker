@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel: go503</title>
+  <meta name="theme-color" content="#0E1438">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="../base.css">
+  <link rel="stylesheet" href="empresa.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
+    <symbol id="i-bus" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 11h18" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="14.5" r="1.3" fill="currentColor"/><circle cx="16" cy="14.5" r="1.3" fill="currentColor"/><path d="M6.5 18v3M17.5 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0 5 5L14 17l-1 4-2-2-6.5-6.5L2.5 10.5l4-1 5.5-5.5a4 4 0 0 0 2.5 2.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11.3 11.7L20 3M16.5 6.5l3 3M14 9l2.5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="18" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="currentColor"/></symbol>
+  </svg>
+
+  <div class="flag"></div>
+
+  <div class="shell">
+    <aside class="side">
+      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <nav class="nav" aria-label="Panel">
+        <a href="#flota"><svg class="ico" aria-hidden="true"><use href="#i-map"/></svg>Flota en vivo</a>
+        <a href="#unidades"><svg class="ico" aria-hidden="true"><use href="#i-bus"/></svg>Unidades</a>
+        <a href="#mantenimiento"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Mantenimiento<span class="badge" id="badge-mant" hidden></span></a>
+        <a href="#reportes"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Reportes</a>
+        <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
+      </nav>
+      <div class="side__foot">
+        <p class="side__company" id="company"></p>
+        <p class="side__email" id="email"></p>
+        <button class="btn btn--line" type="button" id="logout">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <p class="msg" id="msg" role="alert" hidden></p>
+
+      <!-- Activar empresa (cuenta sin empresa todavía) -->
+      <section class="view" id="v-activar" hidden>
+        <div class="panel empty-state" style="max-width:32rem">
+          <h2>Activa tu empresa</h2>
+          <p>Escribe el código de invitación que recibiste con tu sensor y el nombre de tu empresa.</p>
+          <form class="form" id="f-activar" style="width:100%" novalidate>
+            <div class="field"><label for="a-codigo">Código de invitación</label><input class="input input--code" id="a-codigo" placeholder="GO503-XXXX-XXXX" autocomplete="off" spellcheck="false"></div>
+            <div class="field"><label for="a-empresa">Nombre de la empresa</label><input class="input" id="a-empresa" maxlength="80"></div>
+            <button class="btn btn--anil" type="submit">Activar empresa</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Flota en vivo -->
+      <section class="view" id="v-flota" hidden>
+        <div class="head">
+          <div><h1>Flota en vivo</h1><p id="flota-resumen">Cargando…</p></div>
+        </div>
+        <div class="panel empty-state" id="fleet-vacio" hidden>
+          <h2>Registra tu primera unidad</h2>
+          <p>Al registrarla te damos la clave de su sensor. Cuando el sensor empiece a transmitir, la verás aquí en el mapa.</p>
+          <button class="btn btn--anil" type="button" data-nueva>Registrar unidad</button>
+        </div>
+        <div class="fleet" id="fleet">
+          <div id="fleet-map" role="region" aria-label="Mapa de la flota"></div>
+          <div class="panel units"><ul id="units" aria-label="Unidades"></ul></div>
+        </div>
+      </section>
+
+      <!-- Unidades -->
+      <section class="view" id="v-unidades" hidden>
+        <div class="head">
+          <div><h1>Unidades</h1><p>Registra cada bus para generar la clave de su sensor.</p></div>
+          <div class="head__actions"><button class="btn btn--anil" type="button" data-nueva>Registrar unidad</button></div>
+        </div>
+        <div class="panel table-wrap" id="unidades"></div>
+      </section>
+
+      <!-- Mantenimiento -->
+      <section class="view" id="v-mantenimiento" hidden>
+        <div class="head">
+          <div><h1>Mantenimiento</h1><p>Kilómetros contados por el GPS de cada unidad. Registra cada servicio para reiniciar la cuenta.</p></div>
+        </div>
+        <div class="panel table-wrap" id="mantenimiento"></div>
+      </section>
+
+      <!-- Reportes -->
+      <section class="view" id="v-reportes" hidden>
+        <div class="head">
+          <div><h1>Reportes</h1><p>Tiempos reales de tus unidades, sin contar las de otras empresas.</p></div>
+          <div class="filters">
+            <label for="r-dias" class="visually-hidden">Periodo</label>
+            <select class="select" id="r-dias">
+              <option value="7">Últimos 7 días</option>
+              <option value="30">Últimos 30 días</option>
+              <option value="90">Últimos 90 días</option>
+            </select>
+          </div>
+        </div>
+        <section class="panel report" aria-labelledby="r-tramos-t">
+          <h2 id="r-tramos-t">Minutos por tramo según la hora</h2>
+          <p>Promedio de lo que tardan tus unidades entre dos paradas. Más oscuro, más lento.</p>
+          <div class="heat" id="r-tramos"></div>
+        </section>
+        <section class="panel report" aria-labelledby="r-vueltas-t">
+          <h2 id="r-vueltas-t">Vueltas completas por día</h2>
+          <p>Cuenta cada vez que una unidad llega a la última parada de su ruta.</p>
+          <div class="table-wrap" id="r-vueltas"></div>
+        </section>
+      </section>
+
+      <!-- Códigos de invitación (solo administradores) -->
+      <section class="view" id="v-codigos" hidden>
+        <div class="head">
+          <div><h1>Códigos de invitación</h1><p>Crea un código por cada empresa que compre el sensor. Cada código sirve una sola vez.</p></div>
+        </div>
+        <form class="panel report filters" id="f-codigo" novalidate>
+          <label for="cod-nota" class="visually-hidden">Para quién es el código</label>
+          <input class="input" id="cod-nota" maxlength="120" placeholder="Para quién es (ej. Transportes Pérez)" style="flex:1;min-width:14rem">
+          <button class="btn btn--anil" type="submit">Crear código</button>
+        </form>
+        <div class="panel table-wrap" id="codigos" style="margin-top:1rem"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Detalle de una unidad -->
+  <aside class="drawer" id="drawer" aria-labelledby="d-nombre" hidden>
+    <div class="drawer__head">
+      <div><h2 id="d-nombre"></h2><p id="d-sub"></p></div>
+      <button class="close" type="button" id="d-cerrar" aria-label="Cerrar detalle">×</button>
+    </div>
+    <dl class="facts" id="d-facts"></dl>
+    <div class="head__actions" style="margin-top:1rem">
+      <button class="btn btn--anil btn--sm" type="button" id="d-servicio">Registrar servicio</button>
+      <button class="btn btn--ghost btn--sm" type="button" id="d-editar">Editar unidad</button>
+    </div>
+    <h3 class="sub">Últimas 24 horas</h3>
+    <div class="charts" id="d-charts"></div>
+    <h3 class="sub">Servicios</h3>
+    <ul class="services" id="d-servicios"></ul>
+  </aside>
+
+  <!-- Registrar / editar unidad -->
+  <dialog id="dlg-unidad" aria-labelledby="u-titulo">
+    <h2 id="u-titulo">Registrar unidad</h2>
+    <p id="u-ayuda">Al guardar te daremos la clave de su sensor.</p>
+    <form class="form" id="f-unidad" novalidate>
+      <p class="msg" id="u-msg" role="alert" hidden></p>
+      <div class="form__row">
+        <div class="field"><label for="u-nombre">Nombre</label><input class="input" id="u-nombre" maxlength="40" placeholder="Unidad 7"></div>
+        <div class="field"><label for="u-placa">Placa</label><input class="input" id="u-placa" maxlength="12" placeholder="AB 123-456"></div>
+      </div>
+      <div class="form__row">
+        <div class="field"><label for="u-ruta">Ruta</label><select class="select" id="u-ruta"></select></div>
+        <div class="field"><label for="u-tipo">Tipo</label><select class="select" id="u-tipo"><option value="autobus">Autobús</option><option value="microbus">Microbús</option></select></div>
+      </div>
+      <div class="form__row">
+        <div class="field"><label for="u-km">Kilometraje actual</label><input class="input" id="u-km" type="number" min="0" step="1" inputmode="numeric"><small>El del tablero del bus.</small></div>
+        <div class="field"><label for="u-aceite">Cambio de aceite cada</label><input class="input" id="u-aceite" type="number" min="500" max="50000" step="100" value="5000" inputmode="numeric"><small>Kilómetros.</small></div>
+      </div>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn--anil" type="submit" id="u-guardar">Registrar unidad</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Clave del sensor (solo se muestra una vez) -->
+  <dialog id="dlg-clave" aria-labelledby="k-titulo">
+    <h2 id="k-titulo">Clave del sensor</h2>
+    <p>Cópiala ahora y pégala en la configuración del sensor. Por seguridad no la volveremos a mostrar.</p>
+    <div class="key"><code id="k-clave"></code><button class="btn btn--anil btn--sm" type="button" id="k-copiar">Copiar</button></div>
+    <pre class="snippet" id="k-config"></pre>
+    <p class="muted" style="margin-top:.9rem;font-size:.88rem">Para probar sin sensor, en la carpeta del proyecto:</p>
+    <pre class="snippet" id="k-sim"></pre>
+    <div class="dialog__actions"><button class="btn btn--anil" type="button" data-cerrar>Ya la guardé</button></div>
+  </dialog>
+
+  <!-- Registrar servicio -->
+  <dialog id="dlg-servicio" aria-labelledby="s-titulo">
+    <h2 id="s-titulo">Registrar servicio</h2>
+    <p id="s-ayuda"></p>
+    <form class="form" id="f-servicio" novalidate>
+      <p class="msg" id="s-msg" role="alert" hidden></p>
+      <div class="field"><label for="s-tipo">Servicio</label>
+        <select class="select" id="s-tipo">
+          <option value="aceite">Cambio de aceite</option>
+          <option value="frenos">Frenos</option>
+          <option value="llantas">Llantas</option>
+          <option value="general">Revisión general</option>
+          <option value="otro">Otro</option>
+        </select>
+      </div>
+      <div class="field"><label for="s-notas">Notas</label><textarea class="textarea" id="s-notas" maxlength="500" placeholder="Aceite 15W-40, taller El Progreso"></textarea></div>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn--anil" type="submit">Registrar servicio</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirmaciones (nueva clave, eliminar) -->
+  <dialog id="dlg-confirmar" aria-labelledby="c-titulo">
+    <h2 id="c-titulo"></h2>
+    <p id="c-texto"></p>
+    <div class="dialog__actions">
+      <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
+      <button class="btn btn--danger" type="button" id="c-ok"></button>
+    </div>
+  </dialog>
+
+  <div class="tip" id="tip" hidden></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js"></script>
+  <script src="sesion.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>

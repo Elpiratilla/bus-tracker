@@ -15,6 +15,19 @@ app.use("/api/buses", require("./routes/telemetry"));
 app.use("/api/routes", require("./routes/routes"));
 app.use("/api/rutas", require("./routes/rutas"));
 app.use("/api/alertas", require("./routes/alertas"));
+app.use("/api/empresa", require("./routes/empresa"));
+
+// Datos públicos que necesita el navegador para iniciar sesión con Supabase
+app.get("/api/config", (_req, res) => res.json({
+  supabaseUrl: process.env.SUPABASE_URL || null,
+  supabaseKey: process.env.SUPABASE_PUBLISHABLE_KEY || null,
+}));
+
+// Cualquier error inesperado: mensaje claro en JSON (el detalle queda en la terminal)
+app.use((err, _req, res, _next) => {
+  console.error(err);
+  res.status(500).json({ error: "Algo falló en el servidor. Intenta de nuevo." });
+});
 
 const PORT = process.env.PORT || 3000;
 

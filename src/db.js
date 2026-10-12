@@ -25,7 +25,17 @@ function persist(label, query, queue) {
   next.then(() => { if (queues.get(queue) === next) queues.delete(queue); });
 }
 
+// Espera a que terminen las escrituras pendientes de una cola (ej. antes de borrar)
+const flush = (queue) => queues.get(queue) || Promise.resolve();
+
 const ms = (t) => (t ? new Date(t).getTime() : null);
+
+// Fila de la tabla buses -> unidad registrada en memoria
+const unitFromRow = (b) => ({
+  busId: b.id, companyId: b.company_id, name: b.name, plate: b.plate, type: b.type, routeId: b.route_id,
+  apiKeyHash: b.api_key_hash, odometerKm: b.odometer_km, engineHours: b.engine_hours,
+  oilIntervalKm: b.oil_interval_km, createdAt: ms(b.created_at),
+});
 
 async function select(query) {
   const { data, error } = await query;
@@ -62,6 +72,7 @@ async function loadState() {
   for (const b of await select(db.from("buses").select("*"))) {
     store.buses[b.id] = { ...b.data, busId: b.id, routeId: b.route_id, lat: b.lat, lng: b.lng,
       atStop: b.at_stop, updatedAt: ms(b.updated_at) };
+    if (b.company_id) store.units[b.id] = unitFromRow(b);
   }
 
   for (const a of await select(db.from("alerts").select("*"))) {
@@ -69,8 +80,8 @@ async function loadState() {
       { subscription: a.subscription, routeId: a.route_id, stopId: a.stop_id, createdAt: ms(a.created_at) });
   }
 
-  console.log(`Supabase: ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
+  console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
     + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas`);
 }
 
-module.exports = { db, persist, loadState };
+module.exports = { db, persist, flush, loadState, select, unitFromRow };

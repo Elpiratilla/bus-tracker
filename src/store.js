@@ -28,4 +28,7 @@ const routes = [
 // geofence: en qué parada está cada bus ahora mismo (null si va entre paradas)
 // trips: hora en que el bus pasó por cada parada en su vuelta actual
 // alerts: avisos "tu bus está cerca" pendientes (src/alerts.js)
-module.exports = { routes, lastPass: {}, segments: [], buses: {}, geofence: {}, trips: {}, alerts: new Map() };
+// buses: estado en vivo que manda el sensor (posición, velocidad, motor...)
+// units: unidades registradas por una empresa (dueño, placa, clave del sensor, km y horas de motor)
+// retired: unidades eliminadas; si su sensor sigue transmitiendo se rechaza (no se vuelve a crear)
+module.exports = { routes, lastPass: {}, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map() };

@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "simulate": "node tools/simulator.js"
+    "simulate": "node tools/simulator.js",
+    "codigo": "node tools/codigo.js",
+    "admin": "node tools/admin.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

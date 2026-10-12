@@ -51,7 +51,7 @@ async function send(alert, route, stop, mins) {
     title: `Tu ${route.id} está cerca`,
     body: mins < 1 ? `Está llegando a ${stop.name}` : `Llega a ${stop.name} en ${Math.ceil(mins)} min`,
     tag: `go503-${route.id}-${stop.id}`,
-    url: `/?ruta=${encodeURIComponent(route.id)}`,
+    url: `/mapa.html?ruta=${encodeURIComponent(route.id)}`,
   });
   try {
     await webpush.sendNotification(alert.subscription, payload, { TTL: 120 });

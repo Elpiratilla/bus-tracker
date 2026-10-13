@@ -141,4 +141,17 @@ $("tema").addEventListener("click", () => {
 darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
 applyTheme();
 
+// Animaciones al bajar: se activan cuando la sección aparece en pantalla (una sola vez)
+const reveal = document.querySelectorAll("[data-reveal]");
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add("is-visible");
+    io.unobserve(e.target);
+  }), { threshold: 0.35 });
+  reveal.forEach((n) => io.observe(n));
+} else {
+  reveal.forEach((n) => n.classList.add("is-visible"));
+}
+
 init();

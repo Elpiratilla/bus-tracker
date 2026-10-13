@@ -7,7 +7,7 @@
   <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
   <meta name="theme-color" content="#F3F5FB">
   <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
-  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
@@ -97,7 +97,7 @@
         <!-- La única nota a mano de la página -->
         <p class="scribble" aria-hidden="true">
           esto es en vivo, no es un dibujo
-          <svg viewBox="0 0 60 44" width="60" height="44"><path d="M6 40C30 40 46 30 50 6M50 6l-9 8M50 6l4 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg viewBox="0 0 60 44" width="60" height="44"><path pathLength="1" d="M6 40C30 40 46 30 50 6M50 6l-9 8M50 6l4 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </p>
       </div>
     </div>
@@ -107,6 +107,8 @@
     <!-- Cómo funciona: es una secuencia real, por eso va como paradas de una ruta -->
     <section class="how wrap" aria-labelledby="how-title">
       <h2 id="how-title">Así sabemos dónde va tu bus</h2>
+      <div class="how__track" data-reveal>
+        <span class="how__bus" aria-hidden="true"><svg viewBox="0 0 50 28" width="34" height="19"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/></svg></span>
       <ol class="how__route">
         <li>
           <span class="how__stop" aria-hidden="true">1</span>
@@ -124,6 +126,7 @@
           <p>Y si quieres, te avisamos al teléfono cuando tu bus esté a 5 minutos.</p>
         </li>
       </ol>
+      </div>
     </section>
 
     <!-- Para empresas -->
@@ -145,7 +148,7 @@
         </div>
 
         <!-- Vista del panel (ilustrativa) -->
-        <figure class="preview" aria-label="Vista del panel de empresas">
+        <figure class="preview" data-reveal aria-label="Vista del panel de empresas">
           <div class="preview__bar"><span class="logo"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="23" height="26"></span><span>Transportes Cuscatlán</span></div>
           <table class="preview__table">
             <thead><tr><th>Unidad</th><th>Estado</th><th>Velocidad</th><th>Aceite</th></tr></thead>

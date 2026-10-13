@@ -384,7 +384,8 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 
 /* ---------- Lo que lleva cada bus ---------- */
 .kit { padding-block: clamp(4rem, 9vw, 6.5rem) clamp(3rem, 7vw, 5rem); scroll-margin-top: 1rem; }
-.kit__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.2rem 2rem; }
+.kit__head { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem 1.2rem; }
+.kit__ask { font-weight: 700; font-size: 1.05rem; }
 .kit h2 { font-size: clamp(2rem, 4vw, 2.8rem); }
 .kit__lead { max-width: 40rem; margin-top: 1rem; color: var(--muted); font-size: 1.1rem; line-height: 1.6; }
 
@@ -822,3 +823,19 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 }
 .lang:hover { background: color-mix(in srgb, var(--line) 60%, transparent); color: var(--tinta); }
 @media (max-width: 640px) { .lang { padding: .45rem .5rem; } }
+
+/* ---------- Páginas internas (sensor, preguntas) ---------- */
+.top__links a[aria-current="page"] { color: var(--tinta); text-decoration: underline; text-decoration-color: var(--maiz); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.page-top { background: var(--papel); }
+.page-top__body { padding-block: clamp(2.5rem, 7vw, 5rem) 0; }
+.page-top h1 { max-width: 16ch; font-size: clamp(2.6rem, 6vw, 4.4rem); line-height: 1.05; animation: rise .6s ease-out both; }
+.page-top p { max-width: 38rem; margin-top: 1.2rem; color: var(--muted); font-size: clamp(1.08rem, 1.6vw, 1.2rem); line-height: 1.6; animation: rise .6s ease-out .15s both; }
+.page-top + main .kit { padding-top: clamp(2.5rem, 6vw, 4rem); }
+.page-top + main .faq { margin-top: clamp(2.5rem, 6vw, 4rem); }
+
+.next { display: grid; justify-items: start; gap: 1rem; padding-block: clamp(3.5rem, 8vw, 5.5rem); }
+.next h2 { font-size: clamp(1.8rem, 3.6vw, 2.5rem); }
+.next p { color: var(--muted); font-size: 1.08rem; }
+.next .btn { margin-top: .4rem; }
+.order__more { margin-top: .7rem; color: var(--muted); }
+.order__more a { color: var(--tinta); font-weight: 600; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }

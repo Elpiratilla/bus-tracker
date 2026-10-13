@@ -19,6 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
 
@@ -47,8 +48,9 @@
       <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
       <div class="top__links">
         <a href="/mapa.html">Mapa en vivo</a>
-        <a href="#empresas">Para empresas</a>
-        <a href="#sensor">El sensor</a>
+        <a href="/#empresas">Para empresas</a>
+        <a href="/sensor.html">El sensor</a>
+        <a href="/preguntas.html">Preguntas</a>
         <button class="lang" type="button" data-idioma>English</button>
         <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
           <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
@@ -148,7 +150,7 @@
           </dl>
           <div class="biz__actions">
             <a class="btn btn--maiz" href="#pedir">Pedir el sensor</a>
-            <a class="btn btn--line" href="#sensor">Ver qué lleva el bus</a>
+            <a class="btn btn--line" href="/sensor.html">Ver qué lleva el bus</a>
           </div>
         </div>
 
@@ -167,126 +169,12 @@
       </div>
     </section>
 
-    <!-- El sensor: el bus dibujado de lado, con cada pieza que se instala. Los datos salen de firmware/README.md -->
-    <section class="kit wrap" id="sensor" aria-labelledby="kit-title">
-      <div class="kit__head">
-        <div>
-          <h2 id="kit-title">Lo que lleva cada bus</h2>
-          <p class="kit__lead">Una cajita escondida detrás del tablero y dos antenas. Según el bus, también lee el motor. Toca cada punto para ver qué mide y cómo se ve en tu panel.</p>
-        </div>
-        <div class="kit__mode" role="group" aria-label="Tipo de bus">
-          <button type="button" data-modo="obd" aria-pressed="true">Con computadora</button>
-          <button type="button" data-modo="viejo" aria-pressed="false">Sin computadora</button>
-        </div>
-      </div>
-
-      <div class="kit__stage" data-reveal>
-        <svg class="kit__bus" viewBox="0 0 720 270" aria-hidden="true">
-          <line class="kit__road" x1="0" y1="252" x2="720" y2="252"/>
-          <!-- carrocería -->
-          <clipPath id="kit-silueta"><path d="M44 46h560c30 0 52 14 62 40l20 58v74a10 10 0 0 1-10 10H44a20 20 0 0 1-20-20V66a20 20 0 0 1 20-20z"/></clipPath>
-          <path class="kit__body" d="M44 46h560c30 0 52 14 62 40l20 58v74a10 10 0 0 1-10 10H44a20 20 0 0 1-20-20V66a20 20 0 0 1 20-20z"/>
-          <g clip-path="url(#kit-silueta)">
-            <rect class="kit__stripe" x="24" y="160" width="672" height="16"/>
-            <rect class="kit__stripe kit__stripe--thin" x="24" y="184" width="672" height="5"/>
-          </g>
-          <circle class="kit__light" cx="676" cy="164" r="7"/>
-          <circle class="kit__arch" cx="150" cy="226" r="38"/>
-          <circle class="kit__arch" cx="632" cy="226" r="38"/>
-          <!-- ventanas -->
-          <g class="kit__win">
-            <rect x="52" y="66" width="70" height="62" rx="6"/><rect x="132" y="66" width="70" height="62" rx="6"/>
-            <rect x="212" y="66" width="70" height="62" rx="6"/><rect x="292" y="66" width="70" height="62" rx="6"/>
-            <rect x="372" y="66" width="70" height="62" rx="6"/><rect x="452" y="66" width="70" height="62" rx="6"/>
-          </g>
-          <!-- puerta y parabrisas -->
-          <rect class="kit__door" x="536" y="66" width="40" height="150" rx="5"/>
-          <line class="kit__door-line" x1="556" y1="70" x2="556" y2="212"/>
-          <path class="kit__glass" d="M590 66h22c18 0 32 10 38 26l18 46h-78z"/>
-          <!-- rótulo de la ruta en el parabrisas -->
-          <rect class="kit__sign" x="594" y="72" width="40" height="19" rx="3"/>
-          <text class="kit__route" x="614" y="87" text-anchor="middle" translate="no">101</text>
-          <!-- antena en el techo -->
-          <path class="kit__antenna" d="M520 46v-14h28v14"/>
-          <!-- ruedas -->
-          <g class="kit__wheel"><circle cx="150" cy="226" r="30"/><circle class="kit__hub" cx="150" cy="226" r="11"/></g>
-          <g class="kit__wheel"><circle cx="632" cy="226" r="30"/><circle class="kit__hub" cx="632" cy="226" r="11"/></g>
-          <!-- tanque, solo en buses sin computadora se mide -->
-          <rect class="kit__tank" x="300" y="206" width="110" height="26" rx="8"/>
-        </svg>
-
-        <div class="kit__spots" id="kit-spots"></div>
-      </div>
-
-      <div class="kit__detail" id="kit-detail" aria-live="polite">
-        <div class="kit__parts" id="kit-parts" role="group" aria-label="Piezas"></div>
-        <div class="kit__info">
-          <h3 id="kit-nombre"></h3>
-          <dl class="kit__rows">
-            <div><dt>Qué mide</dt><dd id="kit-mide"></dd></div>
-            <div><dt>Cómo se instala</dt><dd id="kit-instala"></dd></div>
-          </dl>
-          <p class="kit__panel"><span class="kit__panel-tag">En tu panel</span><span id="kit-panel"></span></p>
-        </div>
-      </div>
-
-      <dl class="kit__facts">
-        <div><dt>Cada 5 segundos</dt><dd>manda la ubicación mientras el bus va en marcha, y cada 30 cuando está detenido.</dd></div>
-        <div><dt>Hasta 3 horas sin señal</dt><dd>guarda lo que mide en un túnel o una zona sin cobertura y lo manda en orden al volver.</dd></div>
-        <div><dt>Con el bus apagado</dt><dd>sigue reportando cada 10 minutos dónde quedó estacionado.</dd></div>
-        <div><dt>Se recupera solo</dt><dd>reinicia el 4G si pasa 10 minutos sin red, y todo el equipo si se traba.</dd></div>
-      </dl>
-    </section>
-
-    <!-- Preguntas de los dueños antes de comprar -->
-    <section class="faq" id="preguntas" aria-labelledby="faq-title">
-      <div class="faq__inner wrap">
-        <div class="faq__side">
-          <h2 id="faq-title">Lo que nos preguntan los dueños</h2>
-          <p>¿Tienes otra duda? <a href="#pedir">Déjanos tu número</a> y te respondemos por WhatsApp.</p>
-        </div>
-        <div class="faq__list">
-          <details name="faq">
-            <summary>¿Funciona con mi bus?</summary>
-            <p>Sí. La ubicación funciona en cualquier bus. Si tu bus tiene conector OBD-II, el sensor lee la temperatura, el combustible y las fallas de su computadora. Si es de los que no tienen, le ponemos sensores propios para la temperatura, el combustible y el encendido.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Hay que cortar cables o tocar el motor?</summary>
-            <p>No. Se conecta a la batería con su propio fusible y, en buses con computadora, al conector de diagnóstico. El medidor de combustible del tablero sigue funcionando igual.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Qué pasa si el bus entra a una zona sin señal?</summary>
-            <p>El sensor guarda en su memoria lo que va midiendo, hasta unas 3 horas de recorrido, y lo manda en orden cuando vuelve la señal. No se pierde aunque se apague el bus.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Cuántos datos gasta?</summary>
-            <p>Unos 200 MB al mes por unidad, con un chip de Claro, Tigo o Digicel. Para flotas conviene un plan de datos para equipos (IoT), que suele ser más barato.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Le baja la batería al bus?</summary>
-            <p>Consume como 0.1 A, poco para una batería de bus. Va conectado para seguir reportando con el bus apagado, así sabes dónde quedó.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Quién ve los datos de mi flota?</summary>
-            <p>Solo las cuentas de tu empresa, y solo se entra con un código de invitación. En el mapa público la gente ve dónde va el bus de su ruta, nada más: ni placas, ni motor, ni el nombre de tu empresa.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Y si se roban o se daña un sensor?</summary>
-            <p>Cada sensor tiene su propia clave. Lo desactivas desde el panel y deja de contar al momento. Con el bus apagado sigue reportando, así que también sirve para saber si alguien mueve la unidad.</p>
-          </details>
-          <details name="faq">
-            <summary>¿Cuánto cuesta?</summary>
-            <p>Depende de cuántas unidades tengas y de qué tipo son. Déjanos tus datos abajo y te mandamos la cotización por WhatsApp.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
     <!-- Pedir el sensor: formulario de ventas (se guarda en Supabase, tabla leads) -->
     <section class="order wrap" id="pedir" aria-labelledby="order-title">
       <div class="order__copy">
         <h2 id="order-title">Pide el sensor para tus unidades</h2>
         <p class="order__lead">Déjanos tus datos y te contactamos para cotizar. Sin compromiso.</p>
+        <p class="order__more">¿Tienes dudas antes? Lee <a href="/preguntas.html">lo que nos preguntan los dueños</a>.</p>
         <ol class="order__steps">
           <li><b>Te escribimos</b><span>Por WhatsApp o llamada, para saber cuántas unidades y qué rutas tienes.</span></li>
           <li><b>Instalamos el sensor</b><span>En cada unidad, en menos de una hora por bus y sin tocar el motor.</span></li>
@@ -347,9 +235,11 @@
     </span>
     <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
     <p>Hecho en El Salvador por gente que también espera el bus.</p>
-    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/login.html">Panel de empresas</a></nav>
+    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a></nav>
   </footer>
 
+  <script src="/js/sitio.js" defer></script>
   <script src="/js/landing.js" defer></script>
+  <script src="/js/chat.js" defer></script>
 </body>
 </html>

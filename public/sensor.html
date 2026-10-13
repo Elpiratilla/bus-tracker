@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El sensor de Go503</title>
+  <meta name="description" content="Qué lleva cada bus, qué mide el sensor go503 y cómo se instala.">
+  <meta name="theme-color" content="#F3F5FB">
+  <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-bell" viewBox="0 0 24 24">
+      <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <header class="page-top">
+    <nav class="top wrap" aria-label="Principal">
+      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <div class="top__links">
+        <a href="/mapa.html">Mapa en vivo</a>
+        <a href="/#empresas">Para empresas</a>
+        <a href="/sensor.html" aria-current="page">El sensor</a>
+        <a href="/preguntas.html">Preguntas</a>
+        <button class="lang" type="button" data-idioma>English</button>
+        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span class="theme__knob" aria-hidden="true"></span>
+        </button>
+        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+      </div>
+    </nav>
+    <div class="page-top__body wrap">
+      <h1>Lo que lleva cada bus</h1>
+      <p>Una cajita escondida detrás del tablero y dos antenas. Según el bus, también lee el motor. No se corta ningún cable.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- El sensor: el bus dibujado de lado, con cada pieza que se instala. Los datos salen de firmware/README.md -->
+    <section class="kit wrap" id="sensor" aria-labelledby="kit-title">
+      <div class="kit__head">
+        <p class="kit__ask" id="kit-title">¿Cómo es tu bus?</p>
+        <div class="kit__mode" role="group" aria-labelledby="kit-title">
+          <button type="button" data-modo="obd" aria-pressed="true">Con computadora</button>
+          <button type="button" data-modo="viejo" aria-pressed="false">Sin computadora</button>
+        </div>
+      </div>
+
+      <div class="kit__stage" data-reveal>
+        <svg class="kit__bus" viewBox="0 0 720 270" aria-hidden="true">
+          <line class="kit__road" x1="0" y1="252" x2="720" y2="252"/>
+          <!-- carrocería -->
+          <clipPath id="kit-silueta"><path d="M44 46h560c30 0 52 14 62 40l20 58v74a10 10 0 0 1-10 10H44a20 20 0 0 1-20-20V66a20 20 0 0 1 20-20z"/></clipPath>
+          <path class="kit__body" d="M44 46h560c30 0 52 14 62 40l20 58v74a10 10 0 0 1-10 10H44a20 20 0 0 1-20-20V66a20 20 0 0 1 20-20z"/>
+          <g clip-path="url(#kit-silueta)">
+            <rect class="kit__stripe" x="24" y="160" width="672" height="16"/>
+            <rect class="kit__stripe kit__stripe--thin" x="24" y="184" width="672" height="5"/>
+          </g>
+          <circle class="kit__light" cx="676" cy="164" r="7"/>
+          <circle class="kit__arch" cx="150" cy="226" r="38"/>
+          <circle class="kit__arch" cx="632" cy="226" r="38"/>
+          <!-- ventanas -->
+          <g class="kit__win">
+            <rect x="52" y="66" width="70" height="62" rx="6"/><rect x="132" y="66" width="70" height="62" rx="6"/>
+            <rect x="212" y="66" width="70" height="62" rx="6"/><rect x="292" y="66" width="70" height="62" rx="6"/>
+            <rect x="372" y="66" width="70" height="62" rx="6"/><rect x="452" y="66" width="70" height="62" rx="6"/>
+          </g>
+          <!-- puerta y parabrisas -->
+          <rect class="kit__door" x="536" y="66" width="40" height="150" rx="5"/>
+          <line class="kit__door-line" x1="556" y1="70" x2="556" y2="212"/>
+          <path class="kit__glass" d="M590 66h22c18 0 32 10 38 26l18 46h-78z"/>
+          <!-- rótulo de la ruta en el parabrisas -->
+          <rect class="kit__sign" x="594" y="72" width="40" height="19" rx="3"/>
+          <text class="kit__route" x="614" y="87" text-anchor="middle" translate="no">101</text>
+          <!-- antena en el techo -->
+          <path class="kit__antenna" d="M520 46v-14h28v14"/>
+          <!-- ruedas -->
+          <g class="kit__wheel"><circle cx="150" cy="226" r="30"/><circle class="kit__hub" cx="150" cy="226" r="11"/></g>
+          <g class="kit__wheel"><circle cx="632" cy="226" r="30"/><circle class="kit__hub" cx="632" cy="226" r="11"/></g>
+          <!-- tanque, solo en buses sin computadora se mide -->
+          <rect class="kit__tank" x="300" y="206" width="110" height="26" rx="8"/>
+        </svg>
+
+        <div class="kit__spots" id="kit-spots"></div>
+      </div>
+
+      <div class="kit__detail" id="kit-detail" aria-live="polite">
+        <div class="kit__parts" id="kit-parts" role="group" aria-label="Piezas"></div>
+        <div class="kit__info">
+          <h3 id="kit-nombre"></h3>
+          <dl class="kit__rows">
+            <div><dt>Qué mide</dt><dd id="kit-mide"></dd></div>
+            <div><dt>Cómo se instala</dt><dd id="kit-instala"></dd></div>
+          </dl>
+          <p class="kit__panel"><span class="kit__panel-tag">En tu panel</span><span id="kit-panel"></span></p>
+        </div>
+      </div>
+
+      <dl class="kit__facts">
+        <div><dt>Cada 5 segundos</dt><dd>manda la ubicación mientras el bus va en marcha, y cada 30 cuando está detenido.</dd></div>
+        <div><dt>Hasta 3 horas sin señal</dt><dd>guarda lo que mide en un túnel o una zona sin cobertura y lo manda en orden al volver.</dd></div>
+        <div><dt>Con el bus apagado</dt><dd>sigue reportando cada 10 minutos dónde quedó estacionado.</dd></div>
+        <div><dt>Se recupera solo</dt><dd>reinicia el 4G si pasa 10 minutos sin red, y todo el equipo si se traba.</dd></div>
+      </dl>
+    </section>
+
+
+    <section class="next wrap" aria-labelledby="next-title">
+      <h2 id="next-title">¿Lo quieres en tus unidades?</h2>
+      <p>Déjanos tu número y te mandamos la cotización por WhatsApp.</p>
+      <a class="btn btn--maiz" href="/#pedir">Pedir el sensor</a>
+    </section>
+  </main>
+
+  <footer class="foot wrap" data-reveal>
+    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
+    <span class="foot__road" aria-hidden="true">
+      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+    </span>
+    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
+    <p>Hecho en El Salvador por gente que también espera el bus.</p>
+    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a></nav>
+  </footer>
+
+  <script src="/js/sitio.js" defer></script>
+  <script src="/js/sensor.js" defer></script>
+</body>
+</html>

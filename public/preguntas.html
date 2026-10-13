@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preguntas sobre Go503</title>
+  <meta name="description" content="Lo que preguntan los dueños de buses antes de poner el sensor go503.">
+  <meta name="theme-color" content="#F3F5FB">
+  <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-bell" viewBox="0 0 24 24">
+      <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <header class="page-top">
+    <nav class="top wrap" aria-label="Principal">
+      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <div class="top__links">
+        <a href="/mapa.html">Mapa en vivo</a>
+        <a href="/#empresas">Para empresas</a>
+        <a href="/sensor.html">El sensor</a>
+        <a href="/preguntas.html" aria-current="page">Preguntas</a>
+        <button class="lang" type="button" data-idioma>English</button>
+        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span class="theme__knob" aria-hidden="true"></span>
+        </button>
+        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+      </div>
+    </nav>
+    <div class="page-top__body wrap">
+      <h1>Lo que nos preguntan los dueños</h1>
+      <p>Sobre la instalación, los datos, la batería y quién ve tu flota. Si tu duda no está, escríbenos.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Preguntas de los dueños antes de comprar -->
+    <section class="faq" id="preguntas" aria-labelledby="faq-title">
+      <div class="faq__inner wrap">
+        <div class="faq__side">
+          <h2 id="faq-title">Antes de comprar</h2>
+          <p>¿Tienes otra duda? <a href="/#pedir">Déjanos tu número</a> y te respondemos por WhatsApp.</p>
+        </div>
+        <div class="faq__list">
+          <details name="faq">
+            <summary>¿Funciona con mi bus?</summary>
+            <p>Sí. La ubicación funciona en cualquier bus. Si tu bus tiene conector OBD-II, el sensor lee la temperatura, el combustible y las fallas de su computadora. Si es de los que no tienen, le ponemos sensores propios para la temperatura, el combustible y el encendido.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Hay que cortar cables o tocar el motor?</summary>
+            <p>No. Se conecta a la batería con su propio fusible y, en buses con computadora, al conector de diagnóstico. El medidor de combustible del tablero sigue funcionando igual.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Qué pasa si el bus entra a una zona sin señal?</summary>
+            <p>El sensor guarda en su memoria lo que va midiendo, hasta unas 3 horas de recorrido, y lo manda en orden cuando vuelve la señal. No se pierde aunque se apague el bus.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Cuántos datos gasta?</summary>
+            <p>Unos 200 MB al mes por unidad, con un chip de Claro, Tigo o Digicel. Para flotas conviene un plan de datos para equipos (IoT), que suele ser más barato.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Le baja la batería al bus?</summary>
+            <p>Consume como 0.1 A, poco para una batería de bus. Va conectado para seguir reportando con el bus apagado, así sabes dónde quedó.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Quién ve los datos de mi flota?</summary>
+            <p>Solo las cuentas de tu empresa, y solo se entra con un código de invitación. En el mapa público la gente ve dónde va el bus de su ruta, nada más: ni placas, ni motor, ni el nombre de tu empresa.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Y si se roban o se daña un sensor?</summary>
+            <p>Cada sensor tiene su propia clave. Lo desactivas desde el panel y deja de contar al momento. Con el bus apagado sigue reportando, así que también sirve para saber si alguien mueve la unidad.</p>
+          </details>
+          <details name="faq">
+            <summary>¿Cuánto cuesta?</summary>
+            <p>Depende de cuántas unidades tengas y de qué tipo son. Déjanos tus datos abajo y te mandamos la cotización por WhatsApp.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="next wrap" aria-labelledby="next-title">
+      <h2 id="next-title">¿Lo quieres en tus unidades?</h2>
+      <p>Déjanos tu número y te mandamos la cotización por WhatsApp.</p>
+      <a class="btn btn--maiz" href="/#pedir">Pedir el sensor</a>
+    </section>
+  </main>
+
+  <footer class="foot wrap" data-reveal>
+    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
+    <span class="foot__road" aria-hidden="true">
+      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+    </span>
+    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
+    <p>Hecho en El Salvador por gente que también espera el bus.</p>
+    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a></nav>
+  </footer>
+
+  <script src="/js/sitio.js" defer></script>
+</body>
+</html>

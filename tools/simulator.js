@@ -2,6 +2,7 @@
 // Cada bus va y regresa por su ruta en línea recta entre paradas y manda su posición cada TICK_S segundos.
 // Velocidad normal:  npm run simulate          (20 km/h, tramos de 3 a 12 min)
 // Más rápido:        SIM_SPEED_KMH=120 npm run simulate
+// Por defecto saca 2 buses por ruta: uno empieza la ida y el otro el regreso (SIM_POR_RUTA=1 para uno solo)
 // Unidad registrada en el panel:  SIM_BUS=U-XXXXXX SIM_KEY=go503_... SIM_ROUTE=101 npm run simulate
 require("dotenv").config();
 const { distanceM } = require("../src/geo");
@@ -37,7 +38,8 @@ function buildPath(stops, speedKmh) {
   return path;
 }
 
-function runBus(busId, route, speedKmh) {
+// startAtReturn: empieza en la terminal donde arranca el regreso (para que haya bus en los dos sentidos)
+function runBus(busId, route, speedKmh, startAtReturn = false) {
   // Ida completa y luego el regreso (sin repetir la terminal donde da la vuelta); al final vuelve a empezar
   const { ida, regreso } = route.directions || { ida: route.stops, regreso: [...route.stops].reverse() };
   const sameStop = (a, b) => a && b && a.id === b.id;
@@ -45,7 +47,8 @@ function runBus(busId, route, speedKmh) {
   if (sameStop(loop.at(-1), loop[0])) loop.pop(); // la terminal inicial ya está al principio
   loop.push(loop[0]);                              // y cierra la vuelta para seguir sin saltos
   const path = buildPath(loop, speedKmh).slice(0, -DWELL_TICKS);
-  let i = 0;
+  // la ida ocupa los primeros puntos; el regreso empieza con la pausa en su terminal
+  let i = startAtReturn ? buildPath(ida, speedKmh).length - DWELL_TICKS : 0;
   let fuel = 70 + Math.random() * 25;  // baja poco a poco
   let temp = 86;                        // se mueve suave alrededor de 88 °C
   setInterval(async () => {
@@ -85,6 +88,11 @@ function runBus(busId, route, speedKmh) {
     console.log(`Simulando ${process.env.SIM_BUS} en la ruta ${route.id} a ${SPEED_KMH} km/h...`);
     return;
   }
-  routes.forEach((route) => runBus(`BUS-${route.id}`, route, SPEED_KMH));
-  console.log(`Simulando un bus por ruta (${routes.map((r) => r.id).join(", ")}) a ${SPEED_KMH} km/h...`);
+  const porRuta = process.env.SIM_POR_RUTA === "1" ? 1 : 2;
+  routes.forEach((route) => {
+    runBus(`BUS-${route.id}`, route, SPEED_KMH);
+    if (porRuta === 2) runBus(`BUS-${route.id}B`, route, SPEED_KMH, true);
+  });
+  console.log(`Simulando ${porRuta} bus${porRuta === 2 ? "es" : ""} por ruta (${routes.map((r) => r.id).join(", ")}) a ${SPEED_KMH} km/h: `
+    + (porRuta === 2 ? "uno arranca de ida y otro de regreso..." : "..."));
 })();

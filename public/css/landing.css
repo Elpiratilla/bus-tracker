@@ -1,5 +1,46 @@
 /* go503: landing */
 
+/* ---------- Modo oscuro: el del teléfono, salvo que la persona elija otro con el botón ---------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papel: #0E1438; --card: #1B2559; --tinta: #EEF1FB; --muted: #A9B2D8; --line: #2C3772;
+    color-scheme: dark;
+  }
+  :root:not([data-theme="light"]) .logo--claro { display: none; }
+  :root:not([data-theme="light"]) .logo--oscuro { display: block; }
+  :root:not([data-theme="light"]) .btn--anil { background: var(--maiz); color: var(--noche); }
+  :root:not([data-theme="light"]) .board { box-shadow: 0 28px 50px -24px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .08); }
+  :root:not([data-theme="light"]) .biz { background: #151D4A; }
+  :root:not([data-theme="light"]) .scribble { color: #F0779F; }
+}
+:root[data-theme="dark"] {
+  --papel: #0E1438; --card: #1B2559; --tinta: #EEF1FB; --muted: #A9B2D8; --line: #2C3772;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .logo--claro { display: none; }
+:root[data-theme="dark"] .logo--oscuro { display: block; }
+:root[data-theme="dark"] .btn--anil { background: var(--maiz); color: var(--noche); }
+:root[data-theme="dark"] .board { box-shadow: 0 28px 50px -24px rgba(0, 0, 0, .7), inset 0 0 0 1px rgba(255, 255, 255, .08); }
+:root[data-theme="dark"] .biz { background: #151D4A; }
+:root[data-theme="dark"] .scribble { color: #F0779F; }
+:root[data-theme="light"] { color-scheme: light; }
+.logo img.logo--oscuro { display: none; }
+
+/* Botón de modo claro / oscuro */
+.theme {
+  display: grid;
+  place-items: center;
+  width: 2.5rem; height: 2.5rem;
+  padding: 0;
+  background: none;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  color: var(--tinta);
+  cursor: pointer;
+  transition: border-color .15s, color .15s;
+}
+.theme:hover { border-color: currentColor; color: var(--torogoz); }
+
 /* ---------- Portada: de día, como la parada ---------- */
 .hero {
   background: var(--papel);
@@ -289,6 +330,7 @@
   font-size: .95rem;
 }
 .foot .logo { color: var(--tinta); }
+.preview { color-scheme: light; }
 .foot p { flex: 1; min-width: 14rem; }
 .foot nav { display: flex; gap: 1.4rem; }
 .foot nav a { color: var(--tinta); font-weight: 600; text-decoration: none; }

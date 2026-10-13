@@ -6,6 +6,8 @@
   <title>Go503</title>
   <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
   <meta name="theme-color" content="#F3F5FB">
+  <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
@@ -23,6 +25,13 @@
       <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
     <symbol id="i-pin" viewBox="0 0 24 24">
       <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
@@ -33,10 +42,13 @@
   <!-- Portada: la pregunta de la parada, con el tablero en vivo como respuesta -->
   <header class="hero">
     <nav class="top wrap" aria-label="Principal">
-      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"></a>
+      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
       <div class="top__links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="#empresas">Para empresas</a>
+        <button class="theme" id="tema" type="button" aria-label="Cambiar a modo oscuro" title="Modo oscuro">
+          <svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg>
+        </button>
         <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
       </div>
     </nav>
@@ -147,7 +159,7 @@
   </main>
 
   <footer class="foot wrap">
-    <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"></a>
+    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
     <p>Hecho en El Salvador por gente que también espera el bus.</p>
     <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/login.html">Panel de empresas</a></nav>
   </footer>

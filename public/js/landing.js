@@ -122,4 +122,24 @@ async function init() {
   }
 }
 
+// Modo claro / oscuro (se guarda igual que en el mapa)
+const root = document.documentElement;
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : darkQuery.matches);
+function applyTheme() {
+  const dark = isDark();
+  const btn = $("tema");
+  btn.setAttribute("aria-label", dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
+  btn.title = dark ? "Modo claro" : "Modo oscuro";
+  btn.querySelector("use").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#0E1438" : "#F3F5FB";
+}
+$("tema").addEventListener("click", () => {
+  root.dataset.theme = isDark() ? "light" : "dark";
+  try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
+  applyTheme();
+});
+darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
+applyTheme();
+
 init();

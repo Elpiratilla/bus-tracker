@@ -180,21 +180,6 @@
 .board__routes button:hover { border-color: rgba(255, 255, 255, .5); color: #fff; }
 .board__routes button[aria-pressed="true"] { background: var(--maiz); border-color: var(--maiz); color: var(--noche); }
 
-/* ---------- Para los días de siempre ---------- */
-.days { padding-block: clamp(3rem, 6vw, 4.5rem) 0; }
-.days h2 { font-size: clamp(2rem, 4vw, 2.8rem); }
-.days__list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(1.5rem, 4vw, 3rem);
-  margin: 2.6rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-.days__ico { width: 2.6rem; height: 2.6rem; color: var(--anil); }
-.days h3 { margin-top: 1rem; font-size: 1.35rem; }
-.days li p { max-width: 32ch; margin-top: .45rem; color: var(--muted); }
-
 /* ---------- Cómo funciona: tres paradas de una ruta ---------- */
 .how { padding-block: clamp(4rem, 9vw, 7rem); }
 .how h2 { font-size: clamp(2rem, 4vw, 2.8rem); max-width: 18ch; }
@@ -319,7 +304,7 @@
 }
 @media (max-width: 640px) {
   .top__links a:not(.btn) { display: none; }
-  .how__route, .days__list { grid-template-columns: 1fr; gap: 2rem; }
+  .how__route { grid-template-columns: 1fr; gap: 2rem; }
   .scribble { font-size: 1.25rem; }
   .how__route::before { top: 1.3rem; bottom: 1.3rem; left: 1.3rem; right: auto; width: 6px; height: auto; margin: 0 0 0 -3px;
     background: linear-gradient(var(--torogoz) 0 50%, var(--line) 50%); }

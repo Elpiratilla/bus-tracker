@@ -62,7 +62,7 @@
         <div class="hero__actions">
           <a class="btn btn--anil" href="/mapa.html">Ver dónde va mi bus</a>
           <a class="btn btn--line" href="/mapa.html">
-            <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
+            <svg class="ico ico--bell" aria-hidden="true"><use href="#i-bell"/></svg>
             Avísame cuando venga
           </a>
         </div>
@@ -163,7 +163,11 @@
     </section>
   </main>
 
-  <footer class="foot wrap">
+  <footer class="foot wrap" data-reveal>
+    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
+    <span class="foot__road" aria-hidden="true">
+      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+    </span>
     <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
     <p>Hecho en El Salvador por gente que también espera el bus.</p>
     <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/login.html">Panel de empresas</a></nav>

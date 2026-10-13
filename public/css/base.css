@@ -84,8 +84,10 @@ img, svg { display: block; }
   font: 700 1rem/1 var(--sans);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color .15s, border-color .15s, color .15s;
+  transition: background-color .15s, border-color .15s, color .15s, transform .08s;
 }
+/* Se hunde al presionar, como el timbre de bajada */
+.btn:active { transform: translateY(2px) scale(.98); }
 .btn--maiz { background: var(--maiz); color: var(--noche); }
 .btn--maiz:hover { background: var(--maiz-claro); }
 .btn--anil { background: var(--anil); color: #fff; }

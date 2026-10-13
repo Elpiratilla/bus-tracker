@@ -5,6 +5,16 @@ const $ = (id) => document.getElementById(id);
 const minsTo = (iso) => Math.ceil((new Date(iso) - Date.now()) / 60000);
 
 let current = null;
+let lastProgress = null;
+
+// Cambia un texto y, si es distinto, lo hace voltear como letrero de destino
+function flip(node, text) {
+  if (node.textContent === text) return;
+  node.textContent = text;
+  node.classList.remove("flap");
+  void node.offsetWidth;
+  node.classList.add("flap");
+}
 let timer = null;
 
 async function getJSON(url) {
@@ -36,14 +46,15 @@ function render(data) {
   }
   const hacia = (data.sentidos || []).find((x) => x.id === data.sentido)?.destino;
   document.querySelector(".board__label").textContent = hacia ? `Va hacia ${hacia}. Su próxima parada:` : "Su próxima parada:";
-  $("board-stop").textContent = hasBus ? next.nombre : paradas[0].nombre;
+  flip($("board-stop"), hasBus ? next.nombre : paradas[0].nombre);
 
   // Minutos que faltan
   const eta = $("b-eta");
+  const before = eta.textContent;
   eta.replaceChildren();
   if (hasBus && next.etaA) {
     const m = minsTo(next.etaA);
-    if (m <= 0) eta.append(el("span", "board__num", "¡Ya viene!"));
+    if (m <= 0) eta.append(el("span", "board__num board__num--now", "¡Ya viene!"));
     else eta.append(el("span", "board__num", String(m)), el("span", "board__unit", "min"));
   } else if (data.sinSenal) {
     const mins = Math.round((Date.now() - new Date(data.ultimaSenal)) / 60000);
@@ -51,6 +62,8 @@ function render(data) {
   } else {
     eta.append(el("span", "board__note", `Ahorita no viene ningún bus de la ${ruta} por aquí. Prueba con otra ruta.`));
   }
+  // los minutos voltean solo cuando cambian
+  if (eta.textContent !== before) eta.firstChild.classList.add("flap");
 
   // Línea de paradas
   const n = paradas.length - 1;
@@ -70,11 +83,15 @@ function render(data) {
   $("b-done").style.width = hasBus ? at(pos) : "0";
   const busEl = $("b-bus");
   busEl.hidden = !hasBus;
+  // rebota mientras avanza; quieto si sigue en el mismo punto (detenido en la parada)
+  const progress = hasBus ? pos : null;
+  busEl.classList.toggle("is-moving", hasBus && lastProgress != null && progress !== lastProgress);
+  lastProgress = progress;
   busEl.style.left = at(pos);
 
   // Estado de la conexión
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
-  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo ahorita" : `Lo vimos hace ${secs} s`)
+  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo ahorita" : secs < 60 ? `Lo vimos hace ${secs} s` : `Lo vimos hace ${Math.round(secs / 60)} min`)
     : data.sinSenal ? "Sin señal" : "Esperando que salga un bus";
   document.querySelector(".live").classList.toggle("live--off", !hasBus);
 }
@@ -90,6 +107,7 @@ async function load() {
 
 function select(ruta) {
   current = ruta;
+  lastProgress = null;
   document.querySelectorAll("#b-routes button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ruta === ruta)));
   // al cambiar de ruta el bus no debe "viajar" desde la posición de la otra
   const busEl = $("b-bus");

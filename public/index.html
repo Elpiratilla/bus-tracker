@@ -14,7 +14,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/landing.css">
 </head>
@@ -57,11 +57,11 @@
 
     <div class="hero__body wrap">
       <div class="hero__copy">
-        <h1>¿Ya viene el <span class="fascia fascia--title" id="h-ruta">101</span>?</h1>
+        <h1>¿Ya viene el <button class="fascia fascia--title" id="h-ruta" type="button" title="Toca para cambiar de ruta" aria-label="Ruta 101. Toca para cambiar de ruta">101</button>?</h1>
         <p class="hero__lead">Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.</p>
         <div class="hero__actions">
-          <a class="btn btn--anil" href="/mapa.html">Ver dónde va mi bus</a>
-          <a class="btn btn--line" href="/mapa.html">
+          <a class="btn btn--anil" id="cta-mapa" href="/mapa.html">Ver dónde va mi bus</a>
+          <a class="btn btn--line" id="cta-aviso" href="/mapa.html">
             <svg class="ico ico--bell" aria-hidden="true"><use href="#i-bell"/></svg>
             Avísame cuando venga
           </a>
@@ -78,15 +78,19 @@
             </div>
           </div>
 
+          <div class="board__dir" id="b-dir" role="group" aria-label="Sentido" hidden></div>
+
           <p class="board__eta" id="b-eta"><span class="board__num">–</span></p>
 
-          <div class="strip" id="b-strip" aria-hidden="true">
-            <div class="strip__line"><div class="strip__done" id="b-done"></div></div>
+          <div class="strip" id="b-strip" role="group" aria-label="Escoge tu parada">
+            <div class="strip__line" aria-hidden="true"><div class="strip__done" id="b-done"></div></div>
             <div class="strip__stops" id="b-stops"></div>
-            <div class="strip__bus" id="b-bus">
+            <div class="strip__bus" id="b-bus" aria-hidden="true">
               <svg viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
             </div>
           </div>
+
+          <p class="board__hint" id="b-hint">Toca tu parada para ver cuánto le falta.</p>
 
           <div class="board__foot">
             <p class="board__upd"><span class="live" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
@@ -94,11 +98,6 @@
           </div>
         </section>
 
-        <!-- La única nota a mano de la página -->
-        <p class="scribble" aria-hidden="true">
-          esto es en vivo, no es un dibujo
-          <svg viewBox="0 0 60 44" width="60" height="44"><path pathLength="1" d="M6 40C30 40 46 30 50 6M50 6l-9 8M50 6l4 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </p>
       </div>
     </div>
   </header>

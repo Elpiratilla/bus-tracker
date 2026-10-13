@@ -7,7 +7,6 @@
   --maiz-claro: #FFD36B;
   --torogoz: #0FA39C;   /* en línea, recorrido */
   --alerta: #D9434E;    /* fallas y vencidos */
-  --pitahaya: #D93D74;  /* lo escrito a mano (el rosa de los buses pintados) */
   --papel: #F3F5FB;
   --card: #FFFFFF;
   --tinta: #141B3D;
@@ -15,7 +14,6 @@
   --line: #DDE2F0;
 
   --serif: "Young Serif", Georgia, serif;
-  --mano: "Caveat", "Segoe Print", cursive;
   --sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --r-sm: 8px;

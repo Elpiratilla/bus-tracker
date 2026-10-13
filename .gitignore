@@ -7,3 +7,6 @@ firmware/go503_sensor/config.h
 # Archivos de macOS y de herramientas locales
 .DS_Store
 .claude/
+
+# Capturas de pruebas del navegador
+.playwright-mcp/

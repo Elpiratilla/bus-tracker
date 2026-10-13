@@ -46,8 +46,10 @@
       <div class="top__links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="#empresas">Para empresas</a>
-        <button class="theme" id="tema" type="button" aria-label="Cambiar a modo oscuro" title="Modo oscuro">
-          <svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg>
+        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span class="theme__knob" aria-hidden="true"></span>
         </button>
         <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
       </div>

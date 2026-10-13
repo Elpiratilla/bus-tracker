@@ -26,20 +26,37 @@
 :root[data-theme="light"] { color-scheme: light; }
 .logo img.logo--oscuro { display: none; }
 
-/* Botón de modo claro / oscuro */
+/* Interruptor de modo claro / oscuro: sol a la izquierda, luna a la derecha, la bolita marca cuál está */
 .theme {
-  display: grid;
-  place-items: center;
-  width: 2.5rem; height: 2.5rem;
-  padding: 0;
-  background: none;
-  border: 2px solid var(--line);
-  border-radius: 50%;
-  color: var(--tinta);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 4.4rem; height: 2.4rem;
+  padding: 0 .55rem;
+  background: #E3E8F6;
+  border: 0;
+  border-radius: 999px;
   cursor: pointer;
-  transition: border-color .15s, color .15s;
+  transition: background-color .25s;
 }
-.theme:hover { border-color: currentColor; color: var(--torogoz); }
+.theme__ico { position: relative; z-index: 1; width: 1.05rem; height: 1.05rem; transition: color .25s; }
+.theme__ico--sun { color: var(--noche); }
+.theme__ico--moon { color: #7C86AE; }
+.theme__knob {
+  position: absolute;
+  top: .25rem; left: .25rem;
+  width: 1.9rem; height: 1.9rem;
+  background: var(--maiz);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(14, 20, 56, .25);
+  transition: transform .25s cubic-bezier(.3, 1.4, .5, 1);
+}
+.theme:hover .theme__knob { box-shadow: 0 2px 6px rgba(14, 20, 56, .25), 0 0 0 4px rgba(242, 178, 46, .3); }
+.theme[aria-checked="true"] { background: #2A3470; }
+.theme[aria-checked="true"] .theme__knob { transform: translateX(2rem); background: #C9D0EE; }
+.theme[aria-checked="true"] .theme__ico--sun { color: #7C86AE; }
+.theme[aria-checked="true"] .theme__ico--moon { color: var(--noche); }
 
 /* ---------- Portada: de día, como la parada ---------- */
 .hero {

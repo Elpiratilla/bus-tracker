@@ -129,9 +129,8 @@ const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : darkQ
 function applyTheme() {
   const dark = isDark();
   const btn = $("tema");
-  btn.setAttribute("aria-label", dark ? "Cambiar a modo claro" : "Cambiar a modo oscuro");
-  btn.title = dark ? "Modo claro" : "Modo oscuro";
-  btn.querySelector("use").setAttribute("href", dark ? "#i-sun" : "#i-moon");
+  btn.setAttribute("aria-checked", String(dark));
+  btn.title = dark ? "Pasar a modo claro" : "Pasar a modo oscuro";
   document.querySelector('meta[name="theme-color"]').content = dark ? "#0E1438" : "#F3F5FB";
 }
 $("tema").addEventListener("click", () => {

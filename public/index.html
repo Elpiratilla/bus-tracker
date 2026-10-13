@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Go503</title>
   <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
-  <meta name="theme-color" content="#0E1438">
+  <meta name="theme-color" content="#F3F5FB">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/landing.css">
 </head>
@@ -30,10 +30,10 @@
   </svg>
 
 
-  <!-- Portada: tablero en vivo con datos reales de la API -->
+  <!-- Portada: la pregunta de la parada, con el tablero en vivo como respuesta -->
   <header class="hero">
     <nav class="top wrap" aria-label="Principal">
-      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"></a>
       <div class="top__links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="#empresas">Para empresas</a>
@@ -43,10 +43,10 @@
 
     <div class="hero__body wrap">
       <div class="hero__copy">
-        <h1>¿Cuándo pasa tu&nbsp;bus?</h1>
-        <p class="hero__lead">go503 te dice dónde va la unidad y en cuántos minutos llega a tu parada. Sin adivinar y sin esperar de más en la esquina.</p>
+        <h1>¿Ya viene el <span class="fascia fascia--title" id="h-ruta">101</span>?</h1>
+        <p class="hero__lead">Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.</p>
         <div class="hero__actions">
-          <a class="btn btn--maiz" href="/mapa.html">Ver el mapa</a>
+          <a class="btn btn--anil" href="/mapa.html">Ver dónde va mi bus</a>
           <a class="btn btn--line" href="/mapa.html">
             <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
             Avísame cuando venga
@@ -54,52 +54,82 @@
         </div>
       </div>
 
-      <section class="board" aria-labelledby="board-stop" aria-live="polite">
-        <div class="board__head">
-          <span class="fascia" id="b-ruta">101</span>
-          <div class="board__next">
-            <p class="board__label">Siguiente parada</p>
-            <h2 class="board__stop" id="board-stop">Cargando…</h2>
+      <div class="hero__live">
+        <section class="board" aria-labelledby="board-stop" aria-live="polite">
+          <div class="board__head">
+            <span class="fascia" id="b-ruta">101</span>
+            <div class="board__next">
+              <p class="board__label">Siguiente parada</p>
+              <h2 class="board__stop" id="board-stop">Cargando…</h2>
+            </div>
           </div>
-        </div>
 
-        <p class="board__eta" id="b-eta"><span class="board__num">–</span></p>
+          <p class="board__eta" id="b-eta"><span class="board__num">–</span></p>
 
-        <div class="strip" id="b-strip" aria-hidden="true">
-          <div class="strip__line"><div class="strip__done" id="b-done"></div></div>
-          <div class="strip__stops" id="b-stops"></div>
-          <div class="strip__bus" id="b-bus">
-            <svg viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+          <div class="strip" id="b-strip" aria-hidden="true">
+            <div class="strip__line"><div class="strip__done" id="b-done"></div></div>
+            <div class="strip__stops" id="b-stops"></div>
+            <div class="strip__bus" id="b-bus">
+              <svg viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+            </div>
           </div>
-        </div>
 
-        <div class="board__foot">
-          <p class="board__upd"><span class="live" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
-          <div class="board__routes" id="b-routes" role="group" aria-label="Cambiar de ruta"></div>
-        </div>
-      </section>
+          <div class="board__foot">
+            <p class="board__upd"><span class="live" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
+            <div class="board__routes" id="b-routes" role="group" aria-label="Cambiar de ruta"></div>
+          </div>
+        </section>
+
+        <!-- La única nota a mano de la página -->
+        <p class="scribble" aria-hidden="true">
+          esto es en vivo, no es un dibujo
+          <svg viewBox="0 0 60 44" width="60" height="44"><path d="M6 40C30 40 46 30 50 6M50 6l-9 8M50 6l4 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </p>
+      </div>
     </div>
   </header>
 
   <main>
+    <!-- Situaciones de todos los días (no es secuencia: sin números) -->
+    <section class="days wrap" aria-labelledby="days-title">
+      <h2 id="days-title">Para los días de siempre</h2>
+      <ul class="days__list">
+        <li>
+          <svg class="days__ico" viewBox="0 0 40 40" aria-hidden="true"><path d="M5 20a15 15 0 0 1 30 0z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M20 5V3M20 20v12a3 3 0 0 1-6 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <h3>Cuando está lloviendo</h3>
+          <p>Te quedas bajo techo y sales a la parada cuando el bus ya viene cerca.</p>
+        </li>
+        <li>
+          <svg class="days__ico" viewBox="0 0 40 40" aria-hidden="true"><path d="M30 25A12 12 0 1 1 17 8a10 10 0 0 0 13 17z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M28 6v5M25.5 8.5h5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <h3>Cuando sales tarde del trabajo</h3>
+          <p>Sabes si todavía viene uno en camino o si mejor buscas otra forma de llegar a casa.</p>
+        </li>
+        <li>
+          <svg class="days__ico" viewBox="0 0 40 40" aria-hidden="true"><circle cx="14" cy="10" r="4" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="28" cy="17" r="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M7 35V24a7 7 0 0 1 14 0v11M23 35v-7a5 5 0 0 1 10 0v7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+          <h3>Cuando vas con los cipotes</h3>
+          <p>Menos tiempo parados en la esquina, con el sol encima y la mochila en la mano.</p>
+        </li>
+      </ul>
+    </section>
+
     <!-- Cómo funciona: es una secuencia real, por eso va como paradas de una ruta -->
     <section class="how wrap" aria-labelledby="how-title">
-      <h2 id="how-title">Del sensor a tu teléfono</h2>
+      <h2 id="how-title">Así sabemos dónde va tu bus</h2>
       <ol class="how__route">
         <li>
           <span class="how__stop" aria-hidden="true">1</span>
-          <h3>Un sensor en cada unidad</h3>
-          <p>Un GPS instalado en el bus reporta su ubicación cada 5 segundos.</p>
+          <h3>El bus lleva un sensor</h3>
+          <p>Una cajita con GPS que avisa por dónde va la unidad cada 5 segundos.</p>
         </li>
         <li>
           <span class="how__stop" aria-hidden="true">2</span>
-          <h3>go503 calcula la llegada</h3>
-          <p>Con lo que de verdad tarda cada tramo a esa hora, no con horarios de papel.</p>
+          <h3>Contamos lo que de verdad tarda</h3>
+          <p>Si el tramo a Metrocentro se lleva 12 minutos con el tráfico de la mañana, con eso calculamos. Nada de horarios de papel.</p>
         </li>
         <li>
           <span class="how__stop how__stop--you" aria-hidden="true">3</span>
-          <h3>Tú sabes cuándo salir</h3>
-          <p>Y si quieres, te mandamos un aviso cuando tu bus esté a 5 minutos.</p>
+          <h3>Tú sales a tiempo</h3>
+          <p>Y si quieres, te avisamos al teléfono cuando tu bus esté a 5 minutos.</p>
         </li>
       </ol>
     </section>
@@ -108,13 +138,13 @@
     <section class="biz" id="empresas" aria-labelledby="biz-title">
       <div class="biz__inner wrap">
         <div class="biz__copy">
-          <h2 id="biz-title">Tu flota, a la vista</h2>
-          <p class="biz__lead">Instala el sensor go503 en tus unidades y síguelas desde un panel: dónde va cada una, cuántos kilómetros lleva y cuándo le toca el cambio de aceite.</p>
+          <h2 id="biz-title">¿Tienes buses? Sabe dónde anda cada uno</h2>
+          <p class="biz__lead">Sin tener que llamar al motorista. Le pones el sensor go503 a tus unidades y las ves todas desde el teléfono o la computadora: dónde van, cuántos kilómetros llevan y cuándo les toca el cambio de aceite.</p>
           <dl class="biz__list">
-            <div><dt>Ubicación en vivo</dt><dd>Todas tus unidades en un mapa, con su velocidad y su última señal.</dd></div>
-            <div><dt>Mantenimiento por kilómetro</dt><dd>El panel cuenta los kilómetros y las horas de motor, y te avisa antes del cambio de aceite.</dd></div>
-            <div><dt>Tiempos por tramo</dt><dd>Cuánto tardan tus unidades en cada tramo según la hora, y cuántas vueltas dan al día.</dd></div>
-            <div><dt>Un sensor, una clave</dt><dd>Cada sensor transmite con su propia clave. Si pierdes uno, lo desactivas desde el panel.</dd></div>
+            <div><dt>Todas en un mapa</dt><dd>Cada unidad con su velocidad y la hora de su última señal.</dd></div>
+            <div><dt>El aceite, a tiempo</dt><dd>El panel cuenta los kilómetros y las horas de motor, y te avisa antes de que se pase el cambio.</dd></div>
+            <div><dt>Cuántas vueltas dan</dt><dd>Cuánto tardan en cada tramo según la hora y cuántas vueltas completan al día.</dd></div>
+            <div><dt>Si se pierde un sensor</dt><dd>Cada uno tiene su propia clave. Lo desactivas desde el panel y deja de contar.</dd></div>
           </dl>
           <div class="biz__actions">
             <a class="btn btn--maiz" href="/login.html">Entrar al panel</a>
@@ -140,7 +170,7 @@
 
   <footer class="foot wrap">
     <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"></a>
-    <p>Hecho en El Salvador, para la gente que se mueve en bus.</p>
+    <p>Hecho en El Salvador por gente que también espera el bus.</p>
     <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/login.html">Panel de empresas</a></nav>
   </footer>
 

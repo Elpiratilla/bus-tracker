@@ -27,8 +27,15 @@ function render(data) {
   const hasBus = Boolean(bus) && lastIdx >= 0 && next;
 
   $("b-ruta").textContent = ruta;
+  const title = $("h-ruta");
+  if (title.textContent !== ruta) {
+    title.textContent = ruta;
+    title.classList.remove("is-new");
+    void title.offsetWidth; // reinicia la animación
+    title.classList.add("is-new");
+  }
   const hacia = (data.sentidos || []).find((x) => x.id === data.sentido)?.destino;
-  document.querySelector(".board__label").textContent = hacia ? `Siguiente parada, hacia ${hacia}` : "Siguiente parada";
+  document.querySelector(".board__label").textContent = hacia ? `Va hacia ${hacia}. Su próxima parada:` : "Su próxima parada:";
   $("board-stop").textContent = hasBus ? next.nombre : paradas[0].nombre;
 
   // Minutos que faltan
@@ -36,13 +43,13 @@ function render(data) {
   eta.replaceChildren();
   if (hasBus && next.etaA) {
     const m = minsTo(next.etaA);
-    if (m <= 0) eta.append(el("span", "board__num", "Llegando"));
+    if (m <= 0) eta.append(el("span", "board__num", "¡Ya viene!"));
     else eta.append(el("span", "board__num", String(m)), el("span", "board__unit", "min"));
   } else if (data.sinSenal) {
     const mins = Math.round((Date.now() - new Date(data.ultimaSenal)) / 60000);
-    eta.append(el("span", "board__note", `La unidad dejó de enviar señal hace ${mins} min. Prueba otra ruta.`));
+    eta.append(el("span", "board__note", `El bus dejó de mandar señal hace ${mins} min. Mira otra ruta mientras tanto.`));
   } else {
-    eta.append(el("span", "board__note", "No hay unidades en esta ruta ahora. Prueba otra ruta."));
+    eta.append(el("span", "board__note", `Ahorita no viene ningún bus de la ${ruta} por aquí. Prueba con otra ruta.`));
   }
 
   // Línea de paradas
@@ -67,8 +74,8 @@ function render(data) {
 
   // Estado de la conexión
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
-  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo" : `Actualizado hace ${secs} s`)
-    : data.sinSenal ? "Sin señal" : "Sin unidades en ruta";
+  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo ahorita" : `Lo vimos hace ${secs} s`)
+    : data.sinSenal ? "Sin señal" : "Esperando que salga un bus";
   document.querySelector(".live").classList.toggle("live--off", !hasBus);
 }
 
@@ -76,7 +83,7 @@ async function load() {
   try {
     render(await getJSON(`/api/rutas/${encodeURIComponent(current)}`));
   } catch {
-    $("b-upd").textContent = "Sin conexión. Reintentando…";
+    $("b-upd").textContent = "Se cayó la conexión. Volviendo a intentar…";
     document.querySelector(".live").classList.add("live--off");
   }
 }
@@ -109,8 +116,8 @@ async function init() {
     const conBus = rutas.find((r, i) => datos[i]?.bus);
     select((conBus || rutas[0]).ruta);
   } catch {
-    $("board-stop").textContent = "Mapa no disponible";
-    $("b-upd").textContent = "Sin conexión con el servidor";
+    $("board-stop").textContent = "No pudimos conectarnos";
+    $("b-upd").textContent = "Recarga la página en un ratito";
     document.querySelector(".live").classList.add("live--off");
   }
 }

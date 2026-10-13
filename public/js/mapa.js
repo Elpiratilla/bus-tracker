@@ -487,7 +487,7 @@ async function toggleAlerta(ruta, dir, hacia, parada, nombre) {
     if (lastData) render(lastData);
   } catch (err) {
     console.error(err);
-    setStatus("No se pudo guardar el aviso. Intenta de nuevo.");
+    setStatus("No pudimos guardar el aviso. Toca la campana otra vez.");
   }
 }
 
@@ -518,7 +518,7 @@ function render(data) {
   const next = paradas[nextIdx];
   const eta = next && next.etaA ? minsTo(next.etaA) : null;
   const etaLabel = data.sinSenal ? "Sin señal"
-    : eta === null ? "Sin estimado" : eta <= 0 ? "Llegando" : `Llega en ${eta} min`;
+    : eta === null ? "Sin estimado" : eta <= 0 ? "¡Ya viene!" : `Llega en ${eta} min`;
 
   // Sentido: "Hacia Zona Rosa" / "Hacia Terminal de Oriente"
   const actual = (data.sentidos || []).find((x) => x.id === data.sentido);
@@ -537,7 +537,7 @@ function render(data) {
 
   $("#fascia").textContent = ruta;
   $("#fascia").setAttribute("aria-label", `Ruta ${ruta}`);
-  $("#next-stop").textContent = next ? next.nombre : "Recorrido terminado";
+  $("#next-stop").textContent = next ? next.nombre : "Ya llegó a la última parada";
   $("#next-eta").replaceChildren(
     ...(next
       ? eta !== null && eta > 0
@@ -594,7 +594,7 @@ async function load() {
     setStatus("");
   } catch (err) {
     console.error(err);
-    setStatus("No se pudo actualizar. Reintentando...");
+    setStatus("Se cayó la conexión. Volviendo a intentar…");
   }
 }
 
@@ -628,7 +628,7 @@ function matches(r) {
 function renderChips() {
   const visibles = rutas.filter((r) => (tipo === "todos" || r.tipo === tipo) && matches(r));
   if (!visibles.length && query) {
-    $("#chips").replaceChildren(el("p", "chips__empty", `No hay rutas con “${query}”`));
+    $("#chips").replaceChildren(el("p", "chips__empty", `Ninguna ruta pasa por “${query}”. Prueba con el número o el nombre de una parada.`));
     return visibles;
   }
   $("#chips").replaceChildren(
@@ -687,7 +687,7 @@ async function init() {
   } catch (err) {
     console.error(err);
     rutas = [{ ruta: current, tipo: "autobus" }];
-    setStatus("No se pudo cargar la lista de rutas.");
+    setStatus("No pudimos cargar las rutas. Recarga la página en un ratito.");
   }
   if (rutas.length && !rutas.some((r) => r.ruta === current)) current = rutas[0].ruta;
   renderChips();

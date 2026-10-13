@@ -1,12 +1,10 @@
 /* go503: landing */
 
-/* ---------- Portada ---------- */
+/* ---------- Portada: de día, como la parada ---------- */
 .hero {
-  background:
-    radial-gradient(60rem 30rem at 85% 30%, rgba(242, 178, 46, .10), transparent 60%),
-    var(--noche);
-  color: #fff;
-  padding-bottom: clamp(3rem, 8vw, 6rem);
+  background: var(--papel);
+  color: var(--tinta);
+  padding-bottom: clamp(3.5rem, 8vw, 6rem);
 }
 
 .top {
@@ -17,8 +15,8 @@
   padding-block: 1.2rem;
 }
 .top__links { display: flex; align-items: center; gap: 1.6rem; }
-.top__links a:not(.btn) { color: #C9D0EE; font-weight: 600; text-decoration: none; }
-.top__links a:not(.btn):hover { color: #fff; }
+.top__links a:not(.btn) { color: var(--muted); font-weight: 600; text-decoration: none; }
+.top__links a:not(.btn):hover { color: var(--tinta); }
 .top__cta { min-height: 2.5rem; padding: .5rem 1.1rem; font-size: .95rem; }
 
 .hero__body {
@@ -30,26 +28,56 @@
 }
 
 .hero h1 {
-  font-size: clamp(2.8rem, 7vw, 5.4rem);
-  line-height: .98;
+  font-size: clamp(2.9rem, 7vw, 5.6rem);
+  line-height: 1.05;
   letter-spacing: -.01em;
 }
+/* El número de la ruta, pintado como en el parabrisas; cambia con el tablero */
+.fascia--title {
+  min-width: 0;
+  height: auto;
+  padding: .02em .22em .08em;
+  border-radius: .16em;
+  box-shadow: inset 0 0 0 .05em var(--anil), inset 0 0 0 .08em var(--maiz);
+  font-size: .92em;
+  vertical-align: .04em;
+  transform: rotate(-2deg);
+}
+.fascia--title.is-new { animation: swap .35s ease-out; }
+@keyframes swap { from { transform: rotate(-2deg) translateY(.15em); opacity: 0; } }
+
 .hero__lead {
-  max-width: 34rem;
-  margin-top: 1.4rem;
-  color: #C9D0EE;
-  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  max-width: 32rem;
+  margin-top: 1.5rem;
+  color: var(--muted);
+  font-size: clamp(1.08rem, 1.6vw, 1.25rem);
   line-height: 1.6;
 }
 .hero__actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2.2rem; }
-.hero .btn--line { color: #fff; }
+
+.hero__live { position: relative; }
+
+/* La nota a mano junto al tablero */
+.scribble {
+  position: absolute;
+  right: 2.5rem;
+  bottom: -3.9rem;
+  display: flex;
+  align-items: flex-end;
+  gap: .3rem;
+  color: var(--pitahaya);
+  font: 600 1.45rem/1 var(--mano);
+  transform: rotate(-3deg);
+}
+.scribble svg { margin-bottom: .9rem; }
 
 /* ---------- Tablero en vivo ---------- */
 .board {
   padding: 1.6rem 1.6rem 1.2rem;
   background: var(--anil);
   border-radius: var(--r-lg);
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .06);
+  box-shadow: 0 28px 50px -24px rgba(14, 20, 56, .55);
+  color: #fff;
 }
 .board__head { display: flex; align-items: center; gap: 1.1rem; }
 .board__label { color: #A9B2D8; font-size: .9rem; }
@@ -151,6 +179,21 @@
 }
 .board__routes button:hover { border-color: rgba(255, 255, 255, .5); color: #fff; }
 .board__routes button[aria-pressed="true"] { background: var(--maiz); border-color: var(--maiz); color: var(--noche); }
+
+/* ---------- Para los días de siempre ---------- */
+.days { padding-block: clamp(3rem, 6vw, 4.5rem) 0; }
+.days h2 { font-size: clamp(2rem, 4vw, 2.8rem); }
+.days__list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  margin: 2.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.days__ico { width: 2.6rem; height: 2.6rem; color: var(--anil); }
+.days h3 { margin-top: 1rem; font-size: 1.35rem; }
+.days li p { max-width: 32ch; margin-top: .45rem; color: var(--muted); }
 
 /* ---------- Cómo funciona: tres paradas de una ruta ---------- */
 .how { padding-block: clamp(4rem, 9vw, 7rem); }
@@ -269,12 +312,15 @@
 /* ---------- Pantallas pequeñas ---------- */
 @media (max-width: 900px) {
   .hero__body, .biz__inner { grid-template-columns: 1fr; }
+  .hero__live { padding-bottom: 3.5rem; }
+  .scribble { right: 1rem; bottom: 0; }
   .board { max-width: 34rem; }
   .preview { transform: none; }
 }
 @media (max-width: 640px) {
   .top__links a:not(.btn) { display: none; }
-  .how__route { grid-template-columns: 1fr; gap: 2rem; }
+  .how__route, .days__list { grid-template-columns: 1fr; gap: 2rem; }
+  .scribble { font-size: 1.25rem; }
   .how__route::before { top: 1.3rem; bottom: 1.3rem; left: 1.3rem; right: auto; width: 6px; height: auto; margin: 0 0 0 -3px;
     background: linear-gradient(var(--torogoz) 0 50%, var(--line) 50%); }
   .how__route li { padding-left: 3.6rem; }

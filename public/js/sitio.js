@@ -39,4 +39,10 @@ if ("IntersectionObserver" in window) {
   reveal.forEach((n) => n.classList.add("is-visible"));
 }
 
+
+// Botones que abren el chat (con una pregunta lista si traen data-chat="…")
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-chat]");
+  if (b && window.go503Chat) window.go503Chat.abrir(b.dataset.chat || "");
+});
 })();

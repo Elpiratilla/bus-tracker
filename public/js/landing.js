@@ -30,7 +30,7 @@ function el(tag, cls, text) {
   return n;
 }
 
-const hhmm = (iso) => new Date(iso).toLocaleTimeString("es-SV", { hour: "numeric", minute: "2-digit" });
+const hhmm = (iso) => new Date(iso).toLocaleTimeString((window.go503Idioma?.locale || "es-SV"), { hour: "numeric", minute: "2-digit" });
 
 // Lo que la persona escogió: sentido (null = el del bus más reciente) y su parada en cada ruta
 let rutas = [];
@@ -228,9 +228,14 @@ function applyTheme() {
   document.querySelector('meta[name="theme-color"]').content = dark ? "#0E1438" : "#F3F5FB";
 }
 $("tema").addEventListener("click", () => {
-  root.dataset.theme = isDark() ? "light" : "dark";
-  try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
-  applyTheme();
+  const change = () => {
+    root.dataset.theme = isDark() ? "light" : "dark";
+    try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
+    applyTheme();
+  };
+  // fundido suave entre modos si el navegador lo soporta
+  if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(change);
+  else change();
 });
 darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
 applyTheme();
@@ -247,5 +252,54 @@ if ("IntersectionObserver" in window) {
 } else {
   reveal.forEach((n) => n.classList.add("is-visible"));
 }
+
+// ---------- Pedir el sensor ----------
+const pedir = $("f-pedir");
+pedir.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("pedir-enviar");
+  const err = $("pedir-error");
+  pedir.querySelectorAll(".field.is-bad").forEach((f) => f.classList.remove("is-bad"));
+  err.hidden = true;
+  const body = Object.fromEntries(new FormData(pedir));
+  // revisión rápida antes de enviar (el servidor revisa igual)
+  const bad = !body.nombre.trim() ? "nombre" : body.telefono.replace(/\D/g, "").length < 7 ? "telefono" : null;
+  if (bad) return markBad(bad, bad === "nombre" ? "Escribe tu nombre" : "Escribe un teléfono válido, por ejemplo 7123-4567");
+
+  btn.setAttribute("aria-busy", "true");
+  btn.disabled = true;
+  btn.textContent = "Enviando…";
+  try {
+    const res = await fetch("/api/clientes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) return markBad(data.campo, data.error || "No pudimos enviar tu solicitud. Intenta de nuevo.");
+    const nombre = body.nombre.trim().split(" ")[0];
+    $("pedir-gracias").textContent = `¡Listo, ${nombre}!`;
+    $("pedir-detalle").textContent = `Te escribimos al ${body.telefono.trim()} en menos de un día hábil para cotizar${body.unidades ? ` tus ${body.unidades} unidades` : ""}.`;
+    $("pedir-campos").hidden = true;
+    $("pedir-listo").hidden = false;
+    $("pedir-listo").focus();
+  } catch {
+    markBad(null, "Se cayó la conexión. Revisa tu internet e intenta de nuevo.");
+  } finally {
+    btn.removeAttribute("aria-busy");
+    btn.disabled = false;
+    btn.textContent = "Enviar solicitud";
+  }
+});
+function markBad(campo, texto) {
+  const err = $("pedir-error");
+  err.textContent = texto;
+  err.hidden = false;
+  const input = campo && pedir.elements[campo];
+  if (input) { input.closest(".field").classList.add("is-bad"); input.focus(); }
+}
+pedir.addEventListener("input", (e) => e.target.closest(".field")?.classList.remove("is-bad"));
+$("pedir-otra").addEventListener("click", () => {
+  pedir.reset();
+  $("pedir-listo").hidden = true;
+  $("pedir-campos").hidden = false;
+  $("p-nombre").focus();
+});
 
 init();

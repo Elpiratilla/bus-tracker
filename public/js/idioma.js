@@ -1,0 +1,600 @@
+// go503: español / inglés.
+// Todo el sitio está escrito en español. Si la persona escoge inglés, este archivo traduce lo que
+// aparece en pantalla (también lo que llega después: tablero en vivo, alertas, mensajes del servidor).
+// Lo que no está en el diccionario se queda en español: nunca se rompe nada.
+// Se carga en <head>, antes que los demás scripts.
+(function () {
+  const KEY = "go503-idioma";
+  let lang = null;
+  try { lang = localStorage.getItem(KEY); } catch {}
+  if (lang !== "es" && lang !== "en") lang = /^es\b/i.test(navigator.language || "es") ? "es" : "en";
+
+  const api = {
+    lang,
+    locale: lang === "en" ? "en-US" : "es-SV",
+    set(l) { try { localStorage.setItem(KEY, l); } catch {} location.reload(); },
+    t: (s) => s,
+  };
+  window.go503Idioma = api;
+  document.documentElement.lang = lang;
+
+  // Botones "English" / "Español" (cualquier elemento con data-idioma)
+  function bindToggles(root) {
+    root.querySelectorAll?.("[data-idioma]:not([data-idioma-ok])").forEach((b) => {
+      b.dataset.idiomaOk = "1";
+      b.textContent = lang === "en" ? "Español" : "English";
+      b.setAttribute("lang", lang === "en" ? "es" : "en");
+      b.setAttribute("aria-label", lang === "en" ? "Cambiar a español" : "Switch to English");
+      b.addEventListener("click", () => api.set(lang === "en" ? "es" : "en"));
+    });
+  }
+  document.addEventListener("DOMContentLoaded", () => bindToggles(document));
+
+  if (lang !== "en") return;
+
+  // ---------- Diccionario: español -> inglés ----------
+  // {x} es una parte que cambia (número, nombre de parada, hora...). Lo que va dentro también se traduce si se puede.
+  const EN = {
+    // Portada
+    "Mapa en vivo": "Live map",
+    "Para empresas": "For fleets",
+    "Entrar al panel": "Fleet login",
+    "¿Ya viene el": "Is the",
+    "¿Ya viene la": "Is the",
+    "?": " coming?",
+    "Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.": "It's what everyone asks at the stop. See where the bus is and how many minutes until it reaches your corner.",
+    "Ver dónde va mi bus": "Where's my bus?",
+    "Avísame cuando venga": "Tell me when it's close",
+    "Siguiente parada": "Next stop",
+    "Cargando…": "Loading…",
+    "Toca tu parada para ver cuánto le falta.": "Tap your stop to see how long it'll be.",
+    "Conectando…": "Connecting…",
+    "Así sabemos dónde va tu bus": "How we know where your bus is",
+    "El bus lleva un sensor": "The bus carries a sensor",
+    "Una cajita con GPS que avisa por dónde va la unidad cada 5 segundos.": "A small GPS box that reports where the bus is every 5 seconds.",
+    "Contamos lo que de verdad tarda": "We count how long it really takes",
+    "Si el tramo a Metrocentro se lleva 12 minutos con el tráfico de la mañana, con eso calculamos. Nada de horarios de papel.": "If the ride to Metrocentro takes 12 minutes in morning traffic, that's what we use. No paper timetables.",
+    "Tú sales a tiempo": "You leave on time",
+    "Y si quieres, te avisamos al teléfono cuando tu bus esté a 5 minutos.": "And if you want, we'll ping your phone when your bus is 5 minutes away.",
+    "¿Tienes buses? Sabe dónde anda cada uno": "Own buses? Know where each one is",
+    "Sin tener que llamar al motorista. Le pones el sensor Go503 a tus unidades y las ves todas desde el teléfono o la computadora: dónde van, cuántos kilómetros llevan y cuándo les toca el cambio de aceite.": "Without calling the driver. Put the Go503 sensor in your buses and see them all from your phone or computer: where they are, how many kilometers they've done and when the next oil change is due.",
+    "Todas en un mapa": "All on one map",
+    "Cada unidad con su velocidad y la hora de su última señal.": "Every bus with its speed and the time of its last signal.",
+    "El aceite, a tiempo": "Oil changes on time",
+    "El panel cuenta los kilómetros y las horas de motor, y te avisa antes de que se pase el cambio.": "The dashboard counts kilometers and engine hours, and warns you before an oil change is overdue.",
+    "Cuántas vueltas dan": "How many trips they make",
+    "Cuánto tardan en cada tramo según la hora y cuántas vueltas completan al día.": "How long each stretch takes by time of day, and how many trips they complete daily.",
+    "Si se pierde un sensor": "If a sensor goes missing",
+    "Cada uno tiene su propia clave. Lo desactivas desde el panel y deja de contar.": "Each one has its own key. Turn it off from the dashboard and it stops counting.",
+    "Pedir el sensor": "Get the sensor",
+    "Unidad": "Bus",
+    "Estado": "Status",
+    "Velocidad": "Speed",
+    "Aceite": "Oil",
+    "En ruta": "On route",
+    "Sin señal": "No signal",
+    "Pide el sensor para tus unidades": "Get the sensor for your buses",
+    "Déjanos tus datos y te contactamos para cotizar. Sin compromiso.": "Leave your details and we'll get in touch with a quote. No commitment.",
+    "Te escribimos": "We reach out",
+    "Por WhatsApp o llamada, para saber cuántas unidades y qué rutas tienes.": "By WhatsApp or phone, to learn how many buses and routes you run.",
+    "Instalamos el sensor": "We install the sensor",
+    "En cada unidad, en menos de una hora por bus y sin tocar el motor.": "In every bus, in under an hour each, without touching the engine.",
+    "Ves tu flota": "You see your fleet",
+    "Te damos acceso al panel y desde ese día sigues tus buses en vivo.": "We give you dashboard access and from that day on you follow your buses live.",
+    "Tu nombre": "Your name",
+    "Teléfono o WhatsApp": "Phone or WhatsApp",
+    "Empresa o cooperativa": "Company or cooperative",
+    "(opcional)": "(optional)",
+    "¿Cuántas unidades?": "How many buses?",
+    "Ciudad": "City",
+    "Correo": "Email",
+    "¿Algo más que debamos saber?": "Anything else we should know?",
+    "Rutas, horarios, lo que necesites": "Routes, schedules, anything you need",
+    "Enviar solicitud": "Send request",
+    "Recibimos tu solicitud": "We got your request",
+    "Te escribimos pronto.": "We'll be in touch soon.",
+    "Enviar otra": "Send another",
+    "Enviando…": "Sending…",
+    "Escribe tu nombre": "Enter your name",
+    "Escribe un teléfono válido, por ejemplo 7123-4567": "Enter a valid phone number, for example 7123-4567",
+    "Revisa el correo": "Check the email address",
+    "Las unidades van de 1 a 5000": "Buses must be between 1 and 5000",
+    "Uno de los campos es demasiado largo": "One of the fields is too long",
+    "No pudimos enviar tu solicitud. Intenta de nuevo.": "We couldn't send your request. Please try again.",
+    "Se cayó la conexión. Revisa tu internet e intenta de nuevo.": "Connection lost. Check your internet and try again.",
+    "El formulario no está disponible ahora. Escríbenos por WhatsApp.": "The form isn't available right now. Message us on WhatsApp.",
+    "¡Listo, {x}!": "All set, {x}!",
+    "Te escribimos al {tel} en menos de un día hábil para cotizar tus {u} unidades.": "We'll contact you at {tel} within one business day with a quote for your {u} buses.",
+    "Te escribimos al {tel} en menos de un día hábil para cotizar.": "We'll contact you at {tel} within one business day with a quote.",
+    "Hecho en El Salvador por gente que también espera el bus.": "Made in El Salvador by people who also wait for the bus.",
+    "Panel de empresas": "Fleet dashboard",
+    "Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.": "See where your bus is and how many minutes until it reaches your stop. And if you run a fleet, follow it from one dashboard.",
+    "Principal": "Main",
+    "go503, inicio": "go503, home",
+    "Modo oscuro": "Dark mode",
+    "Toca para cambiar de ruta": "Tap to change route",
+    "Ruta {r}. Toca para cambiar de ruta": "Route {r}. Tap to change route",
+    "Sentido": "Direction",
+    "Escoge tu parada": "Pick your stop",
+    "Cambiar de ruta": "Change route",
+    "Vista del panel de empresas": "Fleet dashboard preview",
+    "Pie de página": "Footer",
+    "Pasar a modo claro": "Switch to light mode",
+    "Pasar a modo oscuro": "Switch to dark mode",
+    "Tu parada:": "Your stop:",
+    "Su próxima parada:": "Its next stop:",
+    "Tu parada, yendo hacia {d}:": "Your stop, heading to {d}:",
+    "Va hacia {d}. Su próxima parada:": "Heading to {d}. Next stop:",
+    "En vivo ahorita": "Live now",
+    "Esperando que salga un bus": "Waiting for a bus to leave",
+    "No pudimos conectarnos": "We couldn't connect",
+    "Recarga la página en un ratito": "Reload the page in a moment",
+    "Lo vimos hace {n} s": "Seen {n} s ago",
+    "Lo vimos hace {n} min": "Seen {n} min ago",
+    "El bus ya pasó por aquí a las {h}. Toca otra parada o cambia de sentido.": "The bus already passed here at {h}. Tap another stop or switch direction.",
+    "El bus dejó de mandar señal hace {n} min. Mira otra ruta mientras tanto.": "The bus stopped sending its signal {n} min ago. Check another route meanwhile.",
+    "Ahorita no viene ningún bus de la {r} por aquí. Prueba con otra ruta o el otro sentido.": "No {r} bus is coming this way right now. Try another route or the other direction.",
+
+    // Mapa
+    "Inicio": "Home",
+    "Volver al inicio": "Back to home",
+    "Buscar ruta o parada": "Search route or stop",
+    "Busca tu ruta o parada": "Search your route or stop",
+    "Cerca de mí": "Near me",
+    "Paradas cerca de mí": "Stops near me",
+    "Todos": "All",
+    "Autobús": "Bus",
+    "Microbús": "Minibus",
+    "Tipo de unidad": "Vehicle type",
+    "Rutas": "Routes",
+    "Mapa de la ruta": "Route map",
+    "Sentido de la ruta": "Route direction",
+    "Cerca de ti": "Near you",
+    "Cerrar": "Close",
+    "Buscando tu bus…": "Finding your bus…",
+    "Paradas de la ruta": "Route stops",
+    "Paradas de la ruta {r}": "Route {r} stops",
+    "Paradas de la ruta {r} hacia {d}": "Route {r} stops to {d}",
+    "Hecho en El Salvador": "Made in El Salvador",
+    "Mira cuánto tarda tu bus entre cada parada, en tiempo real.": "See how long your bus takes between stops, in real time.",
+    "Cambiar a modo oscuro": "Switch to dark mode",
+    "Cambiar a modo claro": "Switch to light mode",
+    "Modo claro": "Light mode",
+    "Guardar la ruta en favoritas": "Save route to favorites",
+    "Guardar en favoritas": "Save to favorites",
+    "Quitar de favoritas": "Remove from favorites",
+    "Guardar la {r} en favoritas": "Save the {r} to favorites",
+    "Quitar la {r} de favoritas": "Remove the {r} from favorites",
+    "Guardaste la {r}. Ahora sale primero en la lista de rutas.": "Saved the {r}. It now shows first in the route list.",
+    "Sin estimado": "No estimate",
+    "¡Ya viene!": "Almost here!",
+    "Ya llegó a la última parada": "It reached the last stop",
+    "Llega en": "Arrives in",
+    "Llega en {n} min": "Arrives in {n} min",
+    "Inicio de la ruta": "Start of route",
+    "{n} min desde la anterior": "{n} min from previous",
+    "Pasó {h}": "Passed {h}",
+    "{h} aprox.": "about {h}",
+    "Hacia {d}": "To {d}",
+    "Ruta {r}": "Route {r}",
+    "Ruta {r}, Autobús": "Route {r}, bus",
+    "Ruta {r}, Microbús": "Route {r}, minibus",
+    "Ruta {r}, Autobús, favorita": "Route {r}, bus, favorite",
+    "Ruta {r}, Microbús, favorita": "Route {r}, minibus, favorite",
+    "Autobús. Actualizado a las {h}": "Bus. Updated at {h}",
+    "Microbús. Actualizado a las {h}": "Minibus. Updated at {h}",
+    "Unidad. Actualizado a las {h}": "Vehicle. Updated at {h}",
+    "La unidad no envía señal desde las {h}. Su hora de llegada no es confiable.": "The bus hasn't sent a signal since {h}. Its arrival time isn't reliable.",
+    "Este navegador no puede usar tu ubicación.": "This browser can't use your location.",
+    "Buscando dónde estás…": "Finding where you are…",
+    "No pudimos buscar paradas cerca. Intenta de nuevo.": "We couldn't search nearby stops. Please try again.",
+    "Activa el permiso de ubicación para ver las paradas cerca de ti.": "Allow location access to see stops near you.",
+    "No pudimos saber dónde estás. Revisa que el GPS esté encendido.": "We couldn't find your location. Make sure GPS is on.",
+    "No hay paradas de nuestras rutas a menos de 1 km de ti. Por ahora cubrimos parte de San Salvador.": "None of our stops are within 1 km of you. For now we cover part of San Salvador.",
+    "Toca una para ver la ruta en el mapa.": "Tap one to see the route on the map.",
+    "Sin bus": "No bus",
+    "por ahora": "for now",
+    "no alcanzas": "you'll miss it",
+    "llega": "arrives",
+    "{p}, a {m} m ({w} min a pie)": "{p}, {m} m away ({w} min walk)",
+    "Se cayó la conexión. Volviendo a intentar…": "Connection lost. Retrying…",
+    "No pudimos cargar las rutas. Recarga la página en un ratito.": "We couldn't load the routes. Reload the page in a moment.",
+    "Ninguna ruta pasa por “{q}”. Prueba con el número o el nombre de una parada.": "No route goes through “{q}”. Try a route number or a stop name.",
+    "En iPhone: toca Compartir y luego “Agregar a inicio”. Abre go503 desde ahí para recibir avisos.": "On iPhone: tap Share, then “Add to Home Screen”. Open go503 from there to get alerts.",
+    "Este navegador no permite notificaciones.": "This browser doesn't support notifications.",
+    "Activa las notificaciones de go503 para que te avisemos.": "Turn on go503 notifications so we can alert you.",
+    "No pudimos guardar el aviso. Toca la campana otra vez.": "We couldn't save the alert. Tap the bell again.",
+    "Listo: te avisamos cuando la {r} hacia {d} esté a {n} min de {p}.": "Done: we'll alert you when the {r} to {d} is {n} min from {p}.",
+    "Listo: te avisamos cuando la {r} esté a {n} min de {p}.": "Done: we'll alert you when the {r} is {n} min from {p}.",
+    "Cancelar aviso de {p}": "Cancel alert for {p}",
+    "Avisarme cuando la {r} esté cerca de {p}": "Alert me when the {r} is close to {p}",
+    "{n} min": "{n} min",
+
+    // Acceso
+    "Panel de empresas: Go503": "Fleet dashboard: Go503",
+    "Tu flota, a la vista": "Your fleet, in plain sight",
+    "Dónde va cada unidad, cuántos kilómetros lleva y cuándo le toca el cambio de aceite. Todo desde aquí.": "Where every bus is, how many kilometers it has done and when its oil change is due. All from here.",
+    "¿Aún no tienes código de invitación? Lo recibes al contratar el sensor Go503.": "No invite code yet? You get one when you sign up for the Go503 sensor.",
+    "Entrar": "Log in",
+    "Crear cuenta": "Create account",
+    "Bienvenido de vuelta": "Welcome back",
+    "Contraseña": "Password",
+    "Ver": "Show",
+    "Ocultar": "Hide",
+    "Mostrar contraseña": "Show password",
+    "Ocultar contraseña": "Hide password",
+    "Olvidé mi contraseña": "Forgot my password",
+    "Registra tu empresa": "Register your company",
+    "Necesitas el código de invitación que recibiste con tu sensor.": "You need the invite code that came with your sensor.",
+    "Código de invitación": "Invite code",
+    "Viene en el correo o la hoja que te dimos con el sensor.": "It's in the email or sheet we gave you with the sensor.",
+    "Nombre de la empresa": "Company name",
+    "Al menos 8 caracteres.": "At least 8 characters.",
+    "Muy corta todavía.": "Still too short.",
+    "Aceptable. Con números o símbolos queda mejor.": "Okay. Numbers or symbols make it stronger.",
+    "Buena contraseña.": "Good password.",
+    "Muy segura.": "Very strong.",
+    "Revisando el código…": "Checking the code…",
+    "No pudimos revisar el código ahora. Puedes seguir.": "We couldn't check the code right now. You can continue.",
+    "Código válido. Ya casi.": "Valid code. Almost there.",
+    "Ese código no existe o ya se usó.": "That code doesn't exist or was already used.",
+    "Recupera tu acceso": "Get back in",
+    "Te enviamos un enlace para crear una contraseña nueva.": "We'll send you a link to create a new password.",
+    "Enviar enlace": "Send link",
+    "Volver a entrar": "Back to log in",
+    "Crea tu contraseña nueva": "Create your new password",
+    "Contraseña nueva": "New password",
+    "Guardar contraseña": "Save password",
+    "Revisa tu correo": "Check your email",
+    "Te enviamos un enlace para confirmar tu cuenta. Ábrelo y después entra con tu correo y contraseña.": "We sent you a link to confirm your account. Open it, then log in with your email and password.",
+    "Ir a entrar": "Go to log in",
+    "Entra al panel de go503 para seguir tu flota, su mantenimiento y sus tiempos.": "Log in to the go503 dashboard to follow your fleet, its maintenance and its times.",
+    "Acceso": "Access",
+    "Escribe tu correo y tu contraseña.": "Enter your email and password.",
+    "Entrando…": "Logging in…",
+    "Escribe tu código de invitación.": "Enter your invite code.",
+    "Escribe el nombre de tu empresa.": "Enter your company name.",
+    "Escribe tu correo.": "Enter your email.",
+    "La contraseña debe tener al menos 8 caracteres.": "The password must be at least 8 characters.",
+    "Creando cuenta…": "Creating account…",
+    "No hay conexión. Revisa tu internet.": "No connection. Check your internet.",
+    "Ese código no existe o ya fue usado. Revísalo o pide uno nuevo.": "That code doesn't exist or was already used. Check it or ask for a new one.",
+    "Guardando…": "Saving…",
+    "Te enviamos un enlace a {e}. Ábrelo para confirmar tu cuenta y activar {c}.": "We sent a link to {e}. Open it to confirm your account and activate {c}.",
+    "Si {e} tiene cuenta, te llegará un enlace en unos minutos.": "If {e} has an account, a link will arrive in a few minutes.",
+    "El correo o la contraseña no coinciden.": "The email or password is incorrect.",
+    "Confirma tu correo primero: abre el enlace que te enviamos.": "Confirm your email first: open the link we sent you.",
+    "Ese correo ya tiene cuenta. Entra con tu contraseña.": "That email already has an account. Log in with your password.",
+    "Hiciste muchos intentos. Espera un momento y vuelve a probar.": "Too many attempts. Wait a moment and try again.",
+    "Revisa el correo: parece que está mal escrito.": "Check the email: it looks mistyped.",
+    "El panel aún no está configurado en el servidor.": "The dashboard isn't set up on the server yet.",
+
+    // Panel
+    "Panel: Go503": "Dashboard: Go503",
+    "Panel": "Dashboard",
+    "Flota en vivo": "Live fleet",
+    "Unidades": "Buses",
+    "Mantenimiento": "Maintenance",
+    "Reportes": "Reports",
+    "Clientes": "Leads",
+    "Códigos": "Codes",
+    "Cerrar sesión": "Log out",
+    "Alertas": "Alerts",
+    "Alertas: {n} sin ver": "Alerts: {n} unseen",
+    "Alertas de tu flota": "Fleet alerts",
+    "Marcar como vistas": "Mark as seen",
+    "Todo en orden": "All good",
+    "Ninguna unidad necesita atención ahora.": "No bus needs attention right now.",
+    "Sin señal desde hace {n} min": "No signal for {n} min",
+    "Motor caliente: {n} °C": "Engine running hot: {n} °C",
+    "Va a {n} km/h": "Going {n} km/h",
+    "Combustible bajo: {n} %": "Low fuel: {n} %",
+    "Falla del motor: {c}": "Engine fault: {c}",
+    "Cambio de aceite vencido por {n} km": "Oil change overdue by {n} km",
+    "Cambio de aceite en {n} km": "Oil change in {n} km",
+    "Activa tu empresa": "Activate your company",
+    "Escribe el código de invitación que recibiste con tu sensor y el nombre de tu empresa.": "Enter the invite code that came with your sensor and your company name.",
+    "Activar empresa": "Activate company",
+    "Mapa de la flota": "Fleet map",
+    "Registra tu primera unidad": "Register your first bus",
+    "Al registrarla te damos la clave de su sensor. Cuando el sensor empiece a transmitir, la verás aquí en el mapa.": "When you register it we'll give you its sensor key. Once the sensor starts transmitting, you'll see it here on the map.",
+    "Registrar unidad": "Register bus",
+    "Registra cada bus para generar la clave de su sensor.": "Register each bus to generate its sensor key.",
+    "Kilómetros contados por el GPS de cada unidad. Registra cada servicio para reiniciar la cuenta.": "Kilometers counted by each bus's GPS. Log every service to reset the count.",
+    "Tiempos reales de tus unidades, sin contar las de otras empresas.": "Real times from your buses only, not other companies'.",
+    "Periodo": "Period",
+    "Últimos 7 días": "Last 7 days",
+    "Últimos 30 días": "Last 30 days",
+    "Últimos 90 días": "Last 90 days",
+    "Minutos por tramo según la hora": "Minutes per stretch by hour",
+    "Promedio de lo que tardan tus unidades entre dos paradas. Más oscuro, más lento.": "Average time your buses take between two stops. Darker means slower.",
+    "Recorridos completos por día": "Completed runs per day",
+    "Cuenta cada vez que una unidad llega al final de su ruta, de ida o de regreso. Una vuelta completa son dos recorridos.": "Counts every time a bus reaches the end of its route, either direction. A full round trip is two runs.",
+    "Todavía no hay viajes de tus unidades en este periodo. Aparecerán cuando completen tramos entre paradas.": "No trips from your buses in this period yet. They'll show up once they complete stretches between stops.",
+    "Promedio": "Average",
+    "Más rápido": "Fastest",
+    "Más lento (comparado dentro de cada tramo)": "Slowest (compared within each stretch)",
+    "Registra unidades para ver sus vueltas.": "Register buses to see their trips.",
+    "Total": "Total",
+    "Ruta {r}, {n} viajes": "Route {r}, {n} trips",
+    "Ruta {r} hacia {d}, {n} viajes": "Route {r} to {d}, {n} trips",
+    "Nunca": "Never",
+    "Algo falló. Intenta de nuevo.": "Something went wrong. Please try again.",
+    "El sensor aún no transmite": "The sensor isn't transmitting yet",
+    "Todavía no tienes unidades registradas.": "You don't have any buses registered yet.",
+    "{a} de {b} unidades en línea": "{a} of {b} buses online",
+    "{a} de {b} unidad en línea": "{a} of {b} bus online",
+    "En línea": "Online",
+    "En {p}": "At {p}",
+    "Sin señal, última {t}": "No signal, last {t}",
+    "hace {n} s": "{n} s ago",
+    "hace {n} min": "{n} min ago",
+    "hace {n} h": "{n} h ago",
+    "Kilometraje": "Odometer",
+    "Horas de motor": "Engine hours",
+    "Temperatura": "Temperature",
+    "Combustible": "Fuel",
+    "Combustible {n} %": "Fuel {n} %",
+    "Cargando historial…": "Loading history…",
+    "Temperatura del motor": "Engine temperature",
+    "Aún no hay servicios registrados.": "No services logged yet.",
+    "Sin datos todavía.": "No data yet.",
+    "Aún no tienes unidades": "No buses yet",
+    "Registra cada bus con su ruta y su placa. Te daremos la clave que va en su sensor.": "Register each bus with its route and plate. We'll give you the key for its sensor.",
+    "Sensor": "Sensor",
+    "Sin placa": "No plate",
+    "Placa {p}": "Plate {p}",
+    "{s}. Placa {p}": "{s}. Plate {p}",
+    "{n} unidades necesitan servicio": "{n} buses need service",
+    "{n} unidad necesita servicio": "{n} bus needs service",
+    "Aceite 15W-40, taller El Progreso": "15W-40 oil, El Progreso garage",
+    "Llamar el lunes, quiere 12 unidades para la 101": "Call on Monday, wants 12 buses for the 101",
+    "Aún no transmite": "Not transmitting yet",
+    "Última señal {t}": "Last signal {t}",
+    "Editar": "Edit",
+    "Nueva clave": "New key",
+    "Nueva clave para {x}": "New key for {x}",
+    "La clave actual dejará de funcionar y tendrás que poner la nueva en el sensor.": "The current key will stop working and you'll need to put the new one in the sensor.",
+    "Generar nueva clave": "Generate new key",
+    "Eliminar": "Delete",
+    "Eliminar {x}": "Delete {x}",
+    "Editar {x}": "Edit {x}",
+    "Se borran la unidad y sus servicios. Su sensor dejará de aparecer en tu panel. Esto no se puede deshacer.": "The bus and its services will be deleted. Its sensor will stop showing in your dashboard. This can't be undone.",
+    "Eliminar unidad": "Delete bus",
+    "Editar unidad": "Edit bus",
+    "Los cambios se aplican de inmediato.": "Changes apply right away.",
+    "Al guardar te daremos la clave de su sensor.": "When you save we'll give you its sensor key.",
+    "Nombre": "Name",
+    "Placa": "Plate",
+    "Ruta": "Route",
+    "Tipo": "Type",
+    "Kilometraje actual": "Current odometer",
+    "El del tablero del bus.": "The one on the bus dashboard.",
+    "Cambio de aceite cada": "Oil change every",
+    "Kilómetros.": "Kilometers.",
+    "Cancelar": "Cancel",
+    "Clave del sensor": "Sensor key",
+    "Cópiala ahora y pégala en la configuración del sensor. Por seguridad no la volveremos a mostrar.": "Copy it now and paste it into the sensor settings. For security we won't show it again.",
+    "Copiar": "Copy",
+    "Copiada": "Copied",
+    "Copiado": "Copied",
+    "Selecciónala y cópiala": "Select and copy it",
+    "Selecciónalo y cópialo": "Select and copy it",
+    "Para probar sin sensor, en la carpeta del proyecto:": "To test without a sensor, in the project folder:",
+    "Ya la guardé": "I saved it",
+    "Sin unidades todavía": "No buses yet",
+    "Registra una unidad y aquí verás cuándo le toca cada servicio.": "Register a bus and you'll see when each service is due here.",
+    "Motor": "Engine",
+    "Fallas": "Faults",
+    "Último servicio": "Last service",
+    "Ninguna": "None",
+    "Ninguno": "None",
+    "{n} h de motor": "{n} engine hours",
+    "Vencido por {n} km": "Overdue by {n} km",
+    "Pronto: faltan {n} km": "Soon: {n} km left",
+    "Al día: faltan {n} km": "Up to date: {n} km left",
+    "Cada {n} km": "Every {n} km",
+    "Registrar servicio": "Log service",
+    "Registrar servicio de {x}": "Log service for {x}",
+    "Se guarda con el kilometraje actual: {n} km.": "It's saved with the current odometer: {n} km.",
+    "Servicio registrado para {x}.": "Service logged for {x}.",
+    "Servicios": "Services",
+    "Servicio": "Service",
+    "Cambio de aceite": "Oil change",
+    "Frenos": "Brakes",
+    "Llantas": "Tires",
+    "Revisión general": "General check-up",
+    "Otro": "Other",
+    "Notas": "Notes",
+    "Últimas 24 horas": "Last 24 hours",
+    "Cerrar detalle": "Close details",
+    "Clientes interesados": "Interested leads",
+    "Las personas que pidieron el sensor desde la portada. Márcalas según avanza la venta.": "People who asked for the sensor from the homepage. Update them as the sale moves along.",
+    "Buscar cliente": "Search leads",
+    "Buscar por nombre, empresa, teléfono o ciudad": "Search by name, company, phone or city",
+    "Mostrar": "Show",
+    "Pendientes": "Open",
+    "Nuevos": "New",
+    "Contactados": "Contacted",
+    "Vendidos": "Won",
+    "Descartados": "Discarded",
+    "Nuevo": "New",
+    "Contactado": "Contacted",
+    "Vendido": "Won",
+    "Descartado": "Discarded",
+    "Todavía no hay solicitudes": "No requests yet",
+    "Cuando alguien llene «Pide el sensor» en la portada, aparece aquí.": "When someone fills in “Get the sensor” on the homepage, it shows up here.",
+    "Ningún cliente coincide con el filtro.": "No leads match the filter.",
+    "Persona": "Person",
+    "Contacto": "Contact",
+    "Flota": "Fleet",
+    "Recibido": "Received",
+    "Sin empresa": "No company",
+    "Escribir por WhatsApp": "Message on WhatsApp",
+    "Editar nota": "Edit note",
+    "Nota": "Note",
+    "Nota: {t}": "Note: {t}",
+    "Nota sobre {x}": "Note about {x}",
+    "Estado de {x}": "Status of {x}",
+    "Solo la ven los administradores.": "Only admins can see it.",
+    "Guardar nota": "Save note",
+    "Nota guardada.": "Note saved.",
+    "Se borra la solicitud y su nota. Esto no se puede deshacer.": "The request and its note will be deleted. This can't be undone.",
+    "Eliminar a {x}": "Delete {x}",
+    "Crear código de invitación para {x}": "Create invite code for {x}",
+    "Código para {x}: {c} (ya está copiado). Envíaselo para que se registre.": "Code for {x}: {c} (already copied). Send it so they can sign up.",
+    "{n} unidades": "{n} buses",
+    "{n} unidad": "{n} bus",
+    "{a} nuevo, {b} en conversación y {k} vendido.": "{a} new, {b} in conversation and {k} won.",
+    "{a} nuevos, {b} en conversación y {k} vendidos.": "{a} new, {b} in conversation and {k} won.",
+    "{a} nuevo, {b} en conversación y {k} vendidos.": "{a} new, {b} in conversation and {k} won.",
+    "{a} nuevos, {b} en conversación y {k} vendido.": "{a} new, {b} in conversation and {k} won.",
+    "Códigos de invitación": "Invite codes",
+    "Crea un código por cada empresa que compre el sensor. Cada código sirve una sola vez.": "Create one code per company that buys the sensor. Each code works only once.",
+    "Para quién es el código": "Who the code is for",
+    "Para quién es (ej. Transportes Pérez)": "Who it's for (e.g. Pérez Transport)",
+    "Para quién es": "Who it's for",
+    "Crear código": "Create code",
+    "Buscar código o empresa": "Search code or company",
+    "Buscar por código, nota o empresa": "Search by code, note or company",
+    "Disponibles": "Available",
+    "Usados": "Used",
+    "Disponible": "Available",
+    "Usado": "Used",
+    "Editar código": "Edit code",
+    "Déjalo vacío para quitar la nota.": "Leave it empty to remove the note.",
+    "Guardar cambios": "Save changes",
+    "Todavía no has creado códigos. Escribe para quién es y toca «Crear código».": "You haven't created any codes yet. Write who it's for and tap “Create code”.",
+    "Ningún código coincide con la búsqueda.": "No codes match your search.",
+    "Código": "Code",
+    "Para": "For",
+    "Creado": "Created",
+    "Empresa eliminada": "Deleted company",
+    "Sin nota": "No note",
+    "Todavía nadie lo ha usado.": "Nobody has used it yet.",
+    "Lo usó {x}.": "Used by {x}.",
+    "Lo usó una empresa que ya no existe.": "Used by a company that no longer exists.",
+    "Eliminar código": "Delete code",
+    "Copiar {c}": "Copy {c}",
+    "Nadie lo ha usado todavía. Si ya se lo diste a alguien, ya no le va a servir para registrarse.": "Nobody has used it yet. If you already gave it to someone, it won't work for them anymore.",
+    "{x} lo usó para registrarse y seguirá funcionando igual. Solo se borra de esta lista.": "{x} used it to sign up and will keep working the same. It's only removed from this list.",
+    "La empresa lo usó para registrarse y seguirá funcionando igual. Solo se borra de esta lista.": "The company used it to sign up and will keep working the same. It's only removed from this list.",
+    "Código {c} eliminado.": "Code {c} deleted.",
+    "Cambios guardados en {c}.": "Changes saved to {c}.",
+    "Código creado: {c}. Dáselo a la empresa para que se registre.": "Code created: {c}. Give it to the company so they can sign up.",
+    "{a} disponible y {b} usado.": "{a} available and {b} used.",
+    "{a} disponibles y {b} usados.": "{a} available and {b} used.",
+    "{a} disponible y {b} usados.": "{a} available and {b} used.",
+    "{a} disponibles y {b} usado.": "{a} available and {b} used.",
+
+    // Mensajes del servidor
+    "Ruta no existe": "That route doesn't exist",
+    "El sentido es ida o regreso": "Direction must be ida or regreso",
+    "Manda lat y lng válidos": "Send valid lat and lng",
+    "Supabase no está configurado en el servidor": "Supabase isn't configured on the server",
+    "Tu cuenta ya tiene una empresa": "Your account already has a company",
+    "Escribe el nombre de tu empresa (2 a 80 letras)": "Enter your company name (2 to 80 characters)",
+    "El código no existe o ya fue usado": "The code doesn't exist or was already used",
+    "La nota puede tener hasta 120 letras": "The note can be up to 120 characters",
+    "La nota puede tener hasta 600 letras": "The note can be up to 600 characters",
+    "Ese código no existe": "That code doesn't exist",
+    "Estado no válido": "Invalid status",
+    "Ese cliente no existe": "That lead doesn't exist",
+    "El nombre de la unidad debe tener de 1 a 40 letras": "The bus name must be 1 to 40 characters",
+    "La placa debe tener de 3 a 12 caracteres": "The plate must be 3 to 12 characters",
+    "Escoge una ruta de la lista": "Pick a route from the list",
+    "El tipo debe ser autobús o microbús": "Type must be bus or minibus",
+    "El intervalo de aceite va de 500 a 50,000 km": "Oil interval must be 500 to 50,000 km",
+    "El kilometraje no es válido": "The odometer value isn't valid",
+    "Llegaste al límite de 200 unidades": "You've reached the 200-bus limit",
+    "Esa unidad no existe en tu flota": "That bus isn't in your fleet",
+    "Escoge el tipo de servicio": "Pick the service type",
+    "Las notas pueden tener hasta 500 letras": "Notes can be up to 500 characters",
+    "El panel necesita Supabase configurado en el servidor": "The dashboard needs Supabase configured on the server",
+    "Inicia sesión para continuar": "Log in to continue",
+    "Tu sesión venció. Vuelve a iniciar sesión.": "Your session expired. Please log in again.",
+    "Activa tu empresa con tu código de invitación": "Activate your company with your invite code",
+    "Solo los administradores de go503 pueden hacer esto": "Only go503 admins can do this",
+    "Demasiados intentos. Espera un minuto.": "Too many attempts. Wait a minute.",
+    "Algo falló en el servidor. Intenta de nuevo.": "Something went wrong on the server. Please try again.",
+  };
+
+  // Llaves con partes que cambian -> expresión regular
+  const esc = (s) => s.replace(/[.*+?^$()|[\]\\]/g, "\\$&");
+  const PATTERNS = Object.entries(EN).filter(([k]) => k.includes("{")).map(([k, v]) => {
+    const names = [];
+    // a, b, k, m, n, u, w son números; los demás (nombres, horas, códigos) pueden ser cualquier texto
+    const src = esc(k).replace(/\{(\w+)\}/g, (_, n) => { names.push(n); return /^[abkmnuw]$/.test(n) ? "([\\d.,]+)" : n === "r" ? "(\\S+)" : "(.+?)"; });
+    return { re: new RegExp(`^${src}$`), names, en: v, fixed: k.replace(/\{\w+\}/g, "").length };
+  }).sort((a, b) => b.fixed - a.fixed);
+
+  function t(text, depth = 0) {
+    if (!text) return text;
+    const s = text.trim();
+    if (!s) return text;
+    const key = s.replace(/\s+/g, " ");
+    let out = EN[key];
+    if (out === undefined && depth < 3) {
+      for (const p of PATTERNS) {
+        const m = key.match(p.re);
+        if (!m) continue;
+        out = p.en.replace(/\{(\w+)\}/g, (_, n) => {
+          const v = m[p.names.indexOf(n) + 1] ?? "";
+          return t(v, depth + 1);
+        });
+        break;
+      }
+    }
+    if (out === undefined) return text;
+    // conservar los espacios de los lados (entre palabras y etiquetas)
+    return text.replace(s, out);
+  }
+  api.t = t;
+
+  // ---------- Traducir la página y lo que se agregue después ----------
+  const ATTRS = ["placeholder", "aria-label", "title", "alt"];
+  const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE", "INPUT"]);
+  const skip = (el) => !el || SKIP.has(el.nodeName) || el.closest?.("[translate='no'], .notranslate");
+
+  function doText(node) {
+    if (skip(node.parentElement)) return;
+    const v = node.nodeValue;
+    const out = t(v);
+    if (out !== v) node.nodeValue = out;
+  }
+  function doAttrs(el) {
+    if (el.closest?.("[translate='no'], .notranslate")) return;
+    for (const a of ATTRS) {
+      const v = el.getAttribute?.(a);
+      if (v) { const out = t(v); if (out !== v) el.setAttribute(a, out); }
+    }
+  }
+  function walk(root) {
+    if (root.nodeType === 3) return doText(root);
+    if (root.nodeType !== 1) return;
+    doAttrs(root);
+    if (skip(root)) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = w.nextNode())) {
+      if (n.nodeType === 3) doText(n);
+      else doAttrs(n);
+    }
+  }
+
+  const obs = new MutationObserver((list) => {
+    for (const m of list) {
+      if (m.type === "characterData") doText(m.target);
+      else if (m.type === "attributes") doAttrs(m.target);
+      else m.addedNodes.forEach((n) => { walk(n); bindToggles(n.parentNode || document); });
+    }
+  });
+  obs.observe(document.documentElement, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    walk(document.body);
+    document.title = t(document.title);
+    const d = document.querySelector('meta[name="description"]');
+    if (d) d.content = t(d.content);
+  });
+})();

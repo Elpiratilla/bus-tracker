@@ -5,6 +5,8 @@ const cors = require("cors");
 const path = require("path");
 
 const app = express();
+// En Render las peticiones llegan por un proxy: así req.ip es la IP real (para los límites por IP)
+app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
@@ -16,6 +18,7 @@ app.use("/api/routes", require("./routes/routes"));
 app.use("/api/rutas", require("./routes/rutas"));
 app.use("/api/alertas", require("./routes/alertas"));
 app.use("/api/empresa", require("./routes/empresa"));
+app.use("/api/clientes", require("./routes/clientes"));
 
 // Datos públicos que necesita el navegador para iniciar sesión con Supabase
 app.get("/api/config", (_req, res) => res.json({

@@ -93,6 +93,68 @@ router.post("/admin/codigos", requireAdmin, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// Cambiar la nota de un código (para quién es)
+router.patch("/admin/codigos/:codigo", requireAdmin, async (req, res, next) => {
+  try {
+    const nota = req.body.nota ? text(req.body.nota, 1, 120) : null;
+    if (req.body.nota && !nota) return res.status(400).json({ error: "La nota puede tener hasta 120 letras" });
+    const rows = await select(db.from("invite_codes").update({ note: nota })
+      .eq("code", normCode(req.params.codigo)).select("code"));
+    if (!rows.length) return res.status(404).json({ error: "Ese código no existe" });
+    res.json({ codigo: rows[0].code, nota });
+  } catch (err) { next(err); }
+});
+
+// Eliminar un código. Si ya se usó, la empresa sigue funcionando: solo se borra del historial.
+router.delete("/admin/codigos/:codigo", requireAdmin, async (req, res, next) => {
+  try {
+    const rows = await select(db.from("invite_codes").delete()
+      .eq("code", normCode(req.params.codigo)).select("code"));
+    if (!rows.length) return res.status(404).json({ error: "Ese código no existe" });
+    res.status(204).end();
+  } catch (err) { next(err); }
+});
+
+// ---------- Administración: clientes interesados (formulario "Pedir el sensor") ----------
+const LEAD_STATES = ["nuevo", "contactado", "vendido", "descartado"];
+const leadOut = (l) => ({
+  id: l.id, nombre: l.name, empresa: l.company, telefono: l.phone, correo: l.email, unidades: l.units,
+  ciudad: l.city, mensaje: l.message, estado: l.status, nota: l.admin_note, creado: l.created_at, actualizado: l.updated_at,
+});
+
+router.get("/admin/clientes", requireAdmin, async (_req, res, next) => {
+  try {
+    const rows = await select(db.from("leads").select("*").order("created_at", { ascending: false }).limit(500));
+    res.json(rows.map(leadOut));
+  } catch (err) { next(err); }
+});
+
+router.patch("/admin/clientes/:id", requireAdmin, async (req, res, next) => {
+  try {
+    const change = { updated_at: new Date().toISOString() };
+    if (req.body.estado !== undefined) {
+      if (!LEAD_STATES.includes(req.body.estado)) return res.status(400).json({ error: "Estado no válido" });
+      change.status = req.body.estado;
+    }
+    if (req.body.nota !== undefined) {
+      const nota = req.body.nota ? text(req.body.nota, 1, 600) : null;
+      if (req.body.nota && !nota) return res.status(400).json({ error: "La nota puede tener hasta 600 letras" });
+      change.admin_note = nota;
+    }
+    const rows = await select(db.from("leads").update(change).eq("id", Number(req.params.id)).select("*"));
+    if (!rows.length) return res.status(404).json({ error: "Ese cliente no existe" });
+    res.json(leadOut(rows[0]));
+  } catch (err) { next(err); }
+});
+
+router.delete("/admin/clientes/:id", requireAdmin, async (req, res, next) => {
+  try {
+    const rows = await select(db.from("leads").delete().eq("id", Number(req.params.id)).select("id"));
+    if (!rows.length) return res.status(404).json({ error: "Ese cliente no existe" });
+    res.status(204).end();
+  } catch (err) { next(err); }
+});
+
 router.get("/yo", requireUser, (req, res) =>
   res.json({ usuario: { email: req.user.email }, empresa: req.company }));
 
@@ -241,6 +303,47 @@ router.get("/mantenimiento", requireCompany, async (req, res, next) => {
         ultimoServicio: mine[0] ? { tipo: mine[0].kind, fecha: mine[0].done_at, km: round1(mine[0].odometer_km) } : null,
       };
     }));
+  } catch (err) { next(err); }
+});
+
+// ---------- Alertas para el dueño ----------
+// Se calculan en el momento con el estado en vivo de cada unidad (no se guardan).
+const ALERT = {
+  SIN_SENAL_MS: 15 * 60 * 1000, // transmitía y dejó de hacerlo hace 15 min
+  TEMP_C: 105,                   // motor caliente
+  VEL_KMH: 80,                   // exceso de velocidad en ciudad
+  COMBUSTIBLE: 15,               // % de tanque
+};
+
+router.get("/alertas", requireCompany, async (req, res, next) => {
+  try {
+    const now = Date.now();
+    const list = myUnits(req);
+    const ids = list.map((u) => u.busId);
+    const oils = ids.length ? await select(db.from("service_records").select("bus_id, odometer_km, done_at")
+      .in("bus_id", ids).eq("kind", "aceite").order("done_at", { ascending: false }).limit(2000)) : [];
+    const out = [];
+    const add = (u, tipo, nivel, texto, desde) => out.push({ id: `${tipo}:${u.busId}`, tipo, nivel, unidad: u.busId, nombre: u.name, texto, desde: iso(desde) });
+
+    for (const u of list) {
+      const live = buses[u.busId] || {};
+      const fresh = live.updatedAt && now - live.updatedAt < ONLINE_MS;
+      if (live.updatedAt && now - live.updatedAt > ALERT.SIN_SENAL_MS) {
+        add(u, "sin-senal", "aviso", `Sin señal desde hace ${Math.round((now - live.updatedAt) / 60000)} min`, live.updatedAt);
+      }
+      if (fresh && live.engineTemp >= ALERT.TEMP_C) add(u, "temperatura", "grave", `Motor caliente: ${Math.round(live.engineTemp)} °C`, live.updatedAt);
+      if (fresh && live.speed > ALERT.VEL_KMH) add(u, "velocidad", "aviso", `Va a ${Math.round(live.speed)} km/h`, live.updatedAt);
+      if (fresh && live.fuel != null && live.fuel <= ALERT.COMBUSTIBLE) add(u, "combustible", "aviso", `Combustible bajo: ${Math.round(live.fuel)} %`, live.updatedAt);
+      if (Array.isArray(live.dtc) && live.dtc.length) add(u, "falla", "grave", `Falla del motor: ${live.dtc.slice(0, 3).join(", ")}`, live.updatedAt);
+
+      const oil = oils.find((s) => s.bus_id === u.busId);
+      const desde = u.odometerKm - (oil ? oil.odometer_km : 0);
+      if (desde >= u.oilIntervalKm) add(u, "aceite", "grave", `Cambio de aceite vencido por ${Math.round(desde - u.oilIntervalKm)} km`, null);
+      else if (desde >= u.oilIntervalKm * 0.9) add(u, "aceite", "aviso", `Cambio de aceite en ${Math.round(u.oilIntervalKm - desde)} km`, null);
+    }
+    // lo grave primero
+    out.sort((a, b) => (a.nivel === b.nivel ? 0 : a.nivel === "grave" ? -1 : 1));
+    res.json(out);
   } catch (err) { next(err); }
 });
 

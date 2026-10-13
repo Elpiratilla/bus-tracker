@@ -102,8 +102,7 @@
 button.fascia--title { border: 0; font-family: var(--serif); cursor: pointer; }
 button.fascia--title:hover { box-shadow: inset 0 0 0 .05em var(--anil), inset 0 0 0 .08em var(--maiz-claro); color: var(--maiz-claro); }
 button.fascia--title:active { transform: rotate(-2deg) translateY(.04em) scale(.97); }
-.fascia--title.is-new { animation: swap .35s ease-out; }
-@keyframes swap { from { transform: rotate(-2deg) translateY(.15em); opacity: 0; } }
+.fascia--title.is-new { animation: arrive .65s cubic-bezier(.2, .7, .3, 1); }
 
 .hero__lead {
   max-width: 32rem;
@@ -382,6 +381,79 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .meter span { display: block; height: 100%; background: var(--torogoz); }
 .meter--soon span { background: var(--maiz); }
 
+/* ---------- Pedir el sensor ---------- */
+.order {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  padding-block: clamp(4rem, 9vw, 6.5rem);
+  scroll-margin-top: 1rem;
+}
+.order h2 { font-size: clamp(2rem, 4vw, 2.8rem); max-width: 14ch; }
+.order__lead { margin-top: 1rem; color: var(--muted); font-size: 1.1rem; }
+/* es una secuencia real (lo que pasa después), por eso va numerada */
+.order__steps { display: grid; gap: 1.3rem; margin: 2.2rem 0 0; padding: 0; list-style: none; counter-reset: paso; }
+.order__steps li { position: relative; padding-left: 3rem; counter-increment: paso; }
+.order__steps li::before {
+  content: counter(paso);
+  position: absolute; left: 0; top: -.1rem;
+  display: grid; place-items: center;
+  width: 2rem; height: 2rem;
+  background: var(--anil); color: var(--maiz);
+  border-radius: 50%;
+  font: 1rem/1 var(--serif);
+}
+.order__steps b { display: block; font-weight: 700; }
+.order__steps span { color: var(--muted); }
+
+.order__form {
+  position: relative;
+  padding: clamp(1.4rem, 3vw, 2rem);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: 0 24px 48px -32px rgba(14, 20, 56, .35);
+}
+.order__fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.order .field { display: grid; gap: .35rem; grid-column: 1 / -1; }
+.order .field--half { grid-column: auto; }
+.order label { font-weight: 600; font-size: .92rem; }
+.order label small { color: var(--muted); font-weight: 400; }
+.order input, .order textarea {
+  width: 100%;
+  min-height: 2.9rem;
+  padding: .65rem .85rem;
+  background: var(--papel);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-sm);
+  color: var(--tinta);
+  font: 400 1rem/1.4 var(--sans);
+  transition: border-color .15s, box-shadow .15s, background-color .15s;
+}
+.order textarea { resize: vertical; min-height: 5.5rem; }
+.order input::placeholder, .order textarea::placeholder { color: color-mix(in srgb, var(--muted) 70%, transparent); }
+.order input:hover, .order textarea:hover { border-color: color-mix(in srgb, var(--anil) 35%, var(--line)); }
+.order input:focus, .order textarea:focus { outline: none; border-color: var(--torogoz); box-shadow: 0 0 0 3px rgba(15, 163, 156, .2); background: var(--card); }
+.order .field.is-bad input { border-color: var(--alerta); box-shadow: 0 0 0 3px rgba(217, 67, 78, .15); animation: shake .3s; }
+@keyframes shake { 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } }
+.order__trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.order__error { grid-column: 1 / -1; color: var(--alerta); font-weight: 600; }
+.order__send { grid-column: 1 / -1; justify-self: start; min-width: 12rem; }
+.order__send[aria-busy="true"] { cursor: progress; opacity: .7; }
+
+/* Enviado: la palomita se dibuja */
+.order__done { display: grid; justify-items: start; gap: .6rem; padding-block: 1.5rem; }
+.order__done:focus { outline: none; }
+.order__check { width: 3.4rem; height: 3.4rem; color: var(--torogoz); }
+.order__check circle, .order__check path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.order__done:not([hidden]) .order__check circle { animation: draw .5s ease-out forwards; }
+.order__done:not([hidden]) .order__check path { animation: draw .35s ease-out .4s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+.order__done h3 { font-size: 1.6rem; }
+.order__done p { color: var(--muted); max-width: 36ch; }
+.order__done .btn { margin-top: .6rem; }
+
 /* ---------- Pie ---------- */
 .foot {
   position: relative;
@@ -402,13 +474,14 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 
 /* ---------- Pantallas pequeñas ---------- */
 @media (max-width: 900px) {
-  .hero__body, .biz__inner { grid-template-columns: 1fr; }
+  .hero__body, .biz__inner, .order { grid-template-columns: 1fr; }
   .board { max-width: 34rem; }
   .preview { transform: none; }
 }
 @media (max-width: 640px) {
   .top__links a:not(.btn) { display: none; }
   .how__route { grid-template-columns: 1fr; gap: 2rem; }
+  .order__fields { grid-template-columns: 1fr; }
   .how__route::before { top: 1.3rem; bottom: 1.3rem; left: 1.3rem; right: auto; width: 6px; height: auto; margin: 0 0 0 -3px; }
   .how__route::after { width: 6px; height: 45%; margin: 0 0 0 -3px; transform-origin: top; }
   .how__bus { display: none; }
@@ -516,3 +589,22 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
   .board__num--now, .strip__bus.is-moving svg { animation: none; }
   .foot__bus { display: none; }
 }
+
+/* Cambio de modo claro/oscuro: fundido suave en lugar de salto */
+::view-transition-old(root) { animation: theme-out .35s ease both; }
+::view-transition-new(root) { animation: theme-in .35s ease both; }
+@keyframes theme-out { to { opacity: 0; } }
+@keyframes theme-in { from { opacity: 0; } }
+
+/* Cambiar idioma */
+.lang {
+  padding: .45rem .8rem;
+  background: none;
+  border: 0;
+  border-radius: 999px;
+  color: var(--muted);
+  font: 600 .95rem/1 var(--sans);
+  cursor: pointer;
+}
+.lang:hover { background: color-mix(in srgb, var(--line) 60%, transparent); color: var(--tinta); }
+@media (max-width: 640px) { .lang { padding: .45rem .5rem; } }

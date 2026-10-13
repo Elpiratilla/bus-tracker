@@ -100,7 +100,7 @@ const $ = (sel) => document.querySelector(sel);
 const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 
 const hhmm = (iso) =>
-  new Date(iso).toLocaleTimeString("es-SV", { hour: "2-digit", minute: "2-digit", hour12: false });
+  new Date(iso).toLocaleTimeString((window.go503Idioma?.locale || "es-SV"), { hour: "2-digit", minute: "2-digit", hour12: false });
 const minsTo = (iso) => Math.ceil((new Date(iso) - Date.now()) / 60000);
 
 function el(tag, cls, text) {
@@ -150,9 +150,14 @@ function applyTheme() {
   document.querySelector('meta[name="theme-color"]').content = dark ? "#0C1130" : "#1B2559";
 }
 $("#tema").addEventListener("click", () => {
-  root.dataset.theme = isDark() ? "light" : "dark";
-  try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
-  applyTheme();
+  const change = () => {
+    root.dataset.theme = isDark() ? "light" : "dark";
+    try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
+    applyTheme();
+  };
+  // fundido suave entre modos si el navegador lo soporta
+  if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(change);
+  else change();
 });
 applyTheme();
 darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
@@ -511,6 +516,16 @@ function bellButton(ruta, dir, hacia, p) {
 }
 
 // ---------- Panel ----------
+// Cambia un texto y, si es distinto, lo hace voltear como letrero de destino
+function flap(node, text) {
+  if (node.textContent === text) return;
+  node.textContent = text;
+  node.classList.remove("flap");
+  void node.offsetWidth;
+  node.classList.add("flap");
+}
+let lastNext = { key: null, idx: -1 };
+
 function render(data) {
   const { ruta, actualizado, paradas } = data;
   const lastIdx = paradas.map((p) => Boolean(p.pasoA)).lastIndexOf(true);
@@ -537,14 +552,26 @@ function render(data) {
 
   $("#fascia").textContent = ruta;
   $("#fascia").setAttribute("aria-label", `Ruta ${ruta}`);
-  $("#next-stop").textContent = next ? next.nombre : "Ya llegó a la última parada";
-  $("#next-eta").replaceChildren(
+  const isFav = favs.get().has(ruta);
+  $("#fav").setAttribute("aria-pressed", String(isFav));
+  $("#fav").setAttribute("aria-label", isFav ? `Quitar la ${ruta} de favoritas` : `Guardar la ${ruta} en favoritas`);
+  $("#fav").title = isFav ? "Quitar de favoritas" : "Guardar en favoritas";
+  flap($("#next-stop"), next ? next.nombre : "Ya llegó a la última parada");
+  const etaBox = $("#next-eta");
+  const etaBefore = etaBox.textContent;
+  etaBox.replaceChildren(
     ...(next
       ? eta !== null && eta > 0
         ? ["Llega en ", Object.assign(el("strong"), { textContent: `${eta} min` })]
-        : [Object.assign(el("strong"), { textContent: etaLabel })]
+        : [Object.assign(el("strong"), { className: eta !== null && eta <= 0 ? "now" : "", textContent: etaLabel })]
       : [])
   );
+  // los minutos voltean solo cuando cambian
+  if (etaBox.textContent !== etaBefore) etaBox.querySelector("strong")?.classList.add("flap");
+  // ¿avanzó el bus a la siguiente parada? (misma ruta y sentido)
+  const key = `${ruta}|${data.sentido}`;
+  const advanced = lastNext.key === key && lastNext.idx !== nextIdx;
+  lastNext = { key, idx: nextIdx };
   $("#upd").textContent = data.sinSenal
     ? `La unidad no envía señal desde las ${hhmm(data.ultimaSenal)}. Su hora de llegada no es confiable.`
     : `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
@@ -555,6 +582,7 @@ function render(data) {
       const state = i <= lastIdx ? "done" : i === nextIdx ? "next" : "todo";
       const li = el("li", `stop stop--${state}`);
       if (state === "next") li.setAttribute("aria-current", "step");
+      if (state === "next" && advanced) li.classList.add("stop--advance");
 
       const name = el("span", "stop__name", p.nombre);
       name.append(el("span", "stop__leg", p.tramoMin ? `${p.tramoMin} min desde la anterior` : "Inicio de la ruta"));
@@ -571,6 +599,102 @@ function render(data) {
   );
 
   drawMap(data, lastIdx, nextIdx);
+}
+
+// ---------- Rutas favoritas (se guardan en este teléfono) ----------
+const favs = {
+  get: () => { try { return new Set(JSON.parse(localStorage.getItem("go503-favoritas") || "[]")); } catch { return new Set(); } },
+  set: (set) => { try { localStorage.setItem("go503-favoritas", JSON.stringify([...set])); } catch {} },
+};
+$("#fav").addEventListener("click", () => {
+  const set = favs.get();
+  const on = !set.has(current);
+  on ? set.add(current) : set.delete(current);
+  favs.set(set);
+  const b = $("#fav");
+  b.setAttribute("aria-pressed", String(on));
+  b.setAttribute("aria-label", on ? `Quitar la ${current} de favoritas` : `Guardar la ${current} en favoritas`);
+  b.title = on ? "Quitar de favoritas" : "Guardar en favoritas";
+  b.classList.remove("is-pop");
+  void b.offsetWidth;
+  if (on) b.classList.add("is-pop");
+  setStatus(on ? `Guardaste la ${current}. Ahora sale primero en la lista de rutas.` : "");
+  renderChips();
+});
+
+// ---------- Paradas cerca de mí ----------
+let meMarker = null;
+const cercaBtn = $("#cerca");
+
+function cerrarCerca() {
+  $("#cerca-lista").hidden = true;
+}
+$("#cerca-cerrar").addEventListener("click", cerrarCerca);
+
+cercaBtn.addEventListener("click", () => {
+  if (!navigator.geolocation) return setStatus("Este navegador no puede usar tu ubicación.");
+  cercaBtn.setAttribute("aria-busy", "true");
+  setStatus("Buscando dónde estás…");
+  navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+    const { latitude: lat, longitude: lng } = coords;
+    try {
+      const res = await fetch(api(`/api/rutas/cerca?lat=${lat}&lng=${lng}&radio=1000`));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const { paradas } = await res.json();
+      setStatus("");
+      // tu punto en el mapa
+      if (!meMarker) meMarker = L.marker([lat, lng], { icon: L.divIcon({ className: "", html: '<div class="me"></div>', iconSize: [18, 18] }), keyboard: false, zIndexOffset: 1000 }).addTo(map);
+      else meMarker.setLatLng([lat, lng]);
+      mostrarCerca(paradas);
+    } catch (err) {
+      console.error(err);
+      setStatus("No pudimos buscar paradas cerca. Intenta de nuevo.");
+    } finally {
+      cercaBtn.removeAttribute("aria-busy");
+    }
+  }, (err) => {
+    cercaBtn.removeAttribute("aria-busy");
+    setStatus(err.code === 1
+      ? "Activa el permiso de ubicación para ver las paradas cerca de ti."
+      : "No pudimos saber dónde estás. Revisa que el GPS esté encendido.");
+  }, { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+});
+
+function mostrarCerca(paradas) {
+  const box = $("#cerca-lista");
+  const list = $("#cerca-items");
+  box.hidden = false;
+  if (!paradas.length) {
+    $("#cerca-nota").textContent = "No hay paradas de nuestras rutas a menos de 1 km de ti. Por ahora cubrimos parte de San Salvador.";
+    list.replaceChildren();
+    map.flyTo(meMarker.getLatLng(), 14, { duration: .8 });
+    return;
+  }
+  $("#cerca-nota").textContent = "Toca una para ver la ruta en el mapa.";
+  list.replaceChildren(...paradas.map((p, i) => {
+    const li = el("li");
+    const b = el("button", "nearby__item");
+    b.type = "button";
+    b.style.setProperty("--i", i);
+    const txt = el("span", "nearby__txt");
+    txt.append(el("b", null, `Hacia ${p.destino}`), el("span", null, `${p.parada.nombre}, a ${p.distanciaM} m (${p.caminarMin} min a pie)`));
+    const eta = el("span", `nearby__eta${p.llegaMin != null && p.llegaMin <= p.caminarMin + 5 ? " nearby__eta--soon" : ""}`);
+    if (p.llegaMin == null) eta.append("Sin bus", el("small", null, "por ahora"));
+    else if (p.llegaMin <= 0) eta.append("¡Ya viene!");
+    else eta.append(`${p.llegaMin} min`, el("small", null, p.llegaMin < p.caminarMin ? "no alcanzas" : "llega"));
+    b.append(el("span", "nearby__num", p.ruta), txt, eta);
+    b.setAttribute("aria-label", `Ruta ${p.ruta} hacia ${p.destino}. Parada ${p.parada.nombre} a ${p.distanciaM} metros. ${p.llegaMin == null ? "Sin bus por ahora" : `Llega en ${p.llegaMin} minutos`}`);
+    b.addEventListener("click", () => {
+      current = p.ruta;
+      sentido = p.sentido;
+      fittedRoute = null; // encuadrar la ruta escogida
+      renderChips();
+      load();
+      cerrarCerca();
+    });
+    li.append(b);
+    return li;
+  }));
 }
 
 // ---------- Carga y actualización ----------
@@ -626,7 +750,10 @@ function matches(r) {
 }
 
 function renderChips() {
-  const visibles = rutas.filter((r) => (tipo === "todos" || r.tipo === tipo) && matches(r));
+  const fav = favs.get();
+  // las favoritas van primero
+  const visibles = rutas.filter((r) => (tipo === "todos" || r.tipo === tipo) && matches(r))
+    .sort((a, b) => Number(fav.has(b.ruta)) - Number(fav.has(a.ruta)));
   if (!visibles.length && query) {
     $("#chips").replaceChildren(el("p", "chips__empty", `Ninguna ruta pasa por “${query}”. Prueba con el número o el nombre de una parada.`));
     return visibles;
@@ -636,8 +763,14 @@ function renderChips() {
       const b = el("button", `chip${r.tipo === "microbus" ? " chip--micro" : ""}`);
       b.type = "button";
       b.setAttribute("aria-current", String(r.ruta === current));
-      b.setAttribute("aria-label", `Ruta ${r.ruta}, ${TIPOS[r.tipo]}`);
+      b.setAttribute("aria-label", `Ruta ${r.ruta}, ${TIPOS[r.tipo]}${fav.has(r.ruta) ? ", favorita" : ""}`);
       b.append(icono(r.tipo), r.ruta);
+      if (fav.has(r.ruta)) {
+        const star = icono("star");
+        star.setAttribute("class", "ico chip__star");
+        star.firstChild.setAttribute("href", "#i-star");
+        b.append(star);
+      }
       b.addEventListener("click", () => {
         current = r.ruta;
         sentido = null;

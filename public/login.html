@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Panel de empresas: Go503</title>
   <meta name="description" content="Entra al panel de go503 para seguir tu flota, su mantenimiento y sus tiempos.">
@@ -33,12 +35,16 @@
     </aside>
 
     <main class="auth__main">
-      <a class="auth__back" href="/">Volver al inicio</a>
+      <div class="auth__top">
+        <a class="auth__back" href="/">Volver al inicio</a>
+        <button class="lang" type="button" data-idioma>English</button>
+      </div>
 
       <div class="auth__box">
         <div class="tabs" role="tablist" aria-label="Acceso" id="tabs">
           <button type="button" role="tab" id="tab-entrar" aria-selected="true" aria-controls="v-entrar">Entrar</button>
           <button type="button" role="tab" id="tab-crear" aria-selected="false" aria-controls="v-crear">Crear cuenta</button>
+          <span class="tabs__pill" aria-hidden="true"></span>
         </div>
 
         <p class="msg" id="msg" role="alert" hidden></p>
@@ -53,7 +59,10 @@
             </div>
             <div class="field">
               <label for="e-pass">Contraseña</label>
-              <input class="input" id="e-pass" type="password" autocomplete="current-password" required>
+              <div class="pass">
+                <input class="input" id="e-pass" type="password" autocomplete="current-password" required>
+                <button class="pass__eye" type="button" data-ver="e-pass" aria-label="Mostrar contraseña" aria-pressed="false">Ver</button>
+              </div>
             </div>
             <button class="btn btn--anil" type="submit">Entrar</button>
             <button class="link" type="button" id="go-olvide">Olvidé mi contraseña</button>
@@ -67,7 +76,11 @@
           <form class="form" id="f-crear" novalidate>
             <div class="field">
               <label for="c-codigo">Código de invitación</label>
-              <input class="input input--code" id="c-codigo" placeholder="GO503-XXXX-XXXX" autocomplete="off" spellcheck="false" required>
+              <div class="code-check">
+                <input class="input input--code" id="c-codigo" placeholder="GO503-XXXX-XXXX" autocomplete="off" spellcheck="false" maxlength="15" aria-describedby="c-codigo-estado" required>
+                <span class="code-check__icon" id="c-codigo-icono" aria-hidden="true"></span>
+              </div>
+              <small id="c-codigo-estado" aria-live="polite">Viene en el correo o la hoja que te dimos con el sensor.</small>
             </div>
             <div class="field">
               <label for="c-empresa">Nombre de la empresa</label>
@@ -79,8 +92,12 @@
             </div>
             <div class="field">
               <label for="c-pass">Contraseña</label>
-              <input class="input" id="c-pass" type="password" autocomplete="new-password" minlength="8" required>
-              <small>Al menos 8 caracteres.</small>
+              <div class="pass">
+                <input class="input" id="c-pass" type="password" autocomplete="new-password" minlength="8" aria-describedby="c-pass-nivel" required>
+                <button class="pass__eye" type="button" data-ver="c-pass" aria-label="Mostrar contraseña" aria-pressed="false">Ver</button>
+              </div>
+              <div class="meter-pass" aria-hidden="true"><span id="c-pass-barra"></span></div>
+              <small id="c-pass-nivel" aria-live="polite">Al menos 8 caracteres.</small>
             </div>
             <button class="btn btn--anil" type="submit">Crear cuenta</button>
           </form>
@@ -106,7 +123,10 @@
           <form class="form" id="f-nueva" novalidate>
             <div class="field">
               <label for="n-pass">Contraseña nueva</label>
-              <input class="input" id="n-pass" type="password" autocomplete="new-password" minlength="8" required>
+              <div class="pass">
+                <input class="input" id="n-pass" type="password" autocomplete="new-password" minlength="8" required>
+                <button class="pass__eye" type="button" data-ver="n-pass" aria-label="Mostrar contraseña" aria-pressed="false">Ver</button>
+              </div>
               <small>Al menos 8 caracteres.</small>
             </div>
             <button class="btn btn--anil" type="submit">Guardar contraseña</button>

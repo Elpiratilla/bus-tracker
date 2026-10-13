@@ -2,6 +2,7 @@
 const router = require("express").Router();
 const { routes, buses } = require("../store");
 const { routeStatus, pickDirection } = require("../eta");
+const { distanceM } = require("../geo");
 
 const iso = (t) => (t == null ? null : new Date(t).toISOString());
 
@@ -15,6 +16,48 @@ const sentidos = (route) => ["ida", "regreso"].map((d) => ({
 router.get("/", (_req, res) => res.json(routes.map((r) => ({
   ruta: r.id, tipo: r.type, nombre: r.name, paradas: r.stops.map((s) => s.name), sentidos: sentidos(r),
 }))));
+
+// Paradas cerca de una ubicación: /api/rutas/cerca?lat=13.70&lng=-89.21[&radio=800]
+// Por cada ruta y sentido, la parada más cercana dentro del radio y cuándo llega el próximo bus.
+const WALK_M_PER_MIN = 80; // caminando, unos 4.8 km/h
+router.get("/cerca", (req, res) => {
+  const lat = Number(req.query.lat), lng = Number(req.query.lng);
+  const radio = Math.min(Math.max(Number(req.query.radio) || 800, 100), 3000);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+    return res.status(400).json({ error: "Manda lat y lng válidos" });
+  }
+  const here = { lat, lng };
+  const now = Date.now();
+  const out = [];
+  for (const route of routes) {
+    for (const dir of ["ida", "regreso"]) {
+      const stops = route.directions[dir];
+      // la más cercana de este sentido (sin contar la última: ahí el bus ya no sigue)
+      let best = null;
+      stops.slice(0, -1).forEach((stop, i) => {
+        const d = distanceM(here, stop);
+        if (d <= radio && (!best || d < best.d)) best = { stop, i, d };
+      });
+      if (!best) continue;
+      const { lastIdx, times } = routeStatus(route, dir, now);
+      // una hora estimada que ya pasó es de un bus que dejó de reportar: no cuenta como "en camino"
+      const t = best.i > lastIdx ? times[best.i] : null;
+      const eta = t && t > now - 60 * 1000 ? t : null;
+      out.push({
+        ruta: route.id, tipo: route.type, sentido: dir,
+        destino: stops.at(-1)?.name ?? null,
+        parada: { id: best.stop.id, nombre: best.stop.name, lat: best.stop.lat, lng: best.stop.lng },
+        distanciaM: Math.round(best.d),
+        caminarMin: Math.max(1, Math.round(best.d / WALK_M_PER_MIN)),
+        llegaA: iso(eta),
+        llegaMin: eta ? Math.max(0, Math.round((eta - now) / 60000)) : null,
+      });
+    }
+  }
+  // Primero lo que llega antes; las que no tienen bus en camino, al final por distancia
+  out.sort((a, b) => (a.llegaMin ?? 1e9) - (b.llegaMin ?? 1e9) || a.distanciaM - b.distanciaM);
+  res.json({ radio, paradas: out });
+});
 
 router.get("/:id", (req, res) => {
   const route = routes.find((r) => r.id === req.params.id);

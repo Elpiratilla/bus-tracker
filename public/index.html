@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Go503</title>
   <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
@@ -46,6 +48,7 @@
       <div class="top__links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="#empresas">Para empresas</a>
+        <button class="lang" type="button" data-idioma>English</button>
         <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
           <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
           <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
@@ -57,7 +60,7 @@
 
     <div class="hero__body wrap">
       <div class="hero__copy">
-        <h1>¿Ya viene el <button class="fascia fascia--title" id="h-ruta" type="button" title="Toca para cambiar de ruta" aria-label="Ruta 101. Toca para cambiar de ruta">101</button>?</h1>
+        <h1>¿Ya viene la <button class="fascia fascia--title" id="h-ruta" type="button" title="Toca para cambiar de ruta" aria-label="Ruta 101. Toca para cambiar de ruta">101</button>?</h1>
         <p class="hero__lead">Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.</p>
         <div class="hero__actions">
           <a class="btn btn--anil" id="cta-mapa" href="/mapa.html">Ver dónde va mi bus</a>
@@ -142,7 +145,7 @@
           </dl>
           <div class="biz__actions">
             <a class="btn btn--maiz" href="/login.html">Entrar al panel</a>
-            <a class="btn btn--line" href="mailto:ventas@go503.sv?subject=Quiero%20el%20sensor%20go503">Pedir el sensor</a>
+            <a class="btn btn--line" href="#pedir">Pedir el sensor</a>
           </div>
         </div>
 
@@ -159,6 +162,62 @@
           </table>
         </figure>
       </div>
+    </section>
+    <!-- Pedir el sensor: formulario de ventas (se guarda en Supabase, tabla leads) -->
+    <section class="order wrap" id="pedir" aria-labelledby="order-title">
+      <div class="order__copy">
+        <h2 id="order-title">Pide el sensor para tus unidades</h2>
+        <p class="order__lead">Déjanos tus datos y te contactamos para cotizar. Sin compromiso.</p>
+        <ol class="order__steps">
+          <li><b>Te escribimos</b><span>Por WhatsApp o llamada, para saber cuántas unidades y qué rutas tienes.</span></li>
+          <li><b>Instalamos el sensor</b><span>En cada unidad, en menos de una hora por bus y sin tocar el motor.</span></li>
+          <li><b>Ves tu flota</b><span>Te damos acceso al panel y desde ese día sigues tus buses en vivo.</span></li>
+        </ol>
+      </div>
+
+      <form class="order__form" id="f-pedir" novalidate>
+        <div class="order__fields" id="pedir-campos">
+          <div class="field">
+            <label for="p-nombre">Tu nombre</label>
+            <input id="p-nombre" name="nombre" autocomplete="name" maxlength="80" required>
+          </div>
+          <div class="field">
+            <label for="p-telefono">Teléfono o WhatsApp</label>
+            <input id="p-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="7123-4567" required>
+          </div>
+          <div class="field">
+            <label for="p-empresa">Empresa o cooperativa <small>(opcional)</small></label>
+            <input id="p-empresa" name="empresa" autocomplete="organization" maxlength="80">
+          </div>
+          <div class="field field--half">
+            <label for="p-unidades">¿Cuántas unidades?</label>
+            <input id="p-unidades" name="unidades" type="number" min="1" max="5000" inputmode="numeric" placeholder="10">
+          </div>
+          <div class="field field--half">
+            <label for="p-ciudad">Ciudad</label>
+            <input id="p-ciudad" name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="San Salvador">
+          </div>
+          <div class="field">
+            <label for="p-correo">Correo <small>(opcional)</small></label>
+            <input id="p-correo" name="correo" type="email" autocomplete="email" maxlength="120">
+          </div>
+          <div class="field">
+            <label for="p-mensaje">¿Algo más que debamos saber? <small>(opcional)</small></label>
+            <textarea id="p-mensaje" name="mensaje" rows="3" maxlength="600" placeholder="Rutas, horarios, lo que necesites"></textarea>
+          </div>
+          <!-- trampa para bots: escondido para las personas -->
+          <div class="order__trap" aria-hidden="true"><label for="p-sitio">Sitio web</label><input id="p-sitio" name="sitio" tabindex="-1" autocomplete="off"></div>
+          <p class="order__error" id="pedir-error" role="alert" hidden></p>
+          <button class="btn btn--maiz order__send" type="submit" id="pedir-enviar">Enviar solicitud</button>
+        </div>
+
+        <div class="order__done" id="pedir-listo" tabindex="-1" hidden>
+          <svg class="order__check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="3" pathLength="1"/><path d="M15 27l7 7 15-16" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg>
+          <h3 id="pedir-gracias">Recibimos tu solicitud</h3>
+          <p id="pedir-detalle">Te escribimos pronto.</p>
+          <button class="btn btn--line" type="button" id="pedir-otra">Enviar otra</button>
+        </div>
+      </form>
     </section>
   </main>
 

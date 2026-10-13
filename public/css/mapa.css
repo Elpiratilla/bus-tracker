@@ -363,6 +363,95 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .leaflet-control-attribution a { color: var(--ink); }
 .leaflet-bar a { background: var(--card); color: var(--ink); border-color: var(--line); }
 
+/* Cerca de mí */
+.near {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: .4rem;
+  height: 2.4rem;
+  padding: 0 .85rem;
+  background: var(--anil);
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  font: 700 .9rem/1 var(--sans);
+  cursor: pointer;
+  transition: background-color .15s, transform .08s;
+}
+.near:hover { background: color-mix(in srgb, var(--anil) 80%, var(--torogoz)); }
+.near:active { transform: scale(.96); }
+.near:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.near[aria-busy="true"] .ico { animation: locate 1s ease-in-out infinite; }
+@keyframes locate { 50% { transform: scale(.75); opacity: .6; } }
+@media (max-width: 640px) {
+  .near { width: 2.4rem; padding: 0; justify-content: center; }
+  .near__text { display: none; }
+}
+
+/* Mi ubicación en el mapa */
+.me { width: 18px; height: 18px; background: #2F80ED; border: 3px solid #fff; border-radius: 50%; box-shadow: 0 0 0 0 rgba(47, 128, 237, .5); animation: me 2s ease-out infinite; }
+@keyframes me { to { box-shadow: 0 0 0 16px rgba(47, 128, 237, 0); } }
+
+/* Lista de paradas cerca */
+.nearby { margin-bottom: 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line); animation: sheet .3s cubic-bezier(.2, .8, .3, 1); }
+@keyframes sheet { from { opacity: 0; transform: translateY(12px); } }
+.nearby__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.nearby__head h2 { margin: 0; font: 400 1.4rem/1.1 var(--serif); }
+.nearby__close { padding: .4rem .8rem; background: var(--paper); border: 0; border-radius: 999px; color: var(--ink); font: 700 .85rem/1 var(--sans); cursor: pointer; }
+.nearby__close:hover { color: var(--torogoz); }
+.nearby__note { margin: .35rem 0 .7rem; color: var(--muted); font-size: .88rem; }
+.nearby__list { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.nearby__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .8rem;
+  width: 100%;
+  padding: .65rem .75rem;
+  background: var(--paper);
+  border: 1.5px solid transparent;
+  border-radius: 14px;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  animation: sheet .3s cubic-bezier(.2, .8, .3, 1) both;
+  animation-delay: calc(var(--i, 0) * 50ms);
+  transition: border-color .15s;
+}
+.nearby__item:hover { border-color: var(--torogoz); }
+.nearby__item:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.nearby__num { display: grid; place-items: center; min-width: 2.8rem; height: 2.3rem; padding: 0 .5rem; background: var(--anil); border-radius: 8px; color: var(--maiz); font: 1.15rem/1 var(--serif); }
+.nearby__txt { display: grid; gap: .1rem; min-width: 0; }
+.nearby__txt b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nearby__txt span { color: var(--muted); font-size: .85rem; }
+.nearby__eta { text-align: right; font-weight: 700; white-space: nowrap; }
+.nearby__eta small { display: block; color: var(--muted); font-weight: 500; font-size: .78rem; }
+.nearby__eta--soon { color: var(--torogoz); }
+
+/* Favoritas: la estrella junto al número de ruta */
+.next__side { display: grid; justify-items: center; gap: .4rem; }
+.fav {
+  display: grid;
+  place-items: center;
+  width: 2.3rem; height: 2.3rem;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s, background-color .15s;
+}
+.fav:hover { background: var(--paper); color: var(--maiz); }
+.fav:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.fav .ico { width: 1.35rem; height: 1.35rem; }
+.fav[aria-pressed="true"] { --star-fill: var(--maiz); color: var(--maiz); }
+.fav.is-pop .ico { animation: star .45s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes star { 40% { transform: scale(1.45) rotate(-12deg); } }
+.chip__star { width: .8rem; height: .8rem; margin-left: -.1rem; --star-fill: var(--maiz); color: var(--maiz); }
+.chip[aria-current="true"] .chip__star { color: var(--maiz); }
+
 /* ---------- Panel inferior ---------- */
 .panel {
   position: relative;
@@ -555,11 +644,50 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   .next__eta strong { font-size: 3.2rem; }
 }
 
+/* ---------- Movimiento que cuenta lo que pasa ---------- */
+/* La parada y los minutos voltean como letrero de paletas cuando cambian */
+@keyframes flap {
+  0%   { transform: perspective(500px) rotateX(-85deg); opacity: 0; }
+  60%  { transform: perspective(500px) rotateX(12deg); opacity: 1; }
+  100% { transform: perspective(500px) rotateX(0); }
+}
+.flap { display: inline-block; transform-origin: 50% 0; animation: flap .45s cubic-bezier(.3, .7, .4, 1); }
+h1.flap { display: block; }
+/* "¡Ya viene!" late para verlo de lejos */
+@keyframes nudge { 0%, 100% { transform: none; } 30% { transform: scale(1.06) rotate(-1deg); } 60% { transform: scale(.98); } }
+.next__eta strong.now { display: inline-block; color: var(--torogoz); transform-origin: left center; animation: nudge 1.6s ease-in-out infinite; }
+/* Cuando el bus pasa a la siguiente parada, esa fila se ilumina */
+.stop--advance { animation: advance 1.8s ease-out; }
+@keyframes advance { from { background: color-mix(in srgb, var(--maiz) 35%, transparent); } }
+/* El panel sube como hoja al abrir la página */
+.panel { animation: sheet-up .5s cubic-bezier(.2, .8, .3, 1) both; }
+@keyframes sheet-up { from { transform: translateY(40px); opacity: 0; } }
+
 @media (prefers-reduced-motion: reduce) {
-  .pulse { animation: none; }
+  .pulse, .flap, .next__eta strong.now, .stop--advance, .panel, .nearby, .nearby__item, .me, .fav.is-pop .ico { animation: none !important; }
 }
 
 @media (max-width: 360px) {
   .logo { font-size: 1.2rem; }
   .seg button { padding: .4rem .5rem; font-size: .8rem; }
 }
+/* Cambio de modo claro/oscuro: fundido suave en lugar de salto */
+::view-transition-old(root) { animation: theme-out .35s ease both; }
+::view-transition-new(root) { animation: theme-in .35s ease both; }
+@keyframes theme-out { to { opacity: 0; } }
+@keyframes theme-in { from { opacity: 0; } }
+
+/* Cambiar idioma */
+.lang {
+  flex: none;
+  height: 2.4rem;
+  padding: 0 .7rem;
+  background: var(--paper);
+  border: 0;
+  border-radius: 999px;
+  color: var(--ink);
+  font: 700 .85rem/1 var(--sans);
+  cursor: pointer;
+}
+.lang:hover { color: var(--torogoz); }
+.lang:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }

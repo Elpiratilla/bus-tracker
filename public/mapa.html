@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Go503</title>
   <meta name="description" content="Mira cuánto tarda tu bus entre cada parada, en tiempo real.">
@@ -52,6 +54,14 @@
       <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
+    <symbol id="i-locate" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4" fill="currentColor"/>
+      <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 1.5V4M12 20v2.5M1.5 12H4M20 12h2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z" fill="var(--star-fill, none)" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
     <symbol id="i-micro" viewBox="0 0 24 24">
       <path d="M2 16V8a2 2 0 0 1 2-2h9l5 5h2a2 2 0 0 1 2 2v3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
       <path d="M13 6v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -77,6 +87,11 @@
           <label class="visually-hidden" for="buscar">Buscar ruta o parada</label>
           <input id="buscar" type="search" placeholder="Busca tu ruta o parada" autocomplete="off" spellcheck="false" enterkeyhint="search">
         </div>
+        <button class="near" id="cerca" type="button" aria-label="Paradas cerca de mí">
+          <svg class="ico" aria-hidden="true"><use href="#i-locate"/></svg>
+          <span class="near__text">Cerca de mí</span>
+        </button>
+        <button class="lang" type="button" data-idioma>EN</button>
         <button class="theme" id="tema" type="button" aria-label="Cambiar a modo oscuro">
           <svg class="ico" aria-hidden="true"><use href="#i-moon"/></svg>
         </button>
@@ -96,6 +111,16 @@
     <div class="panel">
       <p id="status" class="status" role="status" hidden></p>
 
+      <!-- Paradas cerca de la persona (botón "Cerca de mí") -->
+      <section class="nearby" id="cerca-lista" aria-labelledby="cerca-titulo" hidden>
+        <div class="nearby__head">
+          <h2 id="cerca-titulo">Cerca de ti</h2>
+          <button class="nearby__close" type="button" id="cerca-cerrar">Cerrar</button>
+        </div>
+        <p class="nearby__note" id="cerca-nota"></p>
+        <ul class="nearby__list" id="cerca-items"></ul>
+      </section>
+
       <div class="dir" id="sentidos" role="group" aria-label="Sentido de la ruta" hidden></div>
 
       <section class="next" aria-labelledby="next-stop">
@@ -103,7 +128,12 @@
           <h1 class="next__stop" id="next-stop">Buscando tu bus…</h1>
           <p class="next__eta" id="next-eta"></p>
         </div>
-        <span class="fascia" id="fascia">101</span>
+        <div class="next__side">
+          <span class="fascia" id="fascia">101</span>
+          <button class="fav" id="fav" type="button" aria-pressed="false" aria-label="Guardar la ruta en favoritas" title="Guardar en favoritas">
+            <svg class="ico" aria-hidden="true"><use href="#i-star"/></svg>
+          </button>
+        </div>
         <p class="next__upd" id="upd"></p>
       </section>
 

@@ -35,6 +35,66 @@ $("#tabs").addEventListener("keydown", (e) => {
   $(`#tab-${next}`).focus();
 });
 
+// ---------- Mostrar / ocultar contraseña ----------
+document.querySelectorAll("[data-ver]").forEach((b) => b.addEventListener("click", () => {
+  const input = $(`#${b.dataset.ver}`);
+  const ver = input.type === "password";
+  input.type = ver ? "text" : "password";
+  b.textContent = ver ? "Ocultar" : "Ver";
+  b.setAttribute("aria-pressed", String(ver));
+  b.setAttribute("aria-label", ver ? "Ocultar contraseña" : "Mostrar contraseña");
+  input.focus();
+}));
+
+// ---------- Qué tan segura es la contraseña ----------
+const NIVELES = ["Al menos 8 caracteres.", "Muy corta todavía.", "Aceptable. Con números o símbolos queda mejor.", "Buena contraseña.", "Muy segura."];
+$("#c-pass").addEventListener("input", (e) => {
+  const p = e.target.value;
+  let n = 0;
+  if (p.length >= 8) n = 2;
+  if (p.length >= 8 && /\d/.test(p) && /[a-zA-Z]/.test(p)) n = 3;
+  if (p.length >= 12 && /\d/.test(p) && /[^a-zA-Z0-9]/.test(p)) n = 4;
+  if (p && p.length < 8) n = 1;
+  const barra = $("#c-pass-barra");
+  barra.style.width = `${n * 25}%`;
+  barra.dataset.nivel = n;
+  $("#c-pass-nivel").textContent = NIVELES[n];
+});
+
+// ---------- Código de invitación: se revisa mientras se escribe ----------
+// Formato GO503-XXXX-XXXX: los guiones se ponen solos
+let codeTimer = null;
+let codeAsked = "";
+function setCodeState(estado, texto) {
+  $("#c-codigo").closest(".code-check").dataset.estado = estado;
+  const s = $("#c-codigo-estado");
+  s.dataset.estado = estado;
+  s.textContent = texto;
+  if (estado === "mal") $("#c-codigo").setAttribute("aria-invalid", "true");
+  else $("#c-codigo").removeAttribute("aria-invalid");
+}
+$("#c-codigo").addEventListener("input", (e) => {
+  const raw = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const body = raw.startsWith("GO503") ? raw.slice(5) : raw;
+  const parts = [body.slice(0, 4), body.slice(4, 8)].filter(Boolean);
+  const formatted = raw.length <= 5 && "GO503".startsWith(raw) ? raw : ["GO503", ...parts].join("-");
+  if (formatted !== e.target.value) e.target.value = formatted;
+
+  clearTimeout(codeTimer);
+  if (formatted.length < 15) return setCodeState("", "Viene en el correo o la hoja que te dimos con el sensor.");
+  if (formatted === codeAsked) return;
+  setCodeState("revisando", "Revisando el código…");
+  codeTimer = setTimeout(async () => {
+    codeAsked = formatted;
+    const r = await fetch("/api/empresa/codigo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ codigo: formatted }) })
+      .then((x) => x.json()).catch(() => null);
+    if ($("#c-codigo").value !== formatted) return; // ya escribió otra cosa
+    if (!r || r.error) return setCodeState("", r?.error || "No pudimos revisar el código ahora. Puedes seguir.");
+    setCodeState(r.valido ? "ok" : "mal", r.valido ? "Código válido. Ya casi." : "Ese código no existe o ya se usó.");
+    if (r.valido) $("#c-empresa").focus();
+  }, 350);
+});
+
 // ---------- Entrar ----------
 $("#f-entrar").addEventListener("submit", (e) => {
   e.preventDefault();

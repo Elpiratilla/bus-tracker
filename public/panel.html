@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Panel: Go503</title>
   <meta name="theme-color" content="#0E1438">
@@ -23,6 +25,8 @@
     <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 0 0 5 5L14 17l-1 4-2-2-6.5-6.5L2.5 10.5l4-1 5.5-5.5a4 4 0 0 0 2.5 2.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11.3 11.7L20 3M16.5 6.5l3 3M14 9l2.5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.5A6.5 6.5 0 0 1 21.5 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="18" r="1.2" fill="currentColor"/></symbol>
     <symbol id="i-stop" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.5" r="1.2" fill="currentColor"/></symbol>
@@ -37,16 +41,34 @@
         <a href="#unidades"><svg class="ico" aria-hidden="true"><use href="#i-bus"/></svg>Unidades</a>
         <a href="#mantenimiento"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Mantenimiento<span class="badge" id="badge-mant" hidden></span></a>
         <a href="#reportes"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Reportes</a>
+        <a href="#clientes" id="nav-clientes" hidden><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg>Clientes<span class="badge" id="badge-clientes" hidden></span></a>
         <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
       </nav>
       <div class="side__foot">
         <p class="side__company" id="company"></p>
         <p class="side__email" id="email"></p>
         <button class="btn btn--line" type="button" id="logout">Cerrar sesión</button>
+        <button class="lang lang--side" type="button" data-idioma>English</button>
       </div>
     </aside>
 
     <main class="main">
+      <!-- Alertas de la flota: sin señal, motor caliente, velocidad, combustible, fallas y aceite -->
+      <div class="alerts" id="alertas" hidden>
+        <button class="alerts__btn" id="btn-alertas" type="button" aria-expanded="false" aria-controls="alertas-pop">
+          <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
+          <span class="visually-hidden">Alertas</span>
+          <span class="alerts__count" id="alertas-n" hidden></span>
+        </button>
+        <div class="alerts__pop" id="alertas-pop" role="region" aria-label="Alertas de tu flota" hidden>
+          <div class="alerts__head">
+            <h2>Alertas</h2>
+            <button class="btn btn--ghost btn--sm" type="button" id="alertas-vistas">Marcar como vistas</button>
+          </div>
+          <ul class="alerts__list" id="alertas-list"></ul>
+        </div>
+      </div>
+
       <p class="msg" id="msg" role="alert" hidden></p>
 
       <!-- Activar empresa (cuenta sin empresa todavía) -->
@@ -120,17 +142,48 @@
         </section>
       </section>
 
+      <!-- Clientes interesados: llegan del formulario "Pedir el sensor" (solo administradores) -->
+      <section class="view" id="v-clientes" hidden>
+        <div class="head">
+          <div><h1>Clientes interesados</h1><p>Las personas que pidieron el sensor desde la portada. Márcalas según avanza la venta.</p><p class="muted" id="cli-resumen"></p></div>
+        </div>
+        <div class="filters">
+          <label for="cli-buscar" class="visually-hidden">Buscar cliente</label>
+          <input class="input" id="cli-buscar" type="search" placeholder="Buscar por nombre, empresa, teléfono o ciudad" autocomplete="off" style="flex:1;min-width:14rem">
+          <label for="cli-estado" class="visually-hidden">Mostrar</label>
+          <select class="select" id="cli-estado" style="width:auto">
+            <option value="activos">Pendientes</option>
+            <option value="todos">Todos</option>
+            <option value="nuevo">Nuevos</option>
+            <option value="contactado">Contactados</option>
+            <option value="vendido">Vendidos</option>
+            <option value="descartado">Descartados</option>
+          </select>
+        </div>
+        <div class="panel table-wrap" id="clientes" style="margin-top:.8rem"></div>
+      </section>
+
       <!-- Códigos de invitación (solo administradores) -->
       <section class="view" id="v-codigos" hidden>
         <div class="head">
-          <div><h1>Códigos de invitación</h1><p>Crea un código por cada empresa que compre el sensor. Cada código sirve una sola vez.</p></div>
+          <div><h1>Códigos de invitación</h1><p>Crea un código por cada empresa que compre el sensor. Cada código sirve una sola vez.</p><p class="muted" id="cod-resumen"></p></div>
         </div>
         <form class="panel report filters" id="f-codigo" novalidate>
           <label for="cod-nota" class="visually-hidden">Para quién es el código</label>
           <input class="input" id="cod-nota" maxlength="120" placeholder="Para quién es (ej. Transportes Pérez)" style="flex:1;min-width:14rem">
           <button class="btn btn--anil" type="submit">Crear código</button>
         </form>
-        <div class="panel table-wrap" id="codigos" style="margin-top:1rem"></div>
+        <div class="filters" style="margin-top:1rem">
+          <label for="cod-buscar" class="visually-hidden">Buscar código o empresa</label>
+          <input class="input" id="cod-buscar" type="search" placeholder="Buscar por código, nota o empresa" autocomplete="off" style="flex:1;min-width:14rem">
+          <label for="cod-estado" class="visually-hidden">Mostrar</label>
+          <select class="select" id="cod-estado" style="width:auto">
+            <option value="todos">Todos</option>
+            <option value="disponibles">Disponibles</option>
+            <option value="usados">Usados</option>
+          </select>
+        </div>
+        <div class="panel table-wrap" id="codigos" style="margin-top:.8rem"></div>
       </section>
     </main>
   </div>
@@ -207,6 +260,34 @@
       <div class="dialog__actions">
         <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
         <button class="btn btn--anil" type="submit">Registrar servicio</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Editar la nota de un código de invitación -->
+  <dialog id="dlg-codigo" aria-labelledby="cd-titulo">
+    <h2 id="cd-titulo">Editar código</h2>
+    <p id="cd-ayuda"></p>
+    <form class="form" id="f-cod-editar" novalidate>
+      <p class="msg" id="cd-msg" role="alert" hidden></p>
+      <div class="field"><label for="cd-nota">Para quién es</label><input class="input" id="cd-nota" maxlength="120" placeholder="Transportes Pérez"><small>Déjalo vacío para quitar la nota.</small></div>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn--anil" type="submit">Guardar cambios</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Nota interna sobre un cliente -->
+  <dialog id="dlg-cliente" aria-labelledby="cl-titulo">
+    <h2 id="cl-titulo">Nota</h2>
+    <p id="cl-ayuda">Solo la ven los administradores.</p>
+    <form class="form" id="f-cliente" novalidate>
+      <p class="msg" id="cl-msg" role="alert" hidden></p>
+      <div class="field"><label for="cl-nota">Nota</label><textarea class="textarea" id="cl-nota" maxlength="600" placeholder="Llamar el lunes, quiere 12 unidades para la 101"></textarea></div>
+      <div class="dialog__actions">
+        <button class="btn btn--ghost" type="button" data-cerrar>Cancelar</button>
+        <button class="btn btn--anil" type="submit">Guardar nota</button>
       </div>
     </form>
   </dialog>

@@ -3,7 +3,8 @@ const { supa, api, $, el, showMsg } = window.go503;
 
 const REFRESH_MS = 5000;
 const CARTO_KEY = "cb1_483z_1_4a6102fca3ea19c0048a0ded"; // la misma del mapa público
-const VIEWS = ["flota", "unidades", "mantenimiento", "reportes", "codigos"];
+const VIEWS = ["flota", "unidades", "mantenimiento", "reportes", "clientes", "codigos"];
+const ADMIN_VIEWS = ["clientes", "codigos"];
 let isAdmin = false;
 const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 const SERVICIOS = { aceite: "Cambio de aceite", frenos: "Frenos", llantas: "Llantas", general: "Revisión general", otro: "Otro" };
@@ -15,9 +16,9 @@ let selected = null;
 
 // ---------- Utilidades ----------
 const km = (n) => `${fmt(n, n != null && n < 100 ? 1 : 0)} km`; // decimales solo cuando son pocos km
-const fmt = (n, d = 0) => (n == null ? "–" : Number(n).toLocaleString("es-SV", { maximumFractionDigits: d, minimumFractionDigits: d }));
-const fecha = (iso) => new Date(iso).toLocaleDateString("es-SV", { day: "numeric", month: "short", year: "numeric" });
-const hora = (t) => new Date(t).toLocaleTimeString("es-SV", { hour: "2-digit", minute: "2-digit", hour12: false });
+const fmt = (n, d = 0) => (n == null ? "–" : Number(n).toLocaleString((window.go503Idioma?.locale || "es-SV"), { maximumFractionDigits: d, minimumFractionDigits: d }));
+const fecha = (iso) => new Date(iso).toLocaleDateString((window.go503Idioma?.locale || "es-SV"), { day: "numeric", month: "short", year: "numeric" });
+const hora = (t) => new Date(t).toLocaleTimeString((window.go503Idioma?.locale || "es-SV"), { hour: "2-digit", minute: "2-digit", hour12: false });
 
 function hace(iso) {
   if (!iso) return "Nunca";
@@ -64,9 +65,17 @@ document.querySelectorAll("dialog").forEach((d) =>
   d.querySelectorAll("[data-cerrar]").forEach((b) => b.addEventListener("click", () => d.close())));
 
 // ---------- Navegación ----------
+// Cambio de sección con una transición suave (si el navegador la soporta)
+let firstRoute = true;
 function route() {
+  if (!firstRoute && document.startViewTransition && !reduceMotion.matches) {
+    document.startViewTransition(showRoute);
+  } else showRoute();
+  firstRoute = false;
+}
+function showRoute() {
   const asked = location.hash.slice(1);
-  const view = VIEWS.includes(asked) && (asked !== "codigos" || isAdmin) ? asked : "flota";
+  const view = VIEWS.includes(asked) && (!ADMIN_VIEWS.includes(asked) || isAdmin) ? asked : "flota";
   VIEWS.forEach((v) => { $(`#v-${v}`).hidden = v !== view; });
   document.querySelectorAll(".nav a").forEach((a) => {
     if (a.getAttribute("href") === `#${view}`) a.setAttribute("aria-current", "page");
@@ -79,6 +88,7 @@ function route() {
   if (view === "mantenimiento") loadMantenimiento();
   if (view === "reportes") loadReportes();
   if (view === "codigos") loadCodigos();
+  if (view === "clientes") loadClientes();
 }
 addEventListener("hashchange", route);
 
@@ -105,6 +115,23 @@ function estado(u) {
   if (!u.ultimaSenal) return "El sensor aún no transmite";
   if (!u.enLinea) return `Sin señal, última ${hace(u.ultimaSenal)}`;
   return u.parada ? `En ${u.parada}` : "En ruta";
+}
+
+const lastEstado = new Map();
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+// Mueve un marcador suavemente durante el intervalo de actualización (sin saltos)
+function slideMarker(m, to) {
+  const from = m.getLatLng();
+  if (reduceMotion.matches || (from.lat === to[0] && from.lng === to[1])) return m.setLatLng(to);
+  cancelAnimationFrame(m._slide);
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / REFRESH_MS);
+    m.setLatLng([from.lat + (to[0] - from.lat) * k, from.lng + (to[1] - from.lng) * k]);
+    if (k < 1) m._slide = requestAnimationFrame(step);
+  };
+  m._slide = requestAnimationFrame(step);
 }
 
 async function loadFlota() {
@@ -136,21 +163,31 @@ async function loadFlota() {
     b.children[1].append(el("span", "unit__name", u.nombre), st);
     b.append(el("span", "unit__meta", `${estado(u)}${u.placa ? `. Placa ${u.placa}` : ""}`));
     b.addEventListener("click", () => openDetalle(u.id));
+    // si cambió de estado (se conectó o perdió la señal) la fila se marca un momento
+    const before = lastEstado.get(u.id);
+    if (before !== undefined && before !== u.enLinea) b.classList.add(u.enLinea ? "unit--up" : "unit--down");
+    lastEstado.set(u.id, u.enLinea);
     li.append(b);
     return li;
   }));
 
-  // Mapa
+  // Mapa: cada marcador se crea una vez y luego se desliza a su nueva posición
   const seen = new Set();
   flota.filter((u) => u.lat != null).forEach((u) => {
     seen.add(u.id);
     let m = markers.get(u.id);
     if (!m) {
-      m = L.marker([u.lat, u.lng], { keyboard: false, title: u.nombre }).addTo(map);
+      m = L.marker([u.lat, u.lng], { keyboard: false, title: u.nombre, icon: markerIcon(u) }).addTo(map);
       m.on("click", () => openDetalle(u.id));
       markers.set(u.id, m);
-    } else m.setLatLng([u.lat, u.lng]);
-    m.setIcon(markerIcon(u));
+    } else {
+      slideMarker(m, [u.lat, u.lng]);
+      const mk = m.getElement()?.querySelector(".fleet-mk");
+      if (mk) {
+        mk.className = `fleet-mk${u.enLinea ? "" : " fleet-mk--off"}${selected === u.id ? " fleet-mk--sel" : ""}`;
+        mk.textContent = u.ruta ?? "";
+      }
+    }
   });
   markers.forEach((m, id) => { if (!seen.has(id)) { m.remove(); markers.delete(id); } });
   const pts = flota.filter((u) => u.lat != null).map((u) => [u.lat, u.lng]);
@@ -567,7 +604,7 @@ function renderVueltas(vueltas, dias) {
     const d = new Date(Date.now() - (n - 1 - i) * 86400000);
     return d.toLocaleDateString("en-CA", { timeZone: "America/El_Salvador" }); // AAAA-MM-DD
   });
-  const label = (d) => new Date(`${d}T12:00:00`).toLocaleDateString("es-SV", { weekday: "short", day: "numeric" });
+  const label = (d) => new Date(`${d}T12:00:00`).toLocaleDateString((window.go503Idioma?.locale || "es-SV"), { weekday: "short", day: "numeric" });
 
   const table = el("table", "table");
   const head = el("tr");
@@ -583,29 +620,323 @@ function renderVueltas(vueltas, dias) {
   root.replaceChildren(table);
 }
 
-// ---------- Códigos de invitación (administradores) ----------
-async function loadCodigos() {
-  let list;
-  try { list = await api("/admin/codigos"); } catch (err) { return fail(err); }
-  const root = $("#codigos");
-  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Todavía no has creado códigos."));
+// ---------- Alertas de la flota ----------
+const ALERTAS_MS = 20000;
+const ICONO_ALERTA = { grave: "i-stop", aviso: "i-warn" };
+let alertas = [];
+let sinVer = 0;
+const vistas = {
+  get: () => { try { return new Set(JSON.parse(localStorage.getItem("go503-alertas-vistas") || "[]")); } catch { return new Set(); } },
+  set: (ids) => { try { localStorage.setItem("go503-alertas-vistas", JSON.stringify([...ids])); } catch {} },
+};
+
+async function loadAlertas() {
+  try { alertas = await api("/alertas"); } catch { return; }
+  // una alerta que se resolvió y vuelve a pasar cuenta como nueva
+  const seen = vistas.get();
+  const ids = new Set(alertas.map((a) => a.id));
+  const kept = new Set([...seen].filter((id) => ids.has(id)));
+  if (kept.size !== seen.size) vistas.set(kept);
+
+  const n = alertas.filter((a) => !kept.has(a.id)).length;
+  const count = $("#alertas-n");
+  count.hidden = !n;
+  count.textContent = n > 9 ? "9+" : n;
+  $("#btn-alertas").setAttribute("aria-label", n ? `Alertas: ${n} sin ver` : "Alertas");
+  // la campana suena cuando llega una alerta nueva
+  if (n > sinVer) {
+    const b = $("#btn-alertas");
+    b.classList.remove("is-ringing");
+    void b.offsetWidth;
+    b.classList.add("is-ringing");
+  }
+  sinVer = n;
+  if (!$("#alertas-pop").hidden) renderAlertas();
+}
+
+function renderAlertas() {
+  const list = $("#alertas-list");
+  if (!alertas.length) {
+    const li = el("li", "alerts__empty");
+    li.append(el("b", null, "Todo en orden"), el("span", null, "Ninguna unidad necesita atención ahora."));
+    return list.replaceChildren(li);
+  }
+  const seen = vistas.get();
+  list.replaceChildren(...alertas.map((a) => {
+    const li = el("li");
+    const b = el("button", `alert alert--${a.nivel}${seen.has(a.id) ? "" : " alert--new"}`);
+    b.type = "button";
+    const ico = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    ico.setAttribute("class", "ico");
+    ico.setAttribute("aria-hidden", "true");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", `#${ICONO_ALERTA[a.nivel]}`);
+    ico.append(use);
+    const txt = el("span", "alert__txt");
+    txt.append(el("b", null, a.nombre), el("span", null, a.texto));
+    b.append(ico, txt);
+    b.addEventListener("click", () => {
+      closeAlertas();
+      if (a.tipo === "aceite") location.hash = "#mantenimiento";
+      else openDetalle(a.unidad);
+    });
+    li.append(b);
+    return li;
+  }));
+}
+
+function openAlertas() {
+  renderAlertas();
+  $("#alertas-pop").hidden = false;
+  $("#btn-alertas").setAttribute("aria-expanded", "true");
+}
+function closeAlertas() {
+  $("#alertas-pop").hidden = true;
+  $("#btn-alertas").setAttribute("aria-expanded", "false");
+}
+$("#btn-alertas").addEventListener("click", () => ($("#alertas-pop").hidden ? openAlertas() : closeAlertas()));
+$("#alertas-vistas").addEventListener("click", () => {
+  vistas.set(new Set(alertas.map((a) => a.id)));
+  sinVer = 0;
+  $("#alertas-n").hidden = true;
+  $("#btn-alertas").setAttribute("aria-label", "Alertas");
+  renderAlertas();
+});
+document.addEventListener("click", (e) => { if (!$("#alertas").contains(e.target)) closeAlertas(); });
+addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !$("#alertas-pop").hidden) { closeAlertas(); $("#btn-alertas").focus(); }
+});
+
+// ---------- Clientes interesados (administradores) ----------
+const ESTADOS_CLIENTE = { nuevo: "Nuevo", contactado: "Contactado", vendido: "Vendido", descartado: "Descartado" };
+let clientes = [];
+
+async function loadClientes({ soloContar = false } = {}) {
+  try { clientes = await api("/admin/clientes"); } catch (err) { return soloContar ? null : fail(err); }
+  const nuevos = clientes.filter((c) => c.estado === "nuevo").length;
+  const badge = $("#badge-clientes");
+  badge.hidden = !nuevos;
+  badge.textContent = nuevos;
+  badge.setAttribute("aria-label", `${nuevos} nuevos`);
+  if (soloContar) return;
+  const n = (e) => clientes.filter((c) => c.estado === e).length;
+  $("#cli-resumen").textContent = clientes.length
+    ? `${nuevos} ${nuevos === 1 ? "nuevo" : "nuevos"}, ${n("contactado")} en conversación y ${n("vendido")} ${n("vendido") === 1 ? "vendido" : "vendidos"}.`
+    : "";
+  renderClientes();
+}
+
+// WhatsApp: si el número no trae código de país, se asume El Salvador (503)
+const waLink = (tel) => {
+  const d = tel.replace(/\D/g, "");
+  return `https://wa.me/${d.length === 8 ? `503${d}` : d}`;
+};
+
+function renderClientes() {
+  const root = $("#clientes");
+  if (!clientes.length) {
+    const empty = el("div", "empty-state");
+    empty.append(el("h2", null, "Todavía no hay solicitudes"), el("p", null, "Cuando alguien llene «Pide el sensor» en la portada, aparece aquí."));
+    return root.replaceChildren(empty);
+  }
+  const q = $("#cli-buscar").value.trim().toLowerCase();
+  const f = $("#cli-estado").value;
+  const list = clientes.filter((c) =>
+    (f === "todos" || (f === "activos" ? ["nuevo", "contactado"].includes(c.estado) : c.estado === f))
+    && (!q || [c.nombre, c.empresa, c.telefono, c.ciudad, c.correo].some((t) => t && t.toLowerCase().includes(q))));
+  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún cliente coincide con el filtro."));
+
   const table = el("table", "table");
   const head = el("tr");
-  ["Código", "Para", "Estado", "Creado"].forEach((t) => head.append(el("th", null, t)));
+  ["Persona", "Contacto", "Flota", "Estado", "Recibido", ""].forEach((t) => head.append(el("th", null, t)));
+  table.append(el("thead"), el("tbody"));
+  table.tHead.append(head);
+  list.forEach((c) => {
+    const tr = el("tr", c.estado === "nuevo" ? "row--new" : null);
+    const who = el("td");
+    who.append(el("b", null, c.nombre), el("small", null, c.empresa || "Sin empresa"));
+    if (c.mensaje) who.append(el("p", "cli__msg", `«${c.mensaje}»`));
+    if (c.nota) who.append(el("p", "cli__nota", `Nota: ${c.nota}`));
+
+    const contact = el("td");
+    const wa = el("a", "cli__link", c.telefono);
+    wa.href = waLink(c.telefono);
+    wa.target = "_blank";
+    wa.rel = "noopener";
+    wa.title = "Escribir por WhatsApp";
+    contact.append(wa);
+    if (c.correo) {
+      const m = el("a", "cli__link cli__link--mail", c.correo);
+      m.href = `mailto:${c.correo}?subject=${encodeURIComponent("Sensor go503")}`;
+      contact.append(m);
+    }
+
+    const flota = el("td");
+    flota.append(el("span", null, c.unidades ? `${c.unidades} ${c.unidades === 1 ? "unidad" : "unidades"}` : "–"), el("small", null, c.ciudad || ""));
+
+    const estado = el("td");
+    const sel = el("select", `select select--sm estado estado--${c.estado}`);
+    sel.setAttribute("aria-label", `Estado de ${c.nombre}`);
+    Object.entries(ESTADOS_CLIENTE).forEach(([v, t]) => {
+      const o = el("option", null, t);
+      o.value = v;
+      o.selected = v === c.estado;
+      sel.append(o);
+    });
+    sel.addEventListener("change", async () => {
+      try {
+        const upd = await api(`/admin/clientes/${c.id}`, { method: "PATCH", body: { estado: sel.value } });
+        Object.assign(c, upd);
+        sel.className = `select select--sm estado estado--${c.estado}`;
+        tr.classList.toggle("row--new", c.estado === "nuevo");
+        tr.classList.add("row--flash");
+        setTimeout(() => tr.classList.remove("row--flash"), 900);
+        loadClientes({ soloContar: true });
+      } catch (err) { sel.value = c.estado; fail(err); }
+    });
+    estado.append(sel);
+
+    const actions = el("td");
+    const wrap = el("div", "actions");
+    const nota = button(c.nota ? "Editar nota" : "Nota", "btn--ghost btn--sm", () => openCliente(c));
+    nota.setAttribute("aria-label", `Nota sobre ${c.nombre}`);
+    if (c.estado === "vendido") {
+      const cod = button("Crear código", "btn--anil btn--sm", async () => {
+        try {
+          const { codigo } = await api("/admin/codigos", { method: "POST", body: { nota: c.empresa || c.nombre } });
+          await navigator.clipboard?.writeText(codigo).catch(() => {});
+          showMsg(msg, `Código para ${c.empresa || c.nombre}: ${codigo} (ya está copiado). Envíaselo para que se registre.`, "ok");
+        } catch (err) { fail(err); }
+      });
+      cod.setAttribute("aria-label", `Crear código de invitación para ${c.empresa || c.nombre}`);
+      wrap.append(cod);
+    }
+    const del = button("Eliminar", "btn--ghost btn--sm", () => confirmar(
+      `Eliminar a ${c.nombre}`,
+      "Se borra la solicitud y su nota. Esto no se puede deshacer.",
+      "Eliminar",
+      async () => { await api(`/admin/clientes/${c.id}`, { method: "DELETE" }); loadClientes(); }));
+    del.setAttribute("aria-label", `Eliminar a ${c.nombre}`);
+    wrap.append(nota, del);
+    actions.append(wrap);
+
+    tr.append(who, contact, flota, estado, el("td", null, fecha(c.creado)), actions);
+    table.tBodies[0].append(tr);
+  });
+  root.replaceChildren(table);
+}
+$("#cli-buscar").addEventListener("input", renderClientes);
+$("#cli-estado").addEventListener("change", renderClientes);
+
+const dlgCliente = $("#dlg-cliente");
+let editingCliente = null;
+function openCliente(c) {
+  editingCliente = c;
+  $("#cl-titulo").textContent = `Nota sobre ${c.nombre}`;
+  $("#cl-nota").value = c.nota ?? "";
+  $("#cl-msg").hidden = true;
+  dlgCliente.showModal();
+  $("#cl-nota").focus();
+}
+$("#f-cliente").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await api(`/admin/clientes/${editingCliente.id}`, { method: "PATCH", body: { nota: $("#cl-nota").value.trim() || null } });
+    dlgCliente.close();
+    showMsg(msg, "Nota guardada.", "ok");
+    loadClientes();
+  } catch (err) { showMsg($("#cl-msg"), err.message); }
+});
+
+// ---------- Códigos de invitación (administradores) ----------
+let codigos = [];
+
+async function loadCodigos() {
+  try { codigos = await api("/admin/codigos"); } catch (err) { return fail(err); }
+  const libres = codigos.filter((c) => !c.usado).length;
+  $("#cod-resumen").textContent = codigos.length
+    ? `${libres} ${libres === 1 ? "disponible" : "disponibles"} y ${codigos.length - libres} ${codigos.length - libres === 1 ? "usado" : "usados"}.`
+    : "";
+  renderCodigos();
+}
+
+function renderCodigos() {
+  const root = $("#codigos");
+  if (!codigos.length) return root.replaceChildren(el("div", "empty-state", "Todavía no has creado códigos. Escribe para quién es y toca «Crear código»."));
+  const q = $("#cod-buscar").value.trim().toLowerCase();
+  const estado = $("#cod-estado").value;
+  const list = codigos.filter((c) =>
+    (estado === "todos" || (estado === "usados") === Boolean(c.usado))
+    && (!q || [c.codigo, c.nota, c.empresa].some((t) => t && t.toLowerCase().includes(q))));
+  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún código coincide con la búsqueda."));
+
+  const table = el("table", "table");
+  const head = el("tr");
+  ["Código", "Para", "Estado", "Creado", ""].forEach((t) => head.append(el("th", null, t)));
   table.append(el("thead"), el("tbody"));
   table.tHead.append(head);
   list.forEach((c) => {
     const tr = el("tr");
     const code = el("td");
-    code.append(el("b", null, c.codigo));
-    const estado = el("td");
-    if (c.usado) estado.append(el("span", "status", "Usado"), el("small", null, `${c.empresa ?? "Empresa eliminada"}, ${fecha(c.usado)}`));
-    else estado.append(el("span", "status status--on", "Disponible"));
-    tr.append(code, el("td", c.nota ? null : "muted", c.nota ?? "Sin nota"), estado, el("td", null, fecha(c.creado)));
+    code.append(el("b", "code", c.codigo));
+    const estadoTd = el("td");
+    if (c.usado) estadoTd.append(el("span", "status", "Usado"), el("small", null, `${c.empresa ?? "Empresa eliminada"}, ${fecha(c.usado)}`));
+    else estadoTd.append(el("span", "status status--on", "Disponible"));
+
+    const actions = el("td");
+    const wrap = el("div", "actions");
+    const copiar = button("Copiar", "btn--ghost btn--sm", async () => {
+      try { await navigator.clipboard.writeText(c.codigo); copiar.textContent = "Copiado"; }
+      catch { getSelection().selectAllChildren(code.firstChild); copiar.textContent = "Selecciónalo y cópialo"; }
+      setTimeout(() => { copiar.textContent = "Copiar"; }, 1800);
+    });
+    copiar.setAttribute("aria-label", `Copiar ${c.codigo}`);
+    const editar = button("Editar", "btn--ghost btn--sm", () => openCodigo(c));
+    editar.setAttribute("aria-label", `Editar ${c.codigo}`);
+    const eliminar = button("Eliminar", "btn--ghost btn--sm", () => confirmar(
+      `Eliminar ${c.codigo}`,
+      c.usado
+        ? `${c.empresa ?? "La empresa"} lo usó para registrarse y seguirá funcionando igual. Solo se borra de esta lista.`
+        : "Nadie lo ha usado todavía. Si ya se lo diste a alguien, ya no le va a servir para registrarse.",
+      "Eliminar código",
+      async () => {
+        await api(`/admin/codigos/${encodeURIComponent(c.codigo)}`, { method: "DELETE" });
+        showMsg(msg, `Código ${c.codigo} eliminado.`, "ok");
+        loadCodigos();
+      }));
+    eliminar.setAttribute("aria-label", `Eliminar ${c.codigo}`);
+    wrap.append(...(c.usado ? [editar, eliminar] : [copiar, editar, eliminar]));
+    actions.append(wrap);
+
+    tr.append(code, el("td", c.nota ? null : "muted", c.nota ?? "Sin nota"), estadoTd, el("td", null, fecha(c.creado)), actions);
     table.tBodies[0].append(tr);
   });
   root.replaceChildren(table);
 }
+$("#cod-buscar").addEventListener("input", renderCodigos);
+$("#cod-estado").addEventListener("change", renderCodigos);
+
+// Editar la nota de un código
+const dlgCodigo = $("#dlg-codigo");
+let editingCode = null;
+function openCodigo(c) {
+  editingCode = c;
+  $("#cd-titulo").textContent = `Editar ${c.codigo}`;
+  $("#cd-ayuda").textContent = c.usado ? `Lo usó ${c.empresa ?? "una empresa que ya no existe"}.` : "Todavía nadie lo ha usado.";
+  $("#cd-nota").value = c.nota ?? "";
+  $("#cd-msg").hidden = true;
+  dlgCodigo.showModal();
+  $("#cd-nota").focus();
+}
+$("#f-cod-editar").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await api(`/admin/codigos/${encodeURIComponent(editingCode.codigo)}`, { method: "PATCH", body: { nota: $("#cd-nota").value.trim() || null } });
+    dlgCodigo.close();
+    showMsg(msg, `Cambios guardados en ${editingCode.codigo}.`, "ok");
+    loadCodigos();
+  } catch (err) { showMsg($("#cd-msg"), err.message); }
+});
 
 $("#f-codigo").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -660,6 +991,11 @@ $("#f-activar").addEventListener("submit", async (e) => {
     $("#company").textContent = yo.empresa.name;
     isAdmin = Boolean(yo.empresa.is_admin);
     $("#nav-codigos").hidden = !isAdmin;
+    $("#nav-clientes").hidden = !isAdmin;
+    if (isAdmin) loadClientes({ soloContar: true });
+    $("#alertas").hidden = false;
+    loadAlertas();
+    setInterval(loadAlertas, ALERTAS_MS);
     rutas = await fetch("/api/rutas").then((r) => r.json());
     route();
     api("/mantenimiento").then(updateBadge).catch(() => {});

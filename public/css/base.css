@@ -6,6 +6,7 @@
   --maiz: #F2B22E;      /* la unidad y lo próximo */
   --maiz-claro: #FFD36B;
   --torogoz: #0FA39C;   /* en línea, recorrido */
+  --torogoz-texto: #0B7F79; /* el mismo verde, más oscuro para letras sobre blanco (4.8:1) */
   --alerta: #D9434E;    /* fallas y vencidos */
   --papel: #F3F5FB;
   --card: #FFFFFF;

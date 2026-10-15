@@ -5,6 +5,7 @@
   --maiz: #F2B22E;        /* maíz: próxima parada y unidad */
   --torogoz: #0FA39C;     /* turquesa del torogoz: tramo recorrido */
   --alerta: #D9434E;      /* fallas: se cayó la conexión */
+  --torogoz-texto: #0B7F79; /* letras en verde sobre fondo claro (4.6:1 o más) */
 
   --paper: #F6F8FC;
   --card: #FFFFFF;
@@ -30,6 +31,7 @@
     --line: #27305F;
     --track: #34407A;
     --route-todo: rgba(190, 200, 240, .5);
+    --torogoz-texto: #0FA39C;
     color-scheme: dark;
   }
   :root:not([data-theme="light"]) .logo--claro { display: none; }
@@ -43,6 +45,7 @@
   --line: #27305F;
   --track: #34407A;
   --route-todo: rgba(190, 200, 240, .5);
+  --torogoz-texto: #0FA39C;
   color-scheme: dark;
 }
 :root[data-theme="light"] { color-scheme: light; }
@@ -171,11 +174,14 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   font: 700 .9rem/1 var(--sans);
   text-decoration: none;
 }
-.home:hover { color: var(--torogoz); }
+.home:hover { color: var(--torogoz-texto); }
 .home:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
 @media (max-width: 640px) {
   .home { width: 2.4rem; padding: 0; justify-content: center; }
   .home__text { display: none; }
+  /* en el teléfono el botón de inicio ya lleva a la portada: el logo sobra y el buscador necesita ese espacio */
+  .top { gap: .4rem; padding-left: .4rem; }
+  .top .logo { display: none; }
 }
 
 /* Botón de modo claro/oscuro */
@@ -191,7 +197,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   color: var(--ink);
   cursor: pointer;
 }
-.theme:hover { color: var(--torogoz); }
+.theme:hover { color: var(--torogoz-texto); }
 .theme:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
 
 /* Segunda fila: tipo de unidad + rutas, flotando sobre el mapa */
@@ -400,7 +406,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .nearby__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .nearby__head h2 { margin: 0; font: 400 1.4rem/1.1 var(--serif); }
 .nearby__close { padding: .4rem .8rem; background: var(--paper); border: 0; border-radius: 999px; color: var(--ink); font: 700 .85rem/1 var(--sans); cursor: pointer; }
-.nearby__close:hover { color: var(--torogoz); }
+.nearby__close:hover { color: var(--torogoz-texto); }
 .nearby__note { margin: .35rem 0 .7rem; color: var(--muted); font-size: .88rem; }
 .nearby__list { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
 .nearby__item {
@@ -429,7 +435,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .nearby__txt span { color: var(--muted); font-size: .85rem; }
 .nearby__eta { text-align: right; font-weight: 700; white-space: nowrap; }
 .nearby__eta small { display: block; color: var(--muted); font-weight: 500; font-size: .78rem; }
-.nearby__eta--soon { color: var(--torogoz); }
+.nearby__eta--soon { color: var(--torogoz-texto); }
 
 /* Favoritas: la estrella junto al número de ruta */
 .next__side { display: grid; justify-items: center; gap: .4rem; }
@@ -657,7 +663,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 h1.flap { display: block; }
 /* "¡Ya viene!" late para verlo de lejos */
 @keyframes nudge { 0%, 100% { transform: none; } 30% { transform: scale(1.06) rotate(-1deg); } 60% { transform: scale(.98); } }
-.next__eta strong.now { display: inline-block; color: var(--torogoz); transform-origin: left center; animation: nudge 1.6s ease-in-out infinite; }
+.next__eta strong.now { display: inline-block; color: var(--torogoz-texto); transform-origin: left center; animation: nudge 1.6s ease-in-out 3; } /* late 3 veces al llegar, no sin parar */
 /* Cuando el bus pasa a la siguiente parada, esa fila se ilumina */
 .stop--advance { animation: advance 1.8s ease-out; }
 @keyframes advance { from { background: color-mix(in srgb, var(--maiz) 35%, transparent); } }
@@ -691,5 +697,5 @@ h1.flap { display: block; }
   font: 700 .85rem/1 var(--sans);
   cursor: pointer;
 }
-.lang:hover { color: var(--torogoz); }
+.lang:hover { color: var(--torogoz-texto); }
 .lang:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }

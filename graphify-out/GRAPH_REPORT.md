@@ -1,12 +1,19 @@
 # Graph Report - bus-tracker  (2026-10-14)
 
 ## Corpus Check
-- Corpus is ~43,845 words - fits in a single context window. You may not need a graph.
+- 38 files · ~45,761 words
+- Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 7 file(s) not represented in the graph (top: .css 4, (none) 1, .ino 1)
 
 ## Summary
-- 459 nodes · 747 edges · 24 communities (19 shown, 5 thin omitted)
+- 475 nodes · 761 edges · 26 communities (21 shown, 5 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 53 edges (avg confidence: 0.84)
-- Token cost: 464,439 input · 0 output
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `5096e7dc`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Panel de administración
@@ -30,6 +37,8 @@
 - Logo claro
 - Icono PWA 192
 - Icono PWA 512
+- Dirección de diseño de go503
+- Registro antislop 001 (2026-10-14)
 
 ## God Nodes (most connected - your core abstractions)
 1. `openDetalle()` - 11 edges
@@ -46,13 +55,13 @@
 ## Surprising Connections (you probably didn't know these)
 - `Render env vars (Supabase, VAPID, BUS_API_KEY)` --shares_data_with--> `BUS_API_KEY`  [INFERRED]
   render.yaml → firmware/README.md
-- `Sensor product page (sensor.html)` --conceptually_related_to--> `go503 sensor (ESP32 + 4G + GPS)`  [INFERRED]
-  public/sensor.html → firmware/README.md
 - `Rider live map (mapa.html)` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
   public/mapa.html → firmware/README.md
 - `Panel view: Flota en vivo` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
   public/panel.html → firmware/README.md
 - `Panel view: Mantenimiento` --shares_data_with--> `GPS odometer`  [INFERRED]
+  public/panel.html → firmware/README.md
+- `Panel view: Mantenimiento` --shares_data_with--> `OBD-II over CAN (SN65HVD230)`  [INFERRED]
   public/panel.html → firmware/README.md
 
 ## Import Cycles
@@ -60,10 +69,10 @@
 
 ## Hyperedges (group relationships)
 - **CI gated deploy to Render** — github_workflows_ci, github_workflows_ci_smoke_test, render, render_autodeploy_checkspass, api_rutas_endpoint [EXTRACTED 1.00]
-- **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 - **Public marketing site pages** — public_index, public_preguntas, public_sensor, public_mapa, public_login [EXTRACTED 1.00]
+- **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 
-## Communities (24 total, 5 thin omitted)
+## Communities (26 total, 5 thin omitted)
 
 ### Community 0 - "Panel de administración"
 Cohesion: 0.06
@@ -141,25 +150,33 @@ Nodes (3): Favicon Dark Mode Color Scheme, go503 Favicon Logo, Dotted Bus Route 
 Cohesion: 1.00
 Nodes (3): go503 Brand Palette (blue #1E4FBF, navy #0E1F3D, amber #F2B230), go503 Brand, go503 Logo (light variant)
 
+### Community 24 - "Dirección de diseño de go503"
+Cohesion: 0.25
+Nodes (7): Diales, Dirección de diseño de go503, Identidad, Motivo de identidad, Paleta (en `public/css/base.css`), Reglas de contenido, Tipografía
+
+### Community 25 - "Registro antislop 001 (2026-10-14)"
+Cohesion: 0.25
+Nodes (7): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Verificación (navegador del app, servidor local)
+
 ## Knowledge Gaps
-- **18 isolated node(s):** `dotenv`, `go503 sensor firmware README`, `J1939 (heavy diesel, planned)`, `Legacy bus sensors (ignition, fuel, DS18B20, MPU6050)`, `Local test tunnel (cloudflared/ngrok)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 199 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **18 isolated node(s):** `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark`, `Front-View Bus Icon`, `Brand Palette (blue background, orange accent, white marks)` (+13 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 213 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `@supabase/supabase-js` connect `Servidor y dependencias` to `Datos y autenticación`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
-- **What connects `dotenv`, `go503 sensor firmware README`, `J1939 (heavy diesel, planned)` to the rest of the system?**
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+- **What connects `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark` to the rest of the system?**
   _18 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Panel de administración` be split into smaller, more focused modules?**
   _Cohesion score 0.06151062867480778 - nodes in this community are weakly interconnected._
 - **Why does `web-push` connect `Servidor y dependencias` to `Alertas y push`?**
-  _High betweenness centrality (0.013) - this node is a cross-community bridge._
+  _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
   _Cohesion score 0.05576923076923077 - nodes in this community are weakly interconnected._
 - **Why does `routes` connect `ETA y rutas (geo)` to `Datos y autenticación`, `Alertas y push`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._

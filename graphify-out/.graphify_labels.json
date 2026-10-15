@@ -1,1 +1,26 @@
-{"0": "Panel de administración", "1": "ETA y rutas (geo)", "2": "Mapa de pasajeros", "3": "Datos y autenticación", "4": "Servidor y dependencias", "5": "Sensor y páginas públicas", "6": "Alertas y push", "7": "Firmware: cola y red", "8": "Landing y pedidos", "9": "Firmware: sensores", "10": "Firmware: GPS", "11": "CI y despliegue Render", "12": "Firmware: OBD-II", "13": "Acceso por código", "14": "Logo oscuro", "15": "Página del sensor", "16": "Icono Apple", "17": "Favicon", "18": "Logo claro", "19": "Icono PWA 192", "20": "Icono PWA 512", "21": "Tema del sitio", "22": "Config de ejemplo", "23": "Service worker"}
+{
+  "0": "Panel de administración",
+  "1": "ETA y rutas (geo)",
+  "2": "Mapa de pasajeros",
+  "3": "Datos y autenticación",
+  "4": "Servidor y dependencias",
+  "5": "Sensor y páginas públicas",
+  "6": "Alertas y push",
+  "7": "Firmware: cola y red",
+  "8": "Landing y pedidos",
+  "9": "Firmware: sensores",
+  "10": "Firmware: GPS",
+  "11": "CI y despliegue Render",
+  "12": "Firmware: OBD-II",
+  "13": "Acceso por código",
+  "14": "Logo oscuro",
+  "15": "Página del sensor",
+  "16": "Icono Apple",
+  "17": "Favicon",
+  "18": "Logo claro",
+  "19": "Icono PWA 192",
+  "20": "Icono PWA 512",
+  "21": "Tema del sitio",
+  "22": "Config de ejemplo",
+  "23": "Service worker"
+}

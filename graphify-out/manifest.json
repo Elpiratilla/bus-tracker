@@ -48,16 +48,16 @@
     "semantic_hash": "4711d82ee98f639b53cae56f31fe3d41"
   },
   "public/js/idioma.js": {
-    "mtime": 1792032421.241147,
-    "seen": 1792036224.387987,
-    "ast_hash": "83a5dafa2aebbd96431538cd3f5d8681",
-    "semantic_hash": "83a5dafa2aebbd96431538cd3f5d8681"
+    "mtime": 1792037951.51434,
+    "seen": 1792037967.475768,
+    "ast_hash": "2ae53cae1fc00607bc8a509b39336816",
+    "semantic_hash": ""
   },
   "public/js/landing.js": {
-    "mtime": 1791863250.2966585,
-    "seen": 1792036224.3879879,
-    "ast_hash": "4eb38e21ba84c117afd688879587db20",
-    "semantic_hash": "4eb38e21ba84c117afd688879587db20"
+    "mtime": 1792037189.0570047,
+    "seen": 1792037967.475769,
+    "ast_hash": "06b0ee7be146b8cf60248dfae8772ae6",
+    "semantic_hash": ""
   },
   "public/js/mapa.js": {
     "mtime": 1791861532.08997,
@@ -222,10 +222,10 @@
     "semantic_hash": "1d3e2cc801b46c4685fe1da78b75551e"
   },
   "public/index.html": {
-    "mtime": 1792032421.2223475,
-    "seen": 1792036224.388022,
-    "ast_hash": "a72bbbb76d518b3192aadcb1cca7d33e",
-    "semantic_hash": "a72bbbb76d518b3192aadcb1cca7d33e"
+    "mtime": 1792037164.7732887,
+    "seen": 1792037967.475816,
+    "ast_hash": "620b74b01049004c40c31e514b4748a8",
+    "semantic_hash": ""
   },
   "public/login.html": {
     "mtime": 1791861532.0893817,
@@ -234,22 +234,22 @@
     "semantic_hash": "a37b06b542760170d8a4aba2e2e9b409"
   },
   "public/mapa.html": {
-    "mtime": 1792032421.2067928,
-    "seen": 1792036224.388024,
-    "ast_hash": "034b77185f29baf8107804258c6ce1a0",
-    "semantic_hash": "034b77185f29baf8107804258c6ce1a0"
+    "mtime": 1792037861.2257586,
+    "seen": 1792037967.475819,
+    "ast_hash": "383544e557b00941fd33e8d31c3f32a3",
+    "semantic_hash": ""
   },
   "public/panel.html": {
-    "mtime": 1791861532.0896728,
-    "seen": 1792036224.388026,
-    "ast_hash": "1b2ba9e2cc84a617f7b8d0d708b7e2b0",
-    "semantic_hash": "1b2ba9e2cc84a617f7b8d0d708b7e2b0"
+    "mtime": 1792037949.776414,
+    "seen": 1792037967.47582,
+    "ast_hash": "6a1e963236fc14a86cdf3f12bf8406c5",
+    "semantic_hash": ""
   },
   "public/preguntas.html": {
-    "mtime": 1792032421.2258265,
-    "seen": 1792036224.388027,
-    "ast_hash": "2ba96f9b9a01009a58c88fabfedaf4ed",
-    "semantic_hash": "2ba96f9b9a01009a58c88fabfedaf4ed"
+    "mtime": 1792037164.7738087,
+    "seen": 1792037967.475821,
+    "ast_hash": "a6a0fdeaee278a0a4941c8a873b67b68",
+    "semantic_hash": ""
   },
   "public/sensor.html": {
     "mtime": 1792032421.218406,
@@ -298,5 +298,17 @@
     "seen": 1792036224.388038,
     "ast_hash": "659ae002f3f00efdb5ca668fd9803dff",
     "semantic_hash": "659ae002f3f00efdb5ca668fd9803dff"
+  },
+  "DESIGN.md": {
+    "mtime": 1792037288.6897235,
+    "seen": 1792037967.475811,
+    "ast_hash": "71432da818245b1cd557e59c1ecf2a9d",
+    "semantic_hash": ""
+  },
+  "anti-slop/registro-001-2026-10-14.md": {
+    "mtime": 1792037994.948158,
+    "seen": 1792038024.8007329,
+    "ast_hash": "7cc2e96e968faf70f90e0fcf5699280c",
+    "semantic_hash": ""
   }
 }

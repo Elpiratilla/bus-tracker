@@ -104,7 +104,7 @@
 .code-check[data-estado="mal"] .code-check__icon::after { content: "!"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font: 800 .8rem/1 var(--sans); }
 .code-check[data-estado="ok"] .input { border-color: var(--torogoz); }
 .code-check[data-estado="mal"] .input { border-color: var(--alerta); }
-#c-codigo-estado[data-estado="ok"] { color: var(--torogoz); font-weight: 600; }
+#c-codigo-estado[data-estado="ok"] { color: var(--torogoz-texto); font-weight: 600; }
 #c-codigo-estado[data-estado="mal"] { color: var(--alerta); font-weight: 600; }
 @keyframes spin { to { transform: rotate(360deg); } }
 

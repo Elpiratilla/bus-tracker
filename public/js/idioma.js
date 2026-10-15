@@ -22,7 +22,9 @@
   function bindToggles(root) {
     root.querySelectorAll?.("[data-idioma]:not([data-idioma-ok])").forEach((b) => {
       b.dataset.idiomaOk = "1";
-      b.textContent = lang === "en" ? "Español" : "English";
+      // data-idioma="corto": donde no cabe la palabra (barra del mapa), solo las siglas
+      const corto = b.dataset.idioma === "corto";
+      b.textContent = lang === "en" ? (corto ? "ES" : "Español") : (corto ? "EN" : "English");
       b.setAttribute("lang", lang === "en" ? "es" : "en");
       b.setAttribute("aria-label", lang === "en" ? "Cambiar a español" : "Switch to English");
       b.addEventListener("click", () => api.set(lang === "en" ? "es" : "en"));
@@ -228,7 +230,7 @@
     "Inicio": "Home",
     "Volver al inicio": "Back to home",
     "Buscar ruta o parada": "Search route or stop",
-    "Busca tu ruta o parada": "Search your route or stop",
+    "Ruta o parada": "Route or stop",
     "Cerca de mí": "Near me",
     "Paradas cerca de mí": "Stops near me",
     "Todos": "All",
@@ -543,6 +545,9 @@
     "Para quién es el código": "Who the code is for",
     "Para quién es (ej. Transportes Pérez)": "Who it's for (e.g. Pérez Transport)",
     "Para quién es": "Who it's for",
+    "Ej.: Transportes Pérez": "E.g. Pérez Transport",
+    "Ej.: tipo de aceite y taller donde se hizo": "E.g. oil type and the shop that did it",
+    "Ej.: cuándo volver a llamar y cuántas unidades quiere": "E.g. when to call back and how many buses they want",
     "Crear código": "Create code",
     "Buscar código o empresa": "Search code or company",
     "Buscar por código, nota o empresa": "Search by code, note or company",

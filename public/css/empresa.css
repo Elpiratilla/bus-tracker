@@ -363,6 +363,10 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
   .form__row { grid-template-columns: 1fr; }
 }
 .table .code { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+/* la nota ("para quién es") se lee en renglones normales, no una palabra por línea */
+.table td.nota { min-width: 12rem; }
+/* "Sin señal" y su fecha no se parten en el teléfono: la tabla se desliza de lado */
+.table td.sensor { min-width: 9.5rem; white-space: nowrap; }
 
 /* ---------- Clientes interesados ---------- */
 .cli__msg { max-width: 38ch; margin-top: .35rem; color: var(--muted); font-size: .85rem; font-style: italic; }

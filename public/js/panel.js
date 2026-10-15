@@ -210,13 +210,15 @@ async function openDetalle(id) {
 
   $("#d-nombre").textContent = u.nombre;
   $("#d-sub").textContent = `Ruta ${u.ruta}, ${TIPOS[u.tipo] || "unidad"}${u.placa ? `, placa ${u.placa}` : ""}`;
+  // Sin señal, temperatura y combustible son la última lectura, no lo de ahora
+  const ult = u.enLinea ? "" : " (última lectura)";
   const facts = [
     ["Estado", estado(u)],
     ["Velocidad", u.enLinea && u.velocidad != null ? `${fmt(u.velocidad)} km/h` : "–"],
     ["Kilometraje", km(u.odometroKm)],
     ["Horas de motor", `${fmt(u.horasMotor, 1)} h`],
-    ["Temperatura", u.temperatura != null ? `${fmt(u.temperatura, 1)} °C` : "–"],
-    ["Combustible", u.combustible != null ? `${fmt(u.combustible)} %` : "–"],
+    [`Temperatura${ult}`, u.temperatura != null ? `${fmt(u.temperatura, 1)} °C` : "–"],
+    [`Combustible${ult}`, u.combustible != null ? `${fmt(u.combustible)} %` : "–"],
   ];
   $("#d-facts").replaceChildren(...facts.map(([k, v]) => { const d = el("div"); d.append(el("dt", null, k), el("dd", null, v)); return d; }));
   $("#d-servicio").onclick = () => openServicio(u);
@@ -334,7 +336,7 @@ async function loadUnidades() {
     const tr = el("tr");
     const name = el("td");
     name.append(el("b", null, u.nombre), el("small", null, u.placa ? `Placa ${u.placa}` : "Sin placa"));
-    const sensor = el("td");
+    const sensor = el("td", "sensor");
     sensor.append(el("span", `status${u.enLinea ? " status--on" : ""}`, u.enLinea ? "En línea" : "Sin señal"),
       el("small", null, u.ultimaSenal ? `Última señal ${hace(u.ultimaSenal)}` : "Aún no transmite"));
     const actions = el("td");
@@ -494,9 +496,10 @@ async function loadMantenimiento() {
     const motor = el("td");
     motor.append(m.temperatura != null ? `${fmt(m.temperatura, 1)} °C` : "–",
       el("small", null, m.combustible != null ? `Combustible ${fmt(m.combustible)} %` : ""));
+    if (!m.enLinea && m.temperatura != null) motor.append(el("small", null, "Última lectura"));
     const fallas = el("td");
     if (m.fallas.length) m.fallas.forEach((f) => fallas.append(el("span", "chip", f)));
-    else fallas.append(el("span", "muted", "Ninguna"));
+    else fallas.append(el("span", "muted", m.enLinea ? "Ninguna" : "Sin datos recientes"));
     const ultimo = el("td");
     if (m.ultimoServicio) ultimo.append(SERVICIOS[m.ultimoServicio.tipo] || m.ultimoServicio.tipo, el("small", null, `${fecha(m.ultimoServicio.fecha)}, a los ${fmt(m.ultimoServicio.km)} km`));
     else ultimo.append(el("span", "muted", "Ninguno"));
@@ -908,7 +911,7 @@ function renderCodigos() {
     wrap.append(...(c.usado ? [editar, eliminar] : [copiar, editar, eliminar]));
     actions.append(wrap);
 
-    tr.append(code, el("td", c.nota ? null : "muted", c.nota ?? "Sin nota"), estadoTd, el("td", null, fecha(c.creado)), actions);
+    tr.append(code, el("td", c.nota ? "nota" : "nota muted", c.nota ?? "Sin nota"), estadoTd, el("td", null, fecha(c.creado)), actions);
     table.tBodies[0].append(tr);
   });
   root.replaceChildren(table);

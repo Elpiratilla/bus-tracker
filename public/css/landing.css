@@ -697,7 +697,10 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
   .kit__parts button { padding: .45rem .75rem .45rem 1.6rem; font-size: .9rem; background: var(--papel); }
   .kit__parts button::before { left: .6rem; }
   .kit__rows { grid-template-columns: 1fr; }
-  .kit__spot { width: 1.8rem; height: 1.8rem; margin: -.9rem 0 0 -.9rem; }
+  /* 44 px para el dedo; el punto dibujado queda del mismo tamaño que antes */
+  .kit__spot { width: 2.75rem; height: 2.75rem; margin: -1.375rem 0 0 -1.375rem; }
+  .kit__spot::before { inset: .82rem; }
+  .kit__spot::after { inset: .47rem; }
   .kit__mode { width: 100%; }
   .kit__mode button { flex: 1; }
   .how__route::before { top: 1.3rem; bottom: 1.3rem; left: 1.3rem; right: auto; width: 6px; height: auto; margin: 0 0 0 -3px; }

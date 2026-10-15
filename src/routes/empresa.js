@@ -299,6 +299,7 @@ router.get("/mantenimiento", requireCompany, async (req, res, next) => {
         intervaloAceiteKm: u.oilIntervalKm, kmDesdeAceite: round1(desde),
         estadoAceite: desde >= u.oilIntervalKm ? "vencido" : desde >= u.oilIntervalKm * 0.9 ? "pronto" : "al-dia",
         temperatura: live.engineTemp ?? null, combustible: live.fuel ?? null,
+        enLinea: Boolean(live.updatedAt && Date.now() - live.updatedAt < ONLINE_MS),
         fallas: Array.isArray(live.dtc) ? live.dtc.slice(0, 10) : [],
         ultimoServicio: mine[0] ? { tipo: mine[0].kind, fecha: mine[0].done_at, km: round1(mine[0].odometer_km) } : null,
       };
@@ -315,6 +316,15 @@ const ALERT = {
   COMBUSTIBLE: 15,               // % de tanque
 };
 
+// "2952 min" no se entiende de un vistazo: minutos, luego horas, luego días
+function hace(ms) {
+  const min = Math.round(ms / 60000);
+  if (min < 60) return `${min} min`;
+  const h = Math.round(min / 60);
+  if (h < 48) return h === 1 ? "1 hora" : `${h} horas`;
+  return `${Math.round(h / 24)} días`;
+}
+
 router.get("/alertas", requireCompany, async (req, res, next) => {
   try {
     const now = Date.now();
@@ -329,7 +339,7 @@ router.get("/alertas", requireCompany, async (req, res, next) => {
       const live = buses[u.busId] || {};
       const fresh = live.updatedAt && now - live.updatedAt < ONLINE_MS;
       if (live.updatedAt && now - live.updatedAt > ALERT.SIN_SENAL_MS) {
-        add(u, "sin-senal", "aviso", `Sin señal desde hace ${Math.round((now - live.updatedAt) / 60000)} min`, live.updatedAt);
+        add(u, "sin-senal", "aviso", `Sin señal desde hace ${hace(now - live.updatedAt)}`, live.updatedAt);
       }
       if (fresh && live.engineTemp >= ALERT.TEMP_C) add(u, "temperatura", "grave", `Motor caliente: ${Math.round(live.engineTemp)} °C`, live.updatedAt);
       if (fresh && live.speed > ALERT.VEL_KMH) add(u, "velocidad", "aviso", `Va a ${Math.round(live.speed)} km/h`, live.updatedAt);

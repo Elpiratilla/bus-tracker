@@ -235,10 +235,33 @@
     <h2 id="k-titulo">Clave del sensor</h2>
     <p>Cópiala ahora y pégala en la configuración del sensor. Por seguridad no la volveremos a mostrar.</p>
     <div class="key"><code id="k-clave"></code><button class="btn btn--anil btn--sm" type="button" id="k-copiar">Copiar</button></div>
+    <div id="k-motorista" hidden>
+      <p class="muted" style="margin-top:.9rem;font-size:.88rem">Micro de colegio: el motorista abre este enlace en su celular y ese celular hace de GPS. No lo compartas con nadie más.</p>
+      <div class="key"><code id="k-enlace"></code><button class="btn btn--ghost btn--sm" type="button" id="k-copiar-enlace">Copiar</button></div>
+      <p style="margin-top:.6rem"><a class="btn btn--anil btn--sm" id="k-whatsapp" target="_blank" rel="noopener">Mandar por WhatsApp</a></p>
+    </div>
     <pre class="snippet" id="k-config"></pre>
     <p class="muted" style="margin-top:.9rem;font-size:.88rem">Para probar sin sensor, en la carpeta del proyecto:</p>
     <pre class="snippet" id="k-sim"></pre>
     <div class="dialog__actions"><button class="btn btn--anil" type="button" data-cerrar>Ya la guardé</button></div>
+  </dialog>
+
+  <!-- Familias de un micro de colegio: un enlace privado por familia -->
+  <dialog id="dlg-familias" aria-labelledby="fa-titulo">
+    <h2 id="fa-titulo">Familias</h2>
+    <p>Cada familia recibe su propio enlace para ver el micro en vivo, sin cuenta ni contraseña. Si alguien deja el servicio, quita su enlace.</p>
+    <p class="msg" id="fa-msg" role="alert" hidden></p>
+    <ul class="familias" id="fa-lista"></ul>
+    <form class="form" id="f-familia" novalidate>
+      <div class="field"><label for="fa-nombre">Nueva familia</label><input class="input" id="fa-nombre" maxlength="60" placeholder="Familia López"><small>Solo para que tú sepas de quién es. Pide permiso a los papás antes.</small></div>
+      <button class="btn btn--anil" type="submit" id="fa-crear">Crear enlace</button>
+    </form>
+    <div id="fa-nuevo" hidden>
+      <p class="muted" style="margin-top:1rem;font-size:.88rem">Mándalo ahora: por seguridad no lo volveremos a mostrar (si lo pierden, crea otro).</p>
+      <div class="key"><code id="fa-enlace"></code><button class="btn btn--ghost btn--sm" type="button" id="fa-copiar">Copiar</button></div>
+      <p style="margin-top:.6rem"><a class="btn btn--maiz btn--sm" id="fa-whatsapp" target="_blank" rel="noopener">Mandar por WhatsApp</a></p>
+    </div>
+    <div class="dialog__actions"><button class="btn btn--ghost" type="button" data-cerrar>Cerrar</button></div>
   </dialog>
 
   <!-- Registrar servicio -->

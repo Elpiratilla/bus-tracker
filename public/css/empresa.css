@@ -337,6 +337,8 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .dialog__actions .btn { width: auto; }
 .key { display: flex; gap: .5rem; margin-top: 1rem; }
 .key code { flex: 1; min-width: 0; padding: .7rem .8rem; overflow-wrap: anywhere; background: var(--papel); border: 1.5px dashed #A9B2D0; border-radius: var(--r-sm); font: 600 .9rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.familias { list-style: none; margin: 1rem 0 0; padding: 0; }
+.familias li { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .5rem 0; border-bottom: 1px solid var(--line); }
 .snippet { margin-top: 1rem; padding: .8rem .9rem; overflow-x: auto; background: var(--noche); border-radius: var(--r-sm); color: #DDE2F5; font: .82rem/1.55 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; }
 
 /* Vacío */

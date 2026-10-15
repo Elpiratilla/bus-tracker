@@ -1,6 +1,6 @@
 // Alertas "avísame cuando mi bus esté cerca" para el frontend
 const router = require("express").Router();
-const { routes, alerts } = require("../store");
+const { alerts, publicRoutes } = require("../store");
 const { enabled, ALERT_MIN, validSubscription, addAlert, removeAlert, listAlerts } = require("../alerts");
 
 const MAX_PER_DEVICE = 10;
@@ -18,7 +18,7 @@ router.get("/clave", (_req, res) => res.json({ clave: process.env.VAPID_PUBLIC_K
 router.post("/", (req, res) => {
   const { suscripcion, ruta, parada } = req.body;
   const sentido = req.body.sentido || "ida";
-  const route = routes.find((r) => r.id === ruta);
+  const route = publicRoutes().find((r) => r.id === ruta);
   if (!validSubscription(suscripcion)) return res.status(400).json({ error: "Suscripción inválida" });
   if (!route || !["ida", "regreso"].includes(sentido) || !route.directions[sentido].some((s) => s.id === parada))
     return res.status(400).json({ error: "ruta, sentido o parada inválida" });

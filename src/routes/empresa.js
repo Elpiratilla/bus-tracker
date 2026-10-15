@@ -2,10 +2,11 @@
 // Todas las rutas (menos /codigo) requieren sesión; cada empresa solo ve sus unidades.
 const crypto = require("crypto");
 const router = require("express").Router();
-const { routes, buses, units, retired } = require("../store");
+const { routes, buses, units, retired, familyLinks, publicRoutes } = require("../store");
 const { db, select, flush, unitFromRow } = require("../db");
 const { hashKey } = require("../middleware/auth");
 const { requireUser, requireCompany, requireAdmin, forgetToken, rateLimit } = require("../middleware/empresa");
+const { schoolRoute, dropSchoolRoute } = require("../colegio");
 
 const ONLINE_MS = 60 * 1000; // sin señal en 1 min = fuera de línea
 const iso = (t) => (t ? new Date(t).toISOString() : null);
@@ -164,8 +165,10 @@ router.get("/flota", requireCompany, (req, res) => {
   const now = Date.now();
   res.json(myUnits(req).map((u) => {
     const live = buses[u.busId] || {};
+    const colegio = isSchool(u);
     return {
-      id: u.busId, nombre: u.name, placa: u.plate, tipo: u.type, ruta: u.routeId,
+      id: u.busId, nombre: u.name, placa: u.plate, tipo: u.type, ruta: colegio ? COLEGIO : u.routeId, colegio,
+      enServicio: Boolean(live.enServicio),
       lat: live.lat ?? null, lng: live.lng ?? null,
       velocidad: live.speed ?? null, rumbo: live.heading ?? null,
       enLinea: Boolean(live.updatedAt && now - live.updatedAt < ONLINE_MS),
@@ -179,7 +182,11 @@ router.get("/flota", requireCompany, (req, res) => {
 
 // ---------- Unidades ----------
 
-function validUnitFields(body, partial) {
+// "colegio" en vez de una ruta: el micro tiene su recorrido propio, que marca el motorista en su app
+const COLEGIO = "colegio";
+const isSchool = (u) => Boolean(schoolRoute(u)) || !u.routeId;
+
+function validUnitFields(body, partial, unit) {
   const out = {};
   if (!partial || body.nombre !== undefined) {
     out.name = text(body.nombre, 1, 40);
@@ -190,8 +197,11 @@ function validUnitFields(body, partial) {
     if (body.placa && !out.plate) return { error: "La placa debe tener de 3 a 12 caracteres" };
   }
   if (!partial || body.ruta !== undefined) {
-    out.route_id = body.ruta;
-    if (!routes.some((r) => r.id === body.ruta)) return { error: "Escoge una ruta de la lista" };
+    if (body.ruta === COLEGIO) out.route_id = schoolRoute(unit)?.id ?? null;
+    else {
+      out.route_id = body.ruta;
+      if (!publicRoutes().some((r) => r.id === body.ruta)) return { error: "Escoge una ruta de la lista" };
+    }
   }
   if (!partial || body.tipo !== undefined) {
     out.type = body.tipo;
@@ -230,7 +240,7 @@ router.patch("/unidades/:id", requireCompany, async (req, res, next) => {
   try {
     const unit = myUnit(req);
     if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
-    const { error, fields } = validUnitFields(req.body, true);
+    const { error, fields } = validUnitFields(req.body, true, unit);
     if (error) return res.status(400).json({ error });
     const row = await select(db.from("buses").update(fields).eq("id", unit.busId).select("*").single());
     units[unit.busId] = unitFromRow(row);
@@ -256,10 +266,62 @@ router.delete("/unidades/:id", requireCompany, async (req, res, next) => {
     if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
     // Primero dejar de aceptar su sensor y esperar lo que estaba por guardarse; luego borrar
     retired.add(unit.busId);
+    const recorrido = dropSchoolRoute(unit);
     delete units[unit.busId];
     delete buses[unit.busId];
+    for (const [hash, link] of familyLinks) if (link.busId === unit.busId) familyLinks.delete(hash);
     await flush(`bus:${unit.busId}`);
     await select(db.from("buses").delete().eq("id", unit.busId).select("id"));
+    // Su recorrido de colegio: la ruta (con sus tiempos y vueltas) y sus paradas
+    if (recorrido) {
+      await flush(`ruta:${recorrido.id}`);
+      await select(db.from("routes").delete().eq("id", recorrido.id).select("id"));
+      if (recorrido.stopIds.length) await select(db.from("stops").delete().in("id", recorrido.stopIds).select("id"));
+    }
+    res.json({ ok: true });
+  } catch (err) { next(err); }
+});
+
+// ---------- Familias: enlaces privados para que los papás vean el micro ----------
+
+const MAX_LINKS = 80;
+const myLinks = (unit) => [...familyLinks.values()].filter((l) => l.busId === unit.busId);
+
+router.get("/unidades/:id/familias", requireCompany, (req, res) => {
+  const unit = myUnit(req);
+  if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
+  res.json(myLinks(unit).sort((a, b) => a.label.localeCompare(b.label, "es"))
+    .map((l) => ({ id: l.id, nombre: l.label, creado: l.createdAt })));
+});
+
+// Nuevo enlace: el token se devuelve UNA vez (solo se guarda su hash). Si el papá lo pierde, se hace otro
+router.post("/unidades/:id/familias", requireCompany, async (req, res, next) => {
+  try {
+    const unit = myUnit(req);
+    if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
+    if (!isSchool(unit)) return res.status(400).json({ error: "Los enlaces de familias son para micros de colegio" });
+    const label = text(req.body.nombre, 1, 60);
+    if (!label) return res.status(400).json({ error: "Escribe para quién es el enlace (1 a 60 letras)" });
+    if (myLinks(unit).length >= MAX_LINKS) return res.status(400).json({ error: `Llegaste al límite de ${MAX_LINKS} enlaces` });
+
+    const token = crypto.randomBytes(18).toString("base64url");
+    const row = await select(db.from("family_links").insert({ bus_id: unit.busId, label, token_hash: hashKey(token) })
+      .select("id, created_at").single());
+    familyLinks.set(hashKey(token), { id: row.id, busId: unit.busId, label, createdAt: row.created_at });
+    res.status(201).json({ id: row.id, nombre: label, token });
+  } catch (err) { next(err); }
+});
+
+// Quitar un enlace: ese papá deja de ver el micro
+router.delete("/unidades/:id/familias/:linkId", requireCompany, async (req, res, next) => {
+  try {
+    const unit = myUnit(req);
+    if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
+    const id = Number(req.params.linkId);
+    const entry = [...familyLinks].find(([, l]) => l.id === id && l.busId === unit.busId);
+    if (!entry) return res.status(404).json({ error: "Ese enlace no existe" });
+    await select(db.from("family_links").update({ revoked_at: new Date().toISOString() }).eq("id", id).select("id"));
+    familyLinks.delete(entry[0]);
     res.json({ ok: true });
   } catch (err) { next(err); }
 });

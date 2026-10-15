@@ -1,11 +1,11 @@
 const router = require("express").Router();
-const { routes, segments } = require("../store");
+const { segments, publicRoutes } = require("../store");
 
-router.get("/", (_req, res) => res.json(routes));
+router.get("/", (_req, res) => res.json(publicRoutes()));
 
 // Promedio y último tiempo por tramo
 router.get("/:id/summary", (req, res) => {
-  const route = routes.find((r) => r.id === req.params.id);
+  const route = publicRoutes().find((r) => r.id === req.params.id);
   if (!route) return res.status(404).json({ error: "Ruta no existe" });
   const dir = req.query.sentido === "regreso" ? "regreso" : "ida";
   const stops = route.directions[dir];

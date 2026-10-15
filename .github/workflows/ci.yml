@@ -36,9 +36,13 @@ jobs:
       # "Lint" mínimo: Node revisa la sintaxis de cada archivo sin ejecutarlo
       - name: Revisar sintaxis
         run: |
-          for f in $(git ls-files 'src/*.js' 'tools/*.js' 'public/*.js'); do
+          for f in $(git ls-files 'src/*.js' 'tools/*.js' 'public/*.js' 'test/*.js'); do
             node --check "$f" || exit 1
           done
+
+      # Pruebas en memoria (sin Supabase): recorrido de colegio, app del motorista y vista de la familia
+      - name: Pruebas
+        run: npm test
 
       # Arranca el servidor y prueba las mismas rutas que usa Render y el navegador
       - name: Prueba de humo del servidor

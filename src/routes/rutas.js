@@ -1,6 +1,6 @@
 // Formato que usa el frontend (public/js/mapa.js): GET /api/rutas y GET /api/rutas/:id?sentido=ida|regreso
 const router = require("express").Router();
-const { routes, buses, units } = require("../store");
+const { buses, units, publicRoutes } = require("../store");
 const { routeStatus, pickDirection } = require("../eta");
 const { distanceM } = require("../geo");
 
@@ -15,7 +15,7 @@ const sentidos = (route) => ["ida", "regreso"].map((d) => ({
 
 // Lista de rutas para los botones del frontend
 // (incluye los nombres de las paradas para que el buscador encuentre rutas por parada)
-router.get("/", (_req, res) => res.json(routes.map((r) => ({
+router.get("/", (_req, res) => res.json(publicRoutes().map((r) => ({
   ruta: r.id, tipo: r.type, nombre: r.name, paradas: r.stops.map((s) => s.name), sentidos: sentidos(r),
 }))));
 
@@ -31,7 +31,7 @@ router.get("/cerca", (req, res) => {
   const here = { lat, lng };
   const now = Date.now();
   const out = [];
-  for (const route of routes) {
+  for (const route of publicRoutes()) {
     for (const dir of ["ida", "regreso"]) {
       const stops = route.directions[dir];
       // la más cercana de este sentido (sin contar la última: ahí el bus ya no sigue)
@@ -63,7 +63,7 @@ router.get("/cerca", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  const route = routes.find((r) => r.id === req.params.id);
+  const route = publicRoutes().find((r) => r.id === req.params.id);
   if (!route) return res.status(404).json({ error: "Ruta no existe" });
   const pedido = req.query.sentido;
   if (pedido && !["ida", "regreso"].includes(pedido)) return res.status(400).json({ error: "El sentido es ida o regreso" });

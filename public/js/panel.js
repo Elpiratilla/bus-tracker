@@ -10,6 +10,8 @@ const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 const SERVICIOS = { aceite: "Cambio de aceite", frenos: "Frenos", llantas: "Llantas", general: "Revisión general", otro: "Otro" };
 
 let rutas = [];
+const COLEGIO = "colegio"; // micro de colegio: su recorrido lo marca el motorista en su app
+const rutaCorta = (u) => (u.colegio ? "Col." : u.ruta ?? "");
 let flota = [];
 let timer = null;
 let selected = null;
@@ -108,12 +110,13 @@ function initMap() {
 
 function markerIcon(u) {
   const cls = `fleet-mk${u.enLinea ? "" : " fleet-mk--off"}${selected === u.id ? " fleet-mk--sel" : ""}`;
-  return L.divIcon({ className: "", html: `<span class="${cls}">${u.ruta ?? ""}</span>`, iconSize: [38, 26], iconAnchor: [19, 13] });
+  return L.divIcon({ className: "", html: `<span class="${cls}">${rutaCorta(u)}</span>`, iconSize: [38, 26], iconAnchor: [19, 13] });
 }
 
 function estado(u) {
   if (!u.ultimaSenal) return "El sensor aún no transmite";
   if (!u.enLinea) return `Sin señal, última ${hace(u.ultimaSenal)}`;
+  if (u.colegio) return u.enServicio ? (u.parada ? `En viaje, en ${u.parada}` : "En viaje") : "Sin viaje";
   return u.parada ? `En ${u.parada}` : "En ruta";
 }
 
@@ -157,7 +160,7 @@ async function loadFlota() {
     b.setAttribute("aria-pressed", String(selected === u.id));
     const speed = u.enLinea && u.velocidad != null ? `${fmt(u.velocidad)} km/h` : "";
     const st = el("span", `status${u.enLinea ? " status--on" : ""}`, u.enLinea ? "En línea" : "Sin señal");
-    b.append(el("span", "unit__route", u.ruta ?? "–"),
+    b.append(el("span", "unit__route", rutaCorta(u) || "–"),
       Object.assign(el("span"), { className: "", style: "display:grid" }),
       el("span", "unit__speed", speed));
     b.children[1].append(el("span", "unit__name", u.nombre), st);
@@ -185,7 +188,7 @@ async function loadFlota() {
       const mk = m.getElement()?.querySelector(".fleet-mk");
       if (mk) {
         mk.className = `fleet-mk${u.enLinea ? "" : " fleet-mk--off"}${selected === u.id ? " fleet-mk--sel" : ""}`;
-        mk.textContent = u.ruta ?? "";
+        mk.textContent = rutaCorta(u);
       }
     }
   });
@@ -209,7 +212,7 @@ async function openDetalle(id) {
   markers.forEach((m, mid) => { const f = flota.find((x) => x.id === mid); if (f) m.setIcon(markerIcon(f)); });
 
   $("#d-nombre").textContent = u.nombre;
-  $("#d-sub").textContent = `Ruta ${u.ruta}, ${TIPOS[u.tipo] || "unidad"}${u.placa ? `, placa ${u.placa}` : ""}`;
+  $("#d-sub").textContent = `${u.colegio ? "Recorrido de colegio" : `Ruta ${u.ruta}`}, ${TIPOS[u.tipo] || "unidad"}${u.placa ? `, placa ${u.placa}` : ""}`;
   // Sin señal, temperatura y combustible son la última lectura, no lo de ahora
   const ult = u.enLinea ? "" : " (última lectura)";
   const facts = [
@@ -323,7 +326,7 @@ async function loadUnidades() {
   if (!flota.length) {
     const empty = el("div", "empty-state");
     empty.append(el("h2", null, "Aún no tienes unidades"),
-      el("p", null, "Registra cada bus con su ruta y su placa. Te daremos la clave que va en su sensor."),
+      el("p", null, "Registra cada bus o micro con su ruta y su placa. Te daremos la clave de su sensor o el enlace de la app del motorista."),
       button("Registrar unidad", "btn--anil", () => openUnidad()));
     return root.replaceChildren(empty);
   }
@@ -342,6 +345,7 @@ async function loadUnidades() {
     const actions = el("td");
     const wrap = el("div", "actions");
     wrap.append(
+      ...(u.colegio ? [button("Familias", "btn--ghost btn--sm", () => openFamilias(u))] : []),
       button("Editar", "btn--ghost btn--sm", () => openUnidad(u)),
       button("Nueva clave", "btn--ghost btn--sm", () => confirmar(
         `Nueva clave para ${u.nombre}`,
@@ -354,7 +358,7 @@ async function loadUnidades() {
         "Eliminar unidad",
         async () => { await api(`/unidades/${u.id}`, { method: "DELETE" }); loadUnidades(); })));
     actions.append(wrap);
-    tr.append(name, el("td", null, u.ruta), el("td", null, TIPOS[u.tipo] || "–"), sensor, actions);
+    tr.append(name, el("td", null, u.colegio ? "Colegio" : u.ruta), el("td", null, TIPOS[u.tipo] || "–"), sensor, actions);
     table.tBodies[0].append(tr);
   });
   root.replaceChildren(table);
@@ -370,11 +374,13 @@ function openUnidad(u = null) {
   $("#u-titulo").textContent = u ? `Editar ${u.nombre}` : "Registrar unidad";
   $("#u-ayuda").textContent = u ? "Los cambios se aplican de inmediato." : "Al guardar te daremos la clave de su sensor.";
   $("#u-guardar").textContent = u ? "Guardar cambios" : "Registrar unidad";
-  $("#u-ruta").replaceChildren(...rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; }));
+  const colegio = el("option", null, "Recorrido de colegio (propio)");
+  colegio.value = COLEGIO;
+  $("#u-ruta").replaceChildren(colegio, ...rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; }));
   $("#u-nombre").value = u?.nombre ?? "";
   $("#u-placa").value = u?.placa ?? "";
-  $("#u-ruta").value = u?.ruta ?? rutas[0]?.ruta ?? "";
-  $("#u-tipo").value = u?.tipo ?? "autobus";
+  $("#u-ruta").value = u?.ruta ?? COLEGIO;
+  $("#u-tipo").value = u?.tipo ?? "microbus";
   $("#u-km").value = u ? Math.round(u.odometroKm) : "";
   $("#u-aceite").value = u?.intervaloAceiteKm ?? 5000;
   showMsg($("#u-msg"), "");
@@ -413,6 +419,11 @@ $("#f-unidad").addEventListener("submit", async (e) => {
 });
 
 function showClave({ id, clave }, ruta) {
+  // Micro de colegio: el sensor es el celular del motorista, con este enlace
+  const enlace = `${location.origin}/motorista.html#u=${encodeURIComponent(id)}&k=${encodeURIComponent(clave)}`;
+  $("#k-motorista").hidden = ruta !== COLEGIO;
+  $("#k-enlace").textContent = enlace;
+  $("#k-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`App del motorista (go503). Ábrela en tu celular y no la compartas:\n${enlace}`)}`;
   $("#k-clave").textContent = clave;
   $("#k-config").textContent = `// config.h del sensor\n#define BUS_ID   "${id}"\n#define API_KEY  "${clave}"\n#define ROUTE_ID "${ruta}"`;
   $("#k-sim").textContent = `SIM_BUS=${id} SIM_KEY=${clave} SIM_ROUTE=${ruta} npm run simulate`;
@@ -428,6 +439,73 @@ $("#k-copiar").addEventListener("click", async () => {
     $("#k-copiar").textContent = "Selecciónala y cópiala";
   }
 });
+
+// Copiar al portapapeles el texto de un nodo (si no se puede, lo deja seleccionado)
+async function copiar(node, btn) {
+  try {
+    await navigator.clipboard.writeText(node.textContent);
+    btn.textContent = "Copiado";
+  } catch {
+    getSelection().selectAllChildren(node);
+    btn.textContent = "Selecciónalo y cópialo";
+  }
+}
+$("#k-copiar-enlace").addEventListener("click", (e) => copiar($("#k-enlace"), e.currentTarget));
+
+// ---------- Familias: enlaces privados para que los papás vean el micro ----------
+const dlgFamilias = $("#dlg-familias");
+let familiasDe = null;
+
+async function openFamilias(u) {
+  familiasDe = u;
+  $("#fa-titulo").textContent = `Familias de ${u.nombre}`;
+  $("#fa-nuevo").hidden = true;
+  $("#fa-nombre").value = "";
+  showMsg($("#fa-msg"), "");
+  dlgFamilias.showModal();
+  loadFamilias();
+}
+
+async function loadFamilias() {
+  const list = $("#fa-lista");
+  try {
+    const links = await api(`/unidades/${familiasDe.id}/familias`);
+    if (!links.length) return list.replaceChildren(el("li", "muted", "Aún no hay enlaces. Crea uno por familia."));
+    list.replaceChildren(...links.map((l) => {
+      const li = el("li");
+      li.append(el("span", null, l.nombre), button("Quitar", "btn--ghost btn--sm", async () => {
+        if (!window.confirm(`¿Quitar el enlace de ${l.nombre}? Esa familia dejará de ver el micro.`)) return;
+        try {
+          await api(`/unidades/${familiasDe.id}/familias/${l.id}`, { method: "DELETE" });
+          loadFamilias();
+        } catch (err) { showMsg($("#fa-msg"), err.message); }
+      }));
+      return li;
+    }));
+  } catch (err) { showMsg($("#fa-msg"), err.message); }
+}
+
+$("#f-familia").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const btn = $("#fa-crear");
+  btn.disabled = true;
+  try {
+    const res = await api(`/unidades/${familiasDe.id}/familias`, { method: "POST", body: { nombre: $("#fa-nombre").value } });
+    const enlace = `${location.origin}/familia.html#t=${res.token}`;
+    $("#fa-enlace").textContent = enlace;
+    $("#fa-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`Hola, aquí puedes ver el micro del colegio en vivo (${familiasDe.nombre}). Es solo para tu familia, no lo compartas:\n${enlace}`)}`;
+    $("#fa-copiar").textContent = "Copiar";
+    $("#fa-nuevo").hidden = false;
+    $("#fa-nombre").value = "";
+    showMsg($("#fa-msg"), "");
+    loadFamilias();
+  } catch (err) {
+    showMsg($("#fa-msg"), err.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+$("#fa-copiar").addEventListener("click", (e) => copiar($("#fa-enlace"), e.currentTarget));
 
 // Confirmación para acciones que no se deshacen
 const dlgConfirm = $("#dlg-confirmar");

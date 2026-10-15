@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Micro del colegio · go503</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#F3F5FB">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/colegio.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app__top">
+      <div><h1 id="titulo">Micro del colegio</h1><small id="subtitulo"></small></div>
+    </header>
+
+    <p class="msg" id="msg" role="alert" hidden></p>
+
+    <div id="v-ok" hidden>
+      <section class="card">
+        <p class="aviso" id="aviso">Cargando…</p>
+        <p class="muted small" id="detalle" style="margin-top:.4rem"></p>
+      </section>
+      <div class="mapa" id="mapa"></div>
+      <section class="card">
+        <h2>Paradas</h2>
+        <p class="muted small" style="margin-bottom:.6rem">Toca tu parada para ver cuánto falta para que llegue.</p>
+        <ol class="paradas" id="paradas"></ol>
+      </section>
+    </div>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="/js/familia.js"></script>
+</body>
+</html>

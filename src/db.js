@@ -25,6 +25,18 @@ function persist(label, query, queue) {
   next.then(() => { if (queues.get(queue) === next) queues.delete(queue); });
 }
 
+// Guarda el estado en vivo de un bus (posición y lo que manda el sensor) en la tabla buses
+function saveBus(busId) {
+  const bus = store.buses[busId];
+  const unit = store.units[busId];
+  if (!bus) return;
+  const { busId: _id, routeId, lat, lng, atStop, updatedAt, ...live } = bus;
+  persist("bus", (db) => db.from("buses").upsert({ id: busId, route_id: routeId ?? null,
+    lat: lat ?? null, lng: lng ?? null, at_stop: atStop ?? null, data: live,
+    updated_at: new Date(updatedAt ?? Date.now()).toISOString(),
+    ...(unit && { odometer_km: unit.odometerKm, engine_hours: unit.engineHours }) }), `bus:${busId}`);
+}
+
 // Espera a que terminen las escrituras pendientes de una cola (ej. antes de borrar)
 const flush = (queue) => queues.get(queue) || Promise.resolve();
 
@@ -48,7 +60,7 @@ async function loadState() {
   if (!db) return;
 
   const routes = await select(db.from("routes")
-    .select("id, name, type, route_stops(direction, position, stops(id, name, lat, lng))")
+    .select("id, name, type, company_id, route_stops(direction, position, stops(id, name, lat, lng))")
     .eq("active", true).order("sort"));
   store.routes.splice(0, store.routes.length, ...routes.map((r) => {
     const dir = (d) => r.route_stops.filter((rs) => rs.direction === d)
@@ -57,7 +69,7 @@ async function loadState() {
     const regreso = dir("regreso");
     // stops: todas las paradas de la ruta (las de ida y las que solo están en el regreso)
     const stops = [...ida, ...regreso.filter((s) => !ida.some((x) => x.id === s.id))];
-    return { id: r.id, name: r.name, type: r.type, stops,
+    return { id: r.id, name: r.name, type: r.type, companyId: r.company_id, stops,
       directions: { ida, regreso: regreso.length ? regreso : [...ida].reverse() } };
   }));
 
@@ -86,8 +98,13 @@ async function loadState() {
       { subscription: a.subscription, routeId: a.route_id, dir: a.direction, stopId: a.stop_id, createdAt: ms(a.created_at) });
   }
 
+  for (const l of await select(db.from("family_links").select("id, bus_id, label, token_hash, created_at").is("revoked_at", null))) {
+    store.familyLinks.set(l.token_hash, { id: l.id, busId: l.bus_id, label: l.label, createdAt: l.created_at });
+  }
+
   console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
-    + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas`);
+    + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas, `
+    + `${store.familyLinks.size} enlaces de familias`);
 }
 
-module.exports = { db, persist, flush, loadState, select, unitFromRow };
+module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow };

@@ -1,23 +1,23 @@
 # Graph Report - bus-tracker  (2026-10-14)
 
 ## Corpus Check
-- 46 files · ~48,350 words
+- 54 files · ~54,291 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 7 file(s) not represented in the graph (top: .css 4, (none) 1, .ino 1)
+- Unclassified: 8 file(s) not represented in the graph (top: .css 5, (none) 1, .ino 1)
 
 ## Summary
-- 481 nodes · 769 edges · 27 communities (22 shown, 5 thin omitted)
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 53 edges (avg confidence: 0.84)
+- 563 nodes · 941 edges · 35 communities (30 shown, 5 thin omitted)
+- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 62 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3c0a8782`
+- Built from commit: `ec459061`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Panel de administración
-- ETA y rutas (geo)
+- routes/familia.js
 - Mapa de pasajeros
 - Datos y autenticación
 - Servidor y dependencias
@@ -40,18 +40,26 @@
 - Dirección de diseño de go503
 - Registro antislop 001 (2026-10-14)
 - auth.js
+- colegio.js
+- tracking.js
+- js/motorista.js
+- colegio.test.js
+- store.js
+- telemetry.js
+- js/familia.js
+- demo-colegio.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `openDetalle()` - 11 edges
-2. `renderChips()` - 10 edges
-3. `loadUnidades()` - 10 edges
-4. `loadMantenimiento()` - 10 edges
-5. `distanceM()` - 10 edges
-6. `render()` - 9 edges
-7. `render()` - 9 edges
-8. `load()` - 9 edges
-9. `fmt()` - 9 edges
-10. `loadFlota()` - 9 edges
+1. `persist()` - 13 edges
+2. `distanceM()` - 12 edges
+3. `openDetalle()` - 11 edges
+4. `loadUnidades()` - 11 edges
+5. `renderChips()` - 10 edges
+6. `loadFlota()` - 10 edges
+7. `loadMantenimiento()` - 10 edges
+8. `schoolRoute()` - 10 edges
+9. `render()` - 9 edges
+10. `render()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Render env vars (Supabase, VAPID, BUS_API_KEY)` --shares_data_with--> `BUS_API_KEY`  [INFERRED]
@@ -73,15 +81,15 @@
 - **Public marketing site pages** — public_index, public_preguntas, public_sensor, public_mapa, public_login [EXTRACTED 1.00]
 - **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 
-## Communities (27 total, 5 thin omitted)
+## Communities (35 total, 5 thin omitted)
 
 ### Community 0 - "Panel de administración"
 Cohesion: 0.06
-Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+58 more)
+Nodes (70): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+62 more)
 
-### Community 1 - "ETA y rutas (geo)"
-Cohesion: 0.06
-Nodes (47): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+39 more)
+### Community 1 - "routes/familia.js"
+Cohesion: 0.08
+Nodes (29): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+21 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.07
@@ -89,19 +97,19 @@ Nodes (57): animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bell
 
 ### Community 3 - "Datos y autenticación"
 Cohesion: 0.06
-Nodes (30): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+22 more)
+Nodes (31): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+23 more)
 
 ### Community 4 - "Servidor y dependencias"
 Cohesion: 0.05
-Nodes (35): dependencies, cors, dotenv, express, @supabase/supabase-js, web-push, engines, node (+27 more)
+Nodes (36): dependencies, cors, dotenv, express, @supabase/supabase-js, web-push, engines, node (+28 more)
 
 ### Community 5 - "Sensor y páginas públicas"
 Cohesion: 0.07
 Nodes (29): go503 sensor firmware README, POST /api/telemetry, Local test tunnel (cloudflared/ngrok), go503 sensor (ESP32 + 4G + GPS), GPS odometer, J1939 (heavy diesel, planned), Legacy bus sensors (ignition, fuel, DS18B20, MPU6050), npm run simulate (sensor simulator) (+21 more)
 
 ### Community 6 - "Alertas y push"
-Cohesion: 0.13
-Nodes (21): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+13 more)
+Cohesion: 0.14
+Nodes (20): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+12 more)
 
 ### Community 7 - "Firmware: cola y red"
 Cohesion: 0.16
@@ -160,28 +168,60 @@ Cohesion: 0.22
 Nodes (8): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Tercera ronda: panel con sesión y página del sensor, Verificación (navegador del app, servidor local)
 
 ### Community 26 - "auth.js"
-Cohesion: 0.24
+Cohesion: 0.28
 Nodes (6): crypto, hashKey(), { isProduction }, sameHash(), sensorAuth(), { units }
+
+### Community 27 - "colegio.js"
+Cohesion: 0.13
+Nodes (21): addStop(), clearStops(), crypto, { distanceM }, dropSchoolRoute(), ensureSchoolRoute(), { persist }, randomId() (+13 more)
+
+### Community 28 - "tracking.js"
+Cohesion: 0.23
+Nodes (13): DIRS, endTrip(), handlePosition(), { nearestStop }, other(), { persist }, registerExit(), registerPass() (+5 more)
+
+### Community 29 - "js/motorista.js"
+Cohesion: 0.33
+Nodes (11): call(), keepAwake(), refresh(), render(), renderDetalle(), save(), sendPosition(), showEntrar() (+3 more)
+
+### Community 30 - "colegio.test.js"
+Cohesion: 0.17
+Nodes (6): assert, express, { hashKey }, PARADAS, store, test
+
+### Community 31 - "store.js"
+Cohesion: 0.20
+Nodes (9): auth, { registerPass, toTime }, router, { routes }, router, { segments, publicRoutes }, publicRoutes(), routes (+1 more)
+
+### Community 32 - "telemetry.js"
+Cohesion: 0.20
+Nodes (7): auth, { distanceM }, { handlePosition, toTime }, lastLog, { persist, saveBus }, router, { routes, buses, units, retired, publicRoutes }
+
+### Community 33 - "js/familia.js"
+Cohesion: 0.60
+Nodes (5): drawMap(), initMap(), refresh(), render(), showMsg()
+
+### Community 34 - "demo-colegio.js"
+Cohesion: 0.33
+Nodes (5): { hashKey }, PARADAS, { startTrip }, stops, store
 
 ## Knowledge Gaps
 - **18 isolated node(s):** `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark`, `Front-View Bus Icon`, `Brand Palette (blue background, orange accent, white marks)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 219 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 260 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `@supabase/supabase-js` connect `Servidor y dependencias` to `Datos y autenticación`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
+- **Why does `route()` connect `Panel de administración` to `demo-colegio.js`?**
+  _High betweenness centrality (0.112) - this node is a cross-community bridge._
 - **What connects `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark` to the rest of the system?**
   _18 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Panel de administración` be split into smaller, more focused modules?**
-  _Cohesion score 0.06151062867480778 - nodes in this community are weakly interconnected._
-- **Why does `web-push` connect `Servidor y dependencias` to `Alertas y push`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
-  _Cohesion score 0.055288461538461536 - nodes in this community are weakly interconnected._
-- **Why does `routes` connect `ETA y rutas (geo)` to `Datos y autenticación`, `Alertas y push`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+  _Cohesion score 0.05712050078247261 - nodes in this community are weakly interconnected._
+- **Why does `@supabase/supabase-js` connect `Servidor y dependencias` to `Datos y autenticación`?**
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+- **Should `routes/familia.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.07641196013289037 - nodes in this community are weakly interconnected._
+- **Why does `express` connect `Servidor y dependencias` to `colegio.test.js`?**
+  _High betweenness centrality (0.017) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._

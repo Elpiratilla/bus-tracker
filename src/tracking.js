@@ -93,6 +93,21 @@ function saveTrip(busId, routeId) {
   persist("vuelta", (db) => db.from("bus_trips").upsert(row), key);
 }
 
+// El motorista tocó "Salir": la vuelta empieza ya, en la primera parada del sentido que escogió
+// (ida = mañana, regreso = tarde). Así no hay que adivinar el sentido con las primeras paradas.
+function startTrip(busId, route, dir, now) {
+  const first = route.directions[dir][0].id;
+  trips[`${busId}:${route.id}`] = { busId, dir, passes: { [first]: now }, lastStopId: first,
+    leftStop: first, leftAt: now, updatedAt: now };
+  saveTrip(busId, route.id);
+}
+
+// El motorista tocó "Llegué": se cierra la vuelta (los tiempos de los tramos ya quedaron guardados)
+function endTrip(busId, route) {
+  delete trips[`${busId}:${route.id}`];
+  saveTrip(busId, route.id);
+}
+
 // Recibe una posición GPS y detecta si el bus entró a una parada o salió de ella.
 // Solo cuenta la entrada: mientras siga dentro del radio no se vuelve a registrar.
 function handlePosition(busId, route, point, now) {
@@ -111,4 +126,4 @@ function handlePosition(busId, route, point, now) {
     distanceM: Math.round(near.distance), entered: Boolean(entered) };
 }
 
-module.exports = { registerPass, handlePosition, toTime, STOP_RADIUS_M, DIRS };
+module.exports = { registerPass, handlePosition, startTrip, endTrip, toTime, STOP_RADIUS_M, DIRS };

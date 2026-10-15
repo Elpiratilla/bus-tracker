@@ -35,4 +35,10 @@ for (const r of routes) r.directions = { ida: r.stops, regreso: [...r.stops].rev
 // buses: estado en vivo que manda el sensor (posición, velocidad, motor...)
 // units: unidades registradas por una empresa (dueño, placa, clave del sensor, km y horas de motor)
 // retired: unidades eliminadas; si su sensor sigue transmitiendo se rechaza (no se vuelve a crear)
-module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map() };
+// familyLinks: enlaces privados de los papás (sha256 del token -> { id, busId, label, createdAt })
+// Una ruta con companyId es el recorrido privado de un micro de colegio (src/colegio.js)
+module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {},
+  alerts: new Map(), familyLinks: new Map() };
+
+// Rutas que salen en el mapa público (sin los recorridos de colegio)
+module.exports.publicRoutes = () => routes.filter((r) => !r.companyId);

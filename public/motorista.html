@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Motorista · go503</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#F3F5FB">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/colegio.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app__top">
+      <div><h1 id="titulo">go503 motorista</h1><small id="subtitulo">Tu celular es el GPS del micro</small></div>
+      <button class="btn btn--ghost btn--sm" type="button" id="cerrar" hidden>Cambiar unidad</button>
+    </header>
+
+    <p class="msg" id="msg" role="alert" hidden></p>
+
+    <!-- Primera vez: código de la unidad y su clave (vienen en el enlace que da el panel) -->
+    <section class="card" id="v-entrar" hidden>
+      <h2>Entrar</h2>
+      <p class="muted small" style="margin-bottom:1rem">El dueño del micro te da el enlace desde su panel. Si no lo tienes, escribe el código y la clave.</p>
+      <form id="f-entrar">
+        <div class="field"><label for="e-unidad">Código de la unidad</label><input class="input" id="e-unidad" placeholder="U-ABC123" autocapitalize="characters" autocomplete="off"></div>
+        <div class="field"><label for="e-clave">Clave</label><input class="input" id="e-clave" placeholder="go503_..." autocomplete="off"></div>
+        <button class="btn btn--anil btn--block btn--big" type="submit">Entrar</button>
+      </form>
+    </section>
+
+    <div id="v-app" hidden>
+      <section class="card">
+        <div class="estado" id="estado"><span class="estado__punto"></span><div><b id="e-texto">Sin viaje</b><small class="muted" id="e-detalle"></small></div></div>
+      </section>
+
+      <!-- Sin viaje: escoger turno -->
+      <section class="stack" id="v-salir" style="margin-bottom:1rem">
+        <button class="btn btn--torogoz btn--big" type="button" data-salir="ida">Salir: mañana<br>(casas → colegio)</button>
+        <button class="btn btn--maiz btn--big" type="button" data-salir="regreso">Salir: tarde<br>(colegio → casas)</button>
+      </section>
+
+      <!-- En viaje -->
+      <section class="stack" id="v-viaje" style="margin-bottom:1rem" hidden>
+        <button class="btn btn--danger btn--big" type="button" id="llegue">Llegué</button>
+        <p class="muted small">No bloquees la pantalla y deja el celular conectado al cargador. Si se bloquea, los papás dejan de ver el micro.</p>
+      </section>
+
+      <section class="card" id="v-paradas">
+        <h2>Paradas</h2>
+        <p class="muted small" style="margin-bottom:.8rem">Márcalas en orden, como el recorrido de la <b>mañana</b>. La última es el <b>colegio</b>. En la tarde se hace al revés.</p>
+        <ol class="paradas" id="paradas"></ol>
+        <form id="f-parada" class="stack">
+          <div class="field" style="margin:0"><label for="p-nombre">Nombre de la parada</label><input class="input" id="p-nombre" maxlength="40" placeholder="Ej.: Esquina Col. Escalón"><small class="muted">No pongas el nombre de los niños.</small></div>
+          <button class="btn btn--anil btn--block" type="submit" id="p-marcar">Marcar parada donde estoy</button>
+        </form>
+        <button class="btn btn--ghost btn--sm" type="button" id="p-borrar" style="margin-top:1rem">Borrar todas las paradas</button>
+      </section>
+    </div>
+  </main>
+  <script src="/js/motorista.js"></script>
+</body>
+</html>

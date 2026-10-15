@@ -1,0 +1,56 @@
+# CI de go503: revisa que el proyecto instale, que todo el JavaScript sea válido
+# y que el servidor arranque y responda. Corre en cada push y PR a main.
+# No usa la Supabase real: sin SUPABASE_URL el servidor trabaja solo en memoria.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Si llega un push nuevo a la misma rama, cancela la revisión vieja
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      # Node 22, la misma versión que usa Render (render.yaml)
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      # Instala exactamente lo de package-lock.json (igual que el buildCommand de Render)
+      - run: npm ci
+
+      # "Lint" mínimo: Node revisa la sintaxis de cada archivo sin ejecutarlo
+      - name: Revisar sintaxis
+        run: |
+          for f in $(git ls-files 'src/*.js' 'tools/*.js' 'public/*.js'); do
+            node --check "$f" || exit 1
+          done
+
+      # Arranca el servidor y prueba las mismas rutas que usa Render y el navegador
+      - name: Prueba de humo del servidor
+        env:
+          PORT: 3999
+        run: |
+          npm start > server.log 2>&1 &
+          curl -fsS --retry 15 --retry-connrefused --retry-delay 1 http://localhost:$PORT/api/rutas
+          curl -fsS http://localhost:$PORT/api/config
+          curl -fsS -o /dev/null http://localhost:$PORT/
+          echo "Servidor OK"
+
+      - name: Log del servidor (si algo falló)
+        if: failure()
+        run: cat server.log || true

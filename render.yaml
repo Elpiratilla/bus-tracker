@@ -10,6 +10,7 @@ services:
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/rutas
+    autoDeployTrigger: checksPass   # despliega cada push a main solo si pasa el CI de GitHub (.github/workflows/ci.yml)
     envVars:
       - key: NODE_VERSION
         value: "22"

@@ -1,5 +1,11 @@
 require("dotenv").config();
 
+// En producción, sin BUS_API_KEY cualquiera podría inventar buses en el mapa público: no arrancar
+if (require("./env").isProduction && !process.env.BUS_API_KEY) {
+  console.error("Falta BUS_API_KEY. En producción es obligatoria (ponla en Environment de Render).");
+  process.exit(1);
+}
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");

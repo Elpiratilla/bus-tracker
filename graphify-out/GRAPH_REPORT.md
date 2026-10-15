@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-14)
 
 ## Corpus Check
-- 38 files · ~46,235 words
+- 46 files · ~48,350 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: .css 4, (none) 1, .ino 1)
 
 ## Summary
-- 477 nodes · 763 edges · 27 communities (22 shown, 5 thin omitted)
+- 481 nodes · 769 edges · 27 communities (22 shown, 5 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 53 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `75b12484`
+- Built from commit: `3c0a8782`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -39,7 +39,7 @@
 - Icono PWA 512
 - Dirección de diseño de go503
 - Registro antislop 001 (2026-10-14)
-- eta.js
+- auth.js
 
 ## God Nodes (most connected - your core abstractions)
 1. `openDetalle()` - 11 edges
@@ -80,8 +80,8 @@ Cohesion: 0.06
 Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+58 more)
 
 ### Community 1 - "ETA y rutas (geo)"
-Cohesion: 0.07
-Nodes (32): persist(), crypto, hashKey(), sameHash(), sensorAuth(), { units }, auth, { registerPass, toTime } (+24 more)
+Cohesion: 0.06
+Nodes (47): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+39 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.07
@@ -100,8 +100,8 @@ Cohesion: 0.07
 Nodes (29): go503 sensor firmware README, POST /api/telemetry, Local test tunnel (cloudflared/ngrok), go503 sensor (ESP32 + 4G + GPS), GPS odometer, J1939 (heavy diesel, planned), Legacy bus sensors (ignition, fuel, DS18B20, MPU6050), npm run simulate (sensor simulator) (+21 more)
 
 ### Community 6 - "Alertas y push"
-Cohesion: 0.14
-Nodes (19): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+11 more)
+Cohesion: 0.13
+Nodes (21): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+13 more)
 
 ### Community 7 - "Firmware: cola y red"
 Cohesion: 0.16
@@ -159,20 +159,20 @@ Nodes (7): Diales, Dirección de diseño de go503, Identidad, Motivo de identida
 Cohesion: 0.22
 Nodes (8): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Tercera ronda: panel con sesión y página del sensor, Verificación (navegador del app, servidor local)
 
-### Community 26 - "eta.js"
-Cohesion: 0.13
-Nodes (22): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+14 more)
+### Community 26 - "auth.js"
+Cohesion: 0.24
+Nodes (6): crypto, hashKey(), { isProduction }, sameHash(), sensorAuth(), { units }
 
 ## Knowledge Gaps
 - **18 isolated node(s):** `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark`, `Front-View Bus Icon`, `Brand Palette (blue background, orange accent, white marks)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 215 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 219 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `@supabase/supabase-js` connect `Servidor y dependencias` to `Datos y autenticación`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **What connects `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark` to the rest of the system?**
   _18 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Panel de administración` be split into smaller, more focused modules?**
@@ -180,8 +180,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `web-push` connect `Servidor y dependencias` to `Alertas y push`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
-  _Cohesion score 0.07293868921775898 - nodes in this community are weakly interconnected._
-- **Why does `routes` connect `ETA y rutas (geo)` to `eta.js`, `Datos y autenticación`, `Alertas y push`?**
+  _Cohesion score 0.055288461538461536 - nodes in this community are weakly interconnected._
+- **Why does `routes` connect `ETA y rutas (geo)` to `Datos y autenticación`, `Alertas y push`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._

@@ -48,9 +48,9 @@
     "semantic_hash": "4711d82ee98f639b53cae56f31fe3d41"
   },
   "public/js/idioma.js": {
-    "mtime": 1792037951.51434,
-    "seen": 1792037967.475768,
-    "ast_hash": "2ae53cae1fc00607bc8a509b39336816",
+    "mtime": 1792038269.529523,
+    "seen": 1792038350.578934,
+    "ast_hash": "106bd330db8af7b42ed26561acd5129d",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -66,10 +66,10 @@
     "semantic_hash": "c5127f90a85a24dd58c0cf619528152f"
   },
   "public/js/panel.js": {
-    "mtime": 1791861532.0902653,
-    "seen": 1792036224.387991,
-    "ast_hash": "b8aca4768c882dc3ff9463752f646f5f",
-    "semantic_hash": "b8aca4768c882dc3ff9463752f646f5f"
+    "mtime": 1792038295.1019855,
+    "seen": 1792038350.578938,
+    "ast_hash": "177dddbc6840f09a5375327977a02fdb",
+    "semantic_hash": ""
   },
   "public/js/sensor.js": {
     "mtime": 1791863250.2972178,
@@ -150,10 +150,10 @@
     "semantic_hash": "636e652e717d405160ac4faa1e573c60"
   },
   "src/routes/empresa.js": {
-    "mtime": 1791860930.4854434,
-    "seen": 1792036224.3880079,
-    "ast_hash": "fb32d2f795edb4774bd87b67be715eaf",
-    "semantic_hash": "fb32d2f795edb4774bd87b67be715eaf"
+    "mtime": 1792038258.985058,
+    "seen": 1792038350.57896,
+    "ast_hash": "f0bbd1aa97c94ba87b3e43bbbe3cc11e",
+    "semantic_hash": ""
   },
   "src/routes/routes.js": {
     "mtime": 1791779934.2861588,
@@ -306,9 +306,9 @@
     "semantic_hash": ""
   },
   "anti-slop/registro-001-2026-10-14.md": {
-    "mtime": 1792037994.948158,
-    "seen": 1792038024.8007329,
-    "ast_hash": "7cc2e96e968faf70f90e0fcf5699280c",
+    "mtime": 1792038346.0678408,
+    "seen": 1792038350.578977,
+    "ast_hash": "a28dbd3c7a9063c1a1ad5ee6d37081d8",
     "semantic_hash": ""
   }
 }

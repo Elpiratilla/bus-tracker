@@ -26,5 +26,5 @@ services:
         sync: false
       - key: VAPID_SUBJECT
         sync: false
-      - key: BUS_API_KEY        # clave para sensores no registrados; en producción, ponla siempre
+      - key: BUS_API_KEY        # obligatoria: sin ella el servidor no arranca en Render (src/env.js)
         sync: false

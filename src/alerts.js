@@ -1,7 +1,7 @@
 // Notificaciones "tu bus está cerca" (Web Push), como el aviso de Uber.
 // Cada CHECK_MS revisa las alertas y avisa una sola vez cuando faltan ALERT_MIN minutos.
 const webpush = require("web-push");
-const { routes, alerts } = require("./store");
+const { routes, alerts, units } = require("./store");
 const { routeStatus } = require("./eta");
 const { persist } = require("./db");
 
@@ -72,7 +72,9 @@ async function checkAlerts() {
     const sk = `${route.id}|${alert.dir}`;
     if (!statuses.has(sk)) statuses.set(sk, routeStatus(route, alert.dir, now));
 
-    const mins = minutesTo(statuses.get(sk), alert.stopId, now);
+    const status = statuses.get(sk);
+    if (status.trip && !units[status.trip.busId]) continue; // un bus demo no manda avisos a gente real
+    const mins = minutesTo(status, alert.stopId, now);
     if (mins === null || mins > ALERT_MIN) continue;
 
     dropAlert(key, alert); // se avisa una sola vez

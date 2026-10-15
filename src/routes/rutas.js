@@ -1,10 +1,12 @@
 // Formato que usa el frontend (public/js/mapa.js): GET /api/rutas y GET /api/rutas/:id?sentido=ida|regreso
 const router = require("express").Router();
-const { routes, buses } = require("../store");
+const { routes, buses, units } = require("../store");
 const { routeStatus, pickDirection } = require("../eta");
 const { distanceM } = require("../geo");
 
 const iso = (t) => (t == null ? null : new Date(t).toISOString());
+// Bus del simulador o de pruebas (no es una unidad registrada por una empresa): el mapa lo marca como demo
+const isDemo = (trip) => Boolean(trip && !units[trip.busId]);
 
 // Los dos sentidos de una ruta, nombrados por su destino ("Hacia Zona Rosa")
 const sentidos = (route) => ["ida", "regreso"].map((d) => ({
@@ -39,7 +41,7 @@ router.get("/cerca", (req, res) => {
         if (d <= radio && (!best || d < best.d)) best = { stop, i, d };
       });
       if (!best) continue;
-      const { lastIdx, times } = routeStatus(route, dir, now);
+      const { trip, lastIdx, times } = routeStatus(route, dir, now);
       // una hora estimada que ya pasó es de un bus que dejó de reportar: no cuenta como "en camino"
       const t = best.i > lastIdx ? times[best.i] : null;
       const eta = t && t > now - 60 * 1000 ? t : null;
@@ -51,6 +53,7 @@ router.get("/cerca", (req, res) => {
         caminarMin: Math.max(1, Math.round(best.d / WALK_M_PER_MIN)),
         llegaA: iso(eta),
         llegaMin: eta ? Math.max(0, Math.round((eta - now) / 60000)) : null,
+        demo: Boolean(eta) && isDemo(trip),
       });
     }
   }
@@ -75,6 +78,7 @@ router.get("/:id", (req, res) => {
     sentido: dir,
     sentidos: sentidos(route),
     actualizado: iso((trip && buses[trip.busId]?.updatedAt) || Date.now()),
+    demo: isDemo(trip),
     // Dónde va el bus: posición GPS real (enVivo) o null si no hay señal reciente
     bus: current && {
       lat: current.bus?.lat ?? null,

@@ -574,6 +574,7 @@ function render(data) {
   lastNext = { key, idx: nextIdx };
   $("#upd").textContent = data.sinSenal
     ? `La unidad no envía señal desde las ${hhmm(data.ultimaSenal)}. Su hora de llegada no es confiable.`
+    : data.demo ? "Demo: este bus es simulado, no es un bus real."
     : `${TIPOS[data.tipo] || "Unidad"}. Actualizado a las ${hhmm(actualizado)}`;
 
   $("#stops-title").textContent = `Paradas de la ruta ${ruta}${hacia ? ` hacia ${hacia}` : ""}`;
@@ -682,6 +683,7 @@ function mostrarCerca(paradas) {
     if (p.llegaMin == null) eta.append("Sin bus", el("small", null, "por ahora"));
     else if (p.llegaMin <= 0) eta.append("¡Ya viene!");
     else eta.append(`${p.llegaMin} min`, el("small", null, p.llegaMin < p.caminarMin ? "no alcanzas" : "llega"));
+    if (p.demo) eta.append(el("small", null, "demo"));
     b.append(el("span", "nearby__num", p.ruta), txt, eta);
     b.setAttribute("aria-label", `Ruta ${p.ruta} hacia ${p.destino}. Parada ${p.parada.nombre} a ${p.distanciaM} metros. ${p.llegaMin == null ? "Sin bus por ahora" : `Llega en ${p.llegaMin} minutos`}`);
     b.addEventListener("click", () => {

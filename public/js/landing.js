@@ -158,7 +158,8 @@ function render(data) {
 
   // Estado de la conexión
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
-  $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo ahorita" : secs < 60 ? `Lo vimos hace ${secs} s` : `Lo vimos hace ${Math.round(secs / 60)} min`)
+  $("b-upd").textContent = hasBus && data.demo ? "Demo: bus simulado, no es real"
+    : hasBus ? (secs < 10 ? "En vivo ahorita" : secs < 60 ? `Lo vimos hace ${secs} s` : `Lo vimos hace ${Math.round(secs / 60)} min`)
     : data.sinSenal ? "Sin señal" : "Esperando que salga un bus";
   const live = document.querySelector(".live");
   live.classList.toggle("live--off", !hasBus);

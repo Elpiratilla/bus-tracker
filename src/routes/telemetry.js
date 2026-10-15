@@ -70,9 +70,10 @@ router.post("/", auth, (req, res) => {
   }
 });
 
-// Posiciones públicas (sin datos del motor ni de la empresa)
+// Posiciones públicas (sin datos del motor ni de la empresa). demo: bus del simulador, no una unidad registrada
 router.get("/", (_req, res) => res.json(Object.values(buses).map((b) => ({
   busId: b.busId, routeId: b.routeId, lat: b.lat, lng: b.lng, atStop: b.atStop, updatedAt: b.updatedAt,
+  demo: !units[b.busId],
 }))));
 
 module.exports = router;

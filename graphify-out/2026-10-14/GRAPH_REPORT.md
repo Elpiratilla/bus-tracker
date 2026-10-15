@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-14)
 
 ## Corpus Check
-- 38 files · ~45,761 words
+- 38 files · ~46,235 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: .css 4, (none) 1, .ino 1)
 
 ## Summary
-- 475 nodes · 761 edges · 26 communities (21 shown, 5 thin omitted)
+- 477 nodes · 763 edges · 27 communities (22 shown, 5 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 53 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5096e7dc`
+- Built from commit: `75b12484`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -39,6 +39,7 @@
 - Icono PWA 512
 - Dirección de diseño de go503
 - Registro antislop 001 (2026-10-14)
+- eta.js
 
 ## God Nodes (most connected - your core abstractions)
 1. `openDetalle()` - 11 edges
@@ -72,15 +73,15 @@
 - **Public marketing site pages** — public_index, public_preguntas, public_sensor, public_mapa, public_login [EXTRACTED 1.00]
 - **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 
-## Communities (26 total, 5 thin omitted)
+## Communities (27 total, 5 thin omitted)
 
 ### Community 0 - "Panel de administración"
 Cohesion: 0.06
 Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+58 more)
 
 ### Community 1 - "ETA y rutas (geo)"
-Cohesion: 0.06
-Nodes (48): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+40 more)
+Cohesion: 0.07
+Nodes (32): persist(), crypto, hashKey(), sameHash(), sensorAuth(), { units }, auth, { registerPass, toTime } (+24 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.07
@@ -88,7 +89,7 @@ Nodes (57): animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bell
 
 ### Community 3 - "Datos y autenticación"
 Cohesion: 0.06
-Nodes (35): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+27 more)
+Nodes (30): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+22 more)
 
 ### Community 4 - "Servidor y dependencias"
 Cohesion: 0.05
@@ -100,7 +101,7 @@ Nodes (29): go503 sensor firmware README, POST /api/telemetry, Local test tunnel
 
 ### Community 6 - "Alertas y push"
 Cohesion: 0.14
-Nodes (20): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+12 more)
+Nodes (19): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+11 more)
 
 ### Community 7 - "Firmware: cola y red"
 Cohesion: 0.16
@@ -155,12 +156,16 @@ Cohesion: 0.25
 Nodes (7): Diales, Dirección de diseño de go503, Identidad, Motivo de identidad, Paleta (en `public/css/base.css`), Reglas de contenido, Tipografía
 
 ### Community 25 - "Registro antislop 001 (2026-10-14)"
-Cohesion: 0.25
-Nodes (7): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Verificación (navegador del app, servidor local)
+Cohesion: 0.22
+Nodes (8): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Tercera ronda: panel con sesión y página del sensor, Verificación (navegador del app, servidor local)
+
+### Community 26 - "eta.js"
+Cohesion: 0.13
+Nodes (22): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+14 more)
 
 ## Knowledge Gaps
 - **18 isolated node(s):** `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark`, `Front-View Bus Icon`, `Brand Palette (blue background, orange accent, white marks)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 213 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 215 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -175,8 +180,8 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `web-push` connect `Servidor y dependencias` to `Alertas y push`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
-  _Cohesion score 0.05576923076923077 - nodes in this community are weakly interconnected._
-- **Why does `routes` connect `ETA y rutas (geo)` to `Datos y autenticación`, `Alertas y push`?**
+  _Cohesion score 0.07293868921775898 - nodes in this community are weakly interconnected._
+- **Why does `routes` connect `ETA y rutas (geo)` to `eta.js`, `Datos y autenticación`, `Alertas y push`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._

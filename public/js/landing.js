@@ -160,8 +160,17 @@ function render(data) {
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
   $("b-upd").textContent = hasBus ? (secs < 10 ? "En vivo ahorita" : secs < 60 ? `Lo vimos hace ${secs} s` : `Lo vimos hace ${Math.round(secs / 60)} min`)
     : data.sinSenal ? "Sin señal" : "Esperando que salga un bus";
-  document.querySelector(".live").classList.toggle("live--off", !hasBus);
+  const live = document.querySelector(".live");
+  live.classList.toggle("live--off", !hasBus);
+  // El punto late una vez cuando llega una señal nueva del bus, no sin parar
+  if (hasBus && actualizado !== lastSignal) {
+    live.classList.remove("live--ping");
+    void live.offsetWidth;
+    live.classList.add("live--ping");
+  }
+  lastSignal = actualizado;
 }
+let lastSignal = null;
 
 async function load() {
   try {

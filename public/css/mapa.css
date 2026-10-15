@@ -4,6 +4,7 @@
   --anil: #1B2559;        /* tinte de añil: el color de la marca */
   --maiz: #F2B22E;        /* maíz: próxima parada y unidad */
   --torogoz: #0FA39C;     /* turquesa del torogoz: tramo recorrido */
+  --alerta: #D9434E;      /* fallas: se cayó la conexión */
 
   --paper: #F6F8FC;
   --card: #FFFFFF;
@@ -467,7 +468,8 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   margin: 0 0 1rem;
   padding: .6rem .9rem;
   background: var(--paper);
-  border-left: 4px solid var(--maiz);
+  /* solo aparece cuando se cae la conexión: la raya roja marca esa falla */
+  border-left: 4px solid var(--alerta);
   font-weight: 600;
 }
 

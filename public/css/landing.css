@@ -141,7 +141,8 @@ button.fascia--title:active { transform: rotate(-2deg) translateY(.04em) scale(.
 .board__note { color: #A9B2D8; font: 500 1.05rem/1.4 var(--sans); }
 
 /* Línea de paradas con el bus avanzando */
-.strip { position: relative; height: 5.2rem; margin: 0 .6rem; }
+/* alto para nombres de hasta 3 renglones ("Terminal de Oriente") sin pisar la ayuda de abajo */
+.strip { position: relative; height: 6.1rem; margin: 0 .6rem; }
 .strip__line {
   position: absolute;
   left: 0; right: 0; top: 1.4rem;
@@ -199,7 +200,7 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .strip__stop--mine { box-shadow: 0 0 0 4px var(--anil), 0 0 0 6px var(--maiz); animation: pick .35s ease-out; }
 @keyframes pick { from { box-shadow: 0 0 0 4px var(--anil), 0 0 0 14px rgba(242, 178, 46, 0); } }
 
-.board__hint { margin: -.4rem 0 .9rem; color: #A9B2D8; font-size: .85rem; }
+.board__hint { margin: 0 0 .9rem; color: #A9B2D8; font-size: .85rem; }
 
 /* Sentido de la ruta */
 .board__dir { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.1rem; }
@@ -241,8 +242,8 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
   background: var(--torogoz);
   border-radius: 50%;
   box-shadow: 0 0 0 0 rgba(15, 163, 156, .6);
-  animation: live 2s ease-out infinite;
 }
+.live--ping { animation: live 1.2s ease-out; }
 .live--off { background: #6B739A; animation: none; }
 @keyframes live { to { box-shadow: 0 0 0 8px rgba(15, 163, 156, 0); } }
 
@@ -335,7 +336,8 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .biz__lead { max-width: 36rem; margin-top: 1.1rem; color: #C9D0EE; font-size: 1.1rem; line-height: 1.6; }
 .biz__list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.3rem 1.6rem; margin: 2rem 0 0; }
 @media (max-width: 640px) { .biz__list { grid-template-columns: 1fr; } }
-.biz__list div { padding-left: 1rem; border-left: 3px solid var(--maiz); }
+/* Una raya arriba de cada punto, como los renglones de una hoja de control: separa sin decorar */
+.biz__list div { padding-top: .8rem; border-top: 1px solid rgba(255, 255, 255, .18); }
 .biz__list dt { font-weight: 700; }
 .biz__list dd { margin: .15rem 0 0; color: #C9D0EE; }
 .biz__actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2.2rem; }
@@ -369,6 +371,7 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
   text-align: left;
 }
 .preview__table td { padding: .75rem 1.1rem; border-top: 1px solid var(--line); vertical-align: middle; }
+.preview__table b { white-space: nowrap; }
 .preview__table small { display: block; color: var(--muted); font-size: .78rem; }
 .dot {
   display: inline-block;
@@ -720,9 +723,10 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 
 .hero h1 { animation: rise .6s ease-out both; }
 .fascia--title:not(.is-new) { animation: arrive .9s cubic-bezier(.2, .7, .3, 1) .3s both; }
-.hero__lead { animation: rise .6s ease-out .45s both; }
-.hero__actions { animation: rise .6s ease-out .55s both; }
-.board { animation: rise .7s ease-out .65s both; }
+.hero__lead { animation: rise .6s ease-out .2s both; }
+.hero__actions { animation: rise .6s ease-out .3s both; }
+/* El tablero es la respuesta: entra casi junto con la pregunta, no al último */
+.board { animation: rise .6s ease-out .15s both; }
 
 /* El recorrido de "Así sabemos…": el bus sale de la parada 1 y llega a la 2 */
 .how__route::after, .how__bus, .how__stop { transition: transform 1.6s cubic-bezier(.45, 0, .25, 1), left 1.6s cubic-bezier(.45, 0, .25, 1), background-color .3s, color .3s; }

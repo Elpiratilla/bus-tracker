@@ -27,5 +27,3 @@ services:
         sync: false
       - key: BUS_API_KEY        # clave para sensores no registrados; en producción, ponla siempre
         sync: false
-      - key: ANTHROPIC_API_KEY  # chat con IA; sin ella, el chat responde con reglas
-        sync: false

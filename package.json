@@ -10,7 +10,6 @@
     "admin": "node tools/admin.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.133.0",
     "@supabase/supabase-js": "^2.117.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",

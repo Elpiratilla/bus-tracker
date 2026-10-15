@@ -840,19 +840,3 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .order__more { margin-top: .7rem; color: var(--muted); }
 .order__more a { color: var(--tinta); font-weight: 600; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
-/* Botón con aspecto de enlace (abre el chat) */
-.link-btn {
-  padding: 0;
-  background: none;
-  border: 0;
-  color: var(--tinta);
-  font: inherit;
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-color: var(--maiz);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.link-btn:hover { text-decoration-color: var(--torogoz); }
-.hero__ask { margin-top: 1.4rem; color: var(--muted); animation: rise .6s ease-out .65s both; }

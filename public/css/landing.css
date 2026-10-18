@@ -812,8 +812,6 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .legal__tabla th, .legal__tabla td { padding: .75rem .9rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .legal__tabla thead th { background: var(--papel); font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; }
 .legal__tabla tbody tr:last-child > * { border-bottom: 0; }
-/* Datos que el dueño todavía tiene que llenar: se notan a propósito */
-mark.falta { padding: 0 .25em; background: var(--maiz); color: var(--noche); border-radius: 4px; }
 @media (max-width: 900px) {
   .legal__inner { grid-template-columns: minmax(0, 1fr); }
   .legal__side { position: static; }

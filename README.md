@@ -130,20 +130,16 @@ Los textos que ve el público están en [`public/html/legal.html`](public/html/l
 
 </details>
 
-### Falta completar antes de publicar
+### Para cuando go503 se inscriba
 
-> [!IMPORTANT]
-> Todo lo que falta aparece en `legal.html` marcado en amarillo.
+go503 es un proyecto estudiantil. La página ya dice quién lo hace (Mateo), cómo contactarlo y qué datos se guardan. Esto queda para cuando se inscriba como negocio:
 
-- [x] Responsable y titular de los derechos: Mateo
-- [x] Correo (go503support@gmail.com) y WhatsApp (7263-5254)
-- [x] Plazo para borrar solicitudes de venta sin compra: 12 meses
-- [ ] Nombre legal completo del responsable (como aparece en el DUI), NIT y NRC (si aplica)
-- [ ] Dirección para notificaciones
-- [ ] Plazo para responder reclamos (propuesta: 10 días hábiles)
+- [ ] Inscribirse en el Ministerio de Hacienda y poner el **NIT** (y el **NRC** si cobra IVA) en la sección 1 de `legal.html`
+- [ ] Poner el **nombre legal completo** del responsable y una **dirección para notificaciones**
+- [ ] Revisar si hay que inscribirse como proveedor ante la **Defensoría del Consumidor**
+- [ ] Fijar un plazo para responder reclamos (hoy dice «lo antes posible»)
 - [ ] Borrar de verdad las solicitudes de la tabla `leads` que pasen 12 meses sin compra
-- [ ] Revisar si hay que inscribirse como proveedor ante la Defensoría del Consumidor
-- [ ] Que un abogado salvadoreño revise los textos antes de vender el primer sensor
+- [ ] Pedir a un abogado salvadoreño que revise los textos antes de vender el primer sensor
 
 <details>
 <summary><b>Dónde se cumple en el código</b></summary>

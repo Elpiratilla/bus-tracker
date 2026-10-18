@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">go503 Motorista</string>
+    <string name="title_activity_main">go503 Motorista</string>
+    <string name="package_name">sv.go503.motorista</string>
+    <string name="custom_url_scheme">sv.go503.motorista</string>
+    <!-- Notificación fija mientras el bus está en trayecto (GPS en segundo plano) -->
+    <string name="capacitor_background_geolocation_notification_channel_name">Trayecto en curso</string>
+    <string name="capacitor_background_geolocation_notification_color">#F2B22E</string>
+</resources>

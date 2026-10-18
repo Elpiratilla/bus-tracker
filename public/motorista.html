@@ -26,9 +26,9 @@
     <!-- Primera vez: código de la unidad y su clave (vienen en el enlace que da el panel) -->
     <section class="card" id="v-entrar" hidden>
       <h2>Entrar</h2>
-      <p class="muted small" style="margin-bottom:1rem">El dueño del bus te da el enlace desde su panel. Si no lo tienes, escribe el código y la clave.</p>
+      <p class="muted small" style="margin-bottom:1rem" id="e-ayuda">El dueño del bus te da el enlace desde su panel. Si no lo tienes, escribe el código y la clave.</p>
       <form id="f-entrar">
-        <div class="field"><label for="e-unidad">Código de la unidad</label><input class="input" id="e-unidad" placeholder="U-ABC123" autocapitalize="characters" autocomplete="off"></div>
+        <div class="field"><label for="e-unidad">Código de la unidad o enlace</label><input class="input" id="e-unidad" placeholder="U-ABC123" autocapitalize="characters" autocomplete="off"></div>
         <div class="field"><label for="e-clave">Clave</label><input class="input" id="e-clave" placeholder="go503_..." autocomplete="off"></div>
         <button class="btn btn--anil btn--block btn--big" type="submit">Entrar</button>
       </form>
@@ -55,7 +55,7 @@
         <section class="stack" style="margin-bottom:1rem">
           <button class="btn btn--maiz btn--big" type="button" id="vuelta"></button>
           <button class="btn btn--danger btn--big" type="button" id="terminar">Terminar trayecto</button>
-          <p class="muted small">No bloquees la pantalla y deja el celular conectado al cargador. Si se bloquea, la gente deja de ver el bus en el mapa.</p>
+          <p class="muted small" id="aviso-pantalla">No bloquees la pantalla y deja el celular conectado al cargador. Si se bloquea, la gente deja de ver el bus en el mapa.</p>
         </section>
         <section class="card">
           <h2>Paradas</h2>

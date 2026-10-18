@@ -1,17 +1,17 @@
-# Graph Report - bus-tracker  (2026-10-14)
+# Graph Report - bus-tracker  (2026-10-18)
 
 ## Corpus Check
-- 46 files · ~48,350 words
+- 62 files · ~61,340 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 7 file(s) not represented in the graph (top: .css 4, (none) 1, .ino 1)
+- Unclassified: 25 file(s) not represented in the graph (top: .xml 10, .css 5, (none) 3)
 
 ## Summary
-- 481 nodes · 769 edges · 27 communities (22 shown, 5 thin omitted)
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 53 edges (avg confidence: 0.84)
+- 575 nodes · 901 edges · 44 communities (30 shown, 14 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3c0a8782`
+- Built from commit: `f8621ca3`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,14 +20,14 @@
 - ETA y rutas (geo)
 - Mapa de pasajeros
 - Datos y autenticación
-- Servidor y dependencias
+- admin.js
 - Sensor y páginas públicas
 - Alertas y push
 - Firmware: cola y red
 - Landing y pedidos
 - Firmware: sensores
 - Firmware: GPS
-- CI y despliegue Render
+- eta.js
 - Firmware: OBD-II
 - Acceso por código
 - Logo oscuro
@@ -40,6 +40,16 @@
 - Dirección de diseño de go503
 - Registro antislop 001 (2026-10-14)
 - auth.js
+- app/package.json
+- js/motorista.js
+- ExampleInstrumentedTest.java
+- MainActivity.java
+- copiar-web.js
+- package.json
+- scripts
+- server.js
+- dependencies
+- codigo.js
 
 ## God Nodes (most connected - your core abstractions)
 1. `openDetalle()` - 11 edges
@@ -73,7 +83,7 @@
 - **Public marketing site pages** — public_index, public_preguntas, public_sensor, public_mapa, public_login [EXTRACTED 1.00]
 - **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 
-## Communities (27 total, 5 thin omitted)
+## Communities (44 total, 14 thin omitted)
 
 ### Community 0 - "Panel de administración"
 Cohesion: 0.06
@@ -81,27 +91,27 @@ Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetal
 
 ### Community 1 - "ETA y rutas (geo)"
 Cohesion: 0.06
-Nodes (47): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+39 more)
+Nodes (44): { createClient }, flush(), loadState(), ms(), persist(), queues, saveBus(), select() (+36 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.07
 Nodes (57): animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bellButton(), buscar, cargarAlertas() (+49 more)
 
 ### Community 3 - "Datos y autenticación"
-Cohesion: 0.06
-Nodes (30): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+22 more)
+Cohesion: 0.07
+Nodes (22): cache, { db }, forgetToken(), lookup(), rateLimit(), requireAdmin(), requireCompany(), requireUser() (+14 more)
 
-### Community 4 - "Servidor y dependencias"
-Cohesion: 0.05
-Nodes (35): dependencies, cors, dotenv, express, @supabase/supabase-js, web-push, engines, node (+27 more)
+### Community 4 - "admin.js"
+Cohesion: 0.20
+Nodes (7): { createClient }, crypto, db, email, ENV, fs, path
 
 ### Community 5 - "Sensor y páginas públicas"
-Cohesion: 0.07
-Nodes (29): go503 sensor firmware README, POST /api/telemetry, Local test tunnel (cloudflared/ngrok), go503 sensor (ESP32 + 4G + GPS), GPS odometer, J1939 (heavy diesel, planned), Legacy bus sensors (ignition, fuel, DS18B20, MPU6050), npm run simulate (sensor simulator) (+21 more)
+Cohesion: 0.06
+Nodes (34): GET /api/rutas (health check), go503 sensor firmware README, POST /api/telemetry, BUS_API_KEY, Local test tunnel (cloudflared/ngrok), go503 sensor (ESP32 + 4G + GPS), GPS odometer, J1939 (heavy diesel, planned) (+26 more)
 
 ### Community 6 - "Alertas y push"
-Cohesion: 0.13
-Nodes (21): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+13 more)
+Cohesion: 0.14
+Nodes (19): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+11 more)
 
 ### Community 7 - "Firmware: cola y red"
 Cohesion: 0.16
@@ -119,9 +129,9 @@ Nodes (7): escribirMpu(), ignicionEncendida(), iniciarAcelerometro(), leerAceler
 Cohesion: 0.29
 Nodes (4): aGrados(), horaIso(), leerGps(), ponerHora()
 
-### Community 11 - "CI y despliegue Render"
-Cohesion: 0.28
-Nodes (5): GET /api/rutas (health check), BUS_API_KEY, CI workflow (GitHub Actions), Render blueprint (render.yaml), Render env vars (Supabase, VAPID, BUS_API_KEY)
+### Community 11 - "eta.js"
+Cohesion: 0.12
+Nodes (21): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+13 more)
 
 ### Community 12 - "Firmware: OBD-II"
 Cohesion: 0.39
@@ -160,28 +170,60 @@ Cohesion: 0.22
 Nodes (8): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Tercera ronda: panel con sesión y página del sensor, Verificación (navegador del app, servidor local)
 
 ### Community 26 - "auth.js"
-Cohesion: 0.24
-Nodes (6): crypto, hashKey(), { isProduction }, sameHash(), sensorAuth(), { units }
+Cohesion: 0.11
+Nodes (14): crypto, hashKey(), { isProduction }, sameHash(), sensorAuth(), { units }, assert, express (+6 more)
+
+### Community 27 - "app/package.json"
+Cohesion: 0.11
+Nodes (18): dependencies, @capacitor/android, @capacitor-community/background-geolocation, @capacitor/core, description, devDependencies, @capacitor/cli, name (+10 more)
+
+### Community 28 - "js/motorista.js"
+Cohesion: 0.32
+Nodes (13): botonGrande(), call(), gpsApp(), keepAwake(), refresh(), render(), renderDetalle(), save() (+5 more)
+
+### Community 31 - "copiar-web.js"
+Cohesion: 0.25
+Nodes (5): ARCHIVOS, fs, path, PUBLIC, WWW
+
+### Community 32 - "package.json"
+Cohesion: 0.25
+Nodes (7): engines, node, name, private, version, dotenv, web-push
+
+### Community 33 - "scripts"
+Cohesion: 0.29
+Nodes (7): scripts, admin, codigo, dev, simulate, start, test
+
+### Community 34 - "server.js"
+Cohesion: 0.29
+Nodes (6): cors, express, app, cors, express, path
+
+### Community 35 - "dependencies"
+Cohesion: 0.33
+Nodes (6): dependencies, cors, dotenv, express, @supabase/supabase-js, web-push
+
+### Community 36 - "codigo.js"
+Cohesion: 0.33
+Nodes (3): @supabase/supabase-js, { createClient }, crypto
 
 ## Knowledge Gaps
-- **18 isolated node(s):** `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark`, `Front-View Bus Icon`, `Brand Palette (blue background, orange accent, white marks)` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 219 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **22 isolated node(s):** `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core`, `@capacitor/cli`, `dotenv` (+17 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 266 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `@supabase/supabase-js` connect `Servidor y dependencias` to `Datos y autenticación`?**
-  _High betweenness centrality (0.031) - this node is a cross-community bridge._
-- **What connects `dotenv`, `go503 Brand Palette (blue #2E63D9, navy #0E1F3D, amber #F2B230)`, `go503 Brand Wordmark` to the rest of the system?**
-  _18 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `@supabase/supabase-js` connect `codigo.js` to `package.json`, `ETA y rutas (geo)`, `admin.js`?**
+  _High betweenness centrality (0.025) - this node is a cross-community bridge._
+- **What connects `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core` to the rest of the system?**
+  _22 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Panel de administración` be split into smaller, more focused modules?**
   _Cohesion score 0.06151062867480778 - nodes in this community are weakly interconnected._
-- **Why does `web-push` connect `Servidor y dependencias` to `Alertas y push`?**
-  _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
-  _Cohesion score 0.055288461538461536 - nodes in this community are weakly interconnected._
-- **Why does `routes` connect `ETA y rutas (geo)` to `Datos y autenticación`, `Alertas y push`?**
+- **Why does `express` connect `server.js` to `package.json`, `auth.js`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
+  _Cohesion score 0.05989110707803993 - nodes in this community are weakly interconnected._
+- **Why does `scripts` connect `scripts` to `package.json`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._

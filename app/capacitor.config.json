@@ -1,0 +1,13 @@
+{
+  "appId": "sv.go503.motorista",
+  "appName": "go503 Motorista",
+  "webDir": "www",
+  "android": {
+    "useLegacyBridge": true
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

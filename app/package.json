@@ -1,0 +1,19 @@
+{
+  "name": "go503-motorista-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de Android del motorista: la misma página de public/motorista.html, con GPS en segundo plano",
+  "scripts": {
+    "web": "node copiar-web.js",
+    "sync": "node copiar-web.js && cap sync android",
+    "abrir": "cap open android"
+  },
+  "dependencies": {
+    "@capacitor-community/background-geolocation": "1.2.26",
+    "@capacitor/android": "8.5.2",
+    "@capacitor/core": "8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2"
+  }
+}

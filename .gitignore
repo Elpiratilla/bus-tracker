@@ -10,3 +10,6 @@ firmware/go503_sensor/config.h
 
 # Capturas de pruebas del navegador
 .playwright-mcp/
+
+# App de Android: www/ se genera con npm run web (copia de public/)
+app/www/

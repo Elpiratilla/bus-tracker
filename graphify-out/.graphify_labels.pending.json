@@ -1,5 +1,24 @@
 {
+  "4": "admin.js",
+  "11": "eta.js",
   "24": "Dirección de diseño de go503",
   "25": "Registro antislop 001 (2026-10-14)",
-  "26": "auth.js"
+  "26": "auth.js",
+  "27": "app/package.json",
+  "28": "js/motorista.js",
+  "29": "ExampleInstrumentedTest.java",
+  "30": "MainActivity.java",
+  "31": "copiar-web.js",
+  "32": "package.json",
+  "33": "scripts",
+  "34": "server.js",
+  "35": "dependencies",
+  "36": "codigo.js",
+  "37": "gradlew",
+  "38": "app/build.gradle",
+  "39": "capacitor.build.gradle",
+  "40": "android/build.gradle",
+  "41": "capacitor.settings.gradle",
+  "42": "settings.gradle",
+  "43": "variables.gradle"
 }

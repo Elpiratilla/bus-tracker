@@ -1,10 +1,17 @@
 // go503 motorista: el celular del motorista hace de sensor del bus.
 // Escoge hacia dónde sale, Dar la vuelta en la terminal y Terminar trayecto.
 // Manda el GPS solo mientras está en trayecto.
+// La misma página va dentro de la app de Android (carpeta app/): ahí el GPS sigue con la pantalla apagada.
 (() => {
 const SEND_MS = 5000;           // cada cuánto se manda la posición durante el trayecto
 const KEY = "go503-motorista";  // código de la unidad y clave, en este celular
 const $ = (id) => document.getElementById(id);
+
+// Dentro de la app: los archivos van en el celular y el servidor es el de Render
+const NATIVA = window.Capacitor?.isNativePlatform?.() === true;
+const SERVIDOR = NATIVA ? "https://go503.onrender.com" : "";
+const GpsFondo = NATIVA ? window.Capacitor.registerPlugin("BackgroundGeolocation") : null;
+let watcherId = null;
 
 let cred = null;      // { busId, clave }
 let estado = null;    // lo último que dijo el servidor
@@ -28,7 +35,7 @@ function showMsg(text, kind = "error") {
 }
 
 async function call(path, body = {}) {
-  const res = await fetch(path, {
+  const res = await fetch(SERVIDOR + path, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": cred.clave },
     body: JSON.stringify({ busId: cred.busId, ...body }),
@@ -116,7 +123,35 @@ function showEntrar() {
 }
 
 // ---------- GPS ----------
+// En la app: el GPS se prende solo durante el trayecto, con una notificación fija (así Android no lo corta)
+async function gpsApp() {
+  if (estado?.enServicio && watcherId == null) {
+    watcherId = "pidiendo";
+    watcherId = await GpsFondo.addWatcher({
+      backgroundTitle: "Trayecto en curso",
+      backgroundMessage: "Tu bus sale en el mapa de go503. Toca Terminar trayecto al acabar.",
+      requestPermissions: true,
+      stale: false,
+      distanceFilter: 0,
+    }, (loc, err) => {
+      if (err) {
+        if (err.code === "NOT_AUTHORIZED") showMsg("Dale permiso de ubicación a go503 Motorista (Permitir siempre) en los ajustes del celular.");
+        return;
+      }
+      pos = { timestamp: loc.time ?? Date.now(), coords: { latitude: loc.latitude, longitude: loc.longitude,
+        accuracy: loc.accuracy, speed: loc.speed, heading: loc.bearing } };
+      sendPosition();
+    }).catch((err) => { watcherId = null; throw err; }); // si falla, se puede volver a intentar
+  } else if (!estado?.enServicio && watcherId != null && watcherId !== "pidiendo") {
+    const id = watcherId;
+    watcherId = null;
+    pos = null;
+    await GpsFondo.removeWatcher({ id });
+  }
+}
+
 function startGps() {
+  if (NATIVA) return; // en la app lo maneja gpsApp()
   if (!("geolocation" in navigator)) return showMsg("Este celular no tiene GPS en el navegador.");
   navigator.geolocation.watchPosition((p) => {
     pos = p;
@@ -146,8 +181,10 @@ async function sendPosition() {
   }
 }
 
-// La pantalla no se apaga durante el trayecto (si se apaga, el navegador deja de mandar el GPS)
+// La pantalla no se apaga durante el trayecto (si se apaga, el navegador deja de mandar el GPS).
+// En la app no hace falta: prende o apaga el GPS en segundo plano.
 async function keepAwake() {
+  if (NATIVA) return gpsApp().catch((err) => showMsg(`No se pudo prender el GPS: ${err.message}`));
   if (!estado?.enServicio) { wakeLock?.release().catch(() => {}); wakeLock = null; return; }
   if (wakeLock || !("wakeLock" in navigator)) return;
   try {
@@ -174,8 +211,10 @@ $("vuelta").addEventListener("click", () => viaje("salir", estado.sentidos.find(
 
 $("f-entrar").addEventListener("submit", (e) => {
   e.preventDefault();
-  const busId = $("e-unidad").value.trim().toUpperCase();
-  const clave = $("e-clave").value.trim();
+  // También sirve pegar el enlace completo del panel (…/motorista.html#u=ID&k=CLAVE)
+  const enlace = new URLSearchParams($("e-unidad").value.split("#")[1] || "");
+  const busId = (enlace.get("u") || $("e-unidad").value).trim().toUpperCase();
+  const clave = (enlace.get("k") || $("e-clave").value).trim();
   if (!busId || !clave) return showMsg("Escribe el código y la clave.");
   cred = { busId, clave };
   save(cred);
@@ -192,6 +231,10 @@ $("cerrar").addEventListener("click", () => {
 });
 
 // ---------- Inicio ----------
+if (NATIVA) {
+  $("aviso-pantalla").textContent = "Puedes bloquear el celular: el GPS sigue mandándose. Déjalo conectado al cargador.";
+  $("e-ayuda").textContent = "Pega aquí el enlace que te mandó el dueño del bus, o escribe el código y la clave.";
+}
 // El panel da un enlace /motorista.html#u=ID&k=CLAVE: se guarda y se quita de la barra
 const hash = new URLSearchParams(location.hash.slice(1));
 if (hash.get("u") && hash.get("k")) {

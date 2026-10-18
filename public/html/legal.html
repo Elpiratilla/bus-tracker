@@ -59,7 +59,7 @@
   <main>
     <!-- Versión de estos textos: si cambia, cambiar también TERMINOS_VERSION en public/js/acceso.js -->
     <section class="legal" aria-label="Documentos legales">
-      <div class="legal__inner wrap">
+      <div class="legal__inner wrap" data-lang="es" translate="no">
         <nav class="legal__side" aria-label="En esta página">
           <p class="legal__ver">Versión 2026-10-18<br>Vigente desde el 18 de octubre de 2026</p>
           <ol>
@@ -70,7 +70,8 @@
             <li><a href="#navegador">Cookies y navegador</a></li>
             <li><a href="#propiedad">Propiedad intelectual</a></li>
             <li><a href="#venta">Venta del sensor</a></li>
-            <li><a href="#reclamos">Reclamos y contacto</a></li>
+            <li><a href="#reclamos">Reportar un problema</a></li>
+            <li><a href="#contacto">Reclamos y contacto</a></li>
           </ol>
         </nav>
 
@@ -339,7 +340,293 @@
 
         </div>
       </div>
+
+      <!-- English version: same sections and ids as the Spanish one above. The Spanish text governs. -->
+      <div class="legal__inner wrap" data-lang="en" lang="en" translate="no">
+        <nav class="legal__side" aria-label="On this page">
+          <p class="legal__ver">Version 2026-10-18<br>In effect since October 18, 2026</p>
+          <ol>
+            <li><a href="#resumen">In short</a></li>
+            <li><a href="#aviso">Who we are</a></li>
+            <li><a href="#terminos">Terms of use</a></li>
+            <li><a href="#privacidad">Privacy</a></li>
+            <li><a href="#navegador">Cookies and your browser</a></li>
+            <li><a href="#propiedad">Intellectual property</a></li>
+            <li><a href="#venta">Buying the sensor</a></li>
+            <li><a href="#reclamos">Report a problem</a></li>
+            <li><a href="#contacto">Complaints and contact</a></li>
+          </ol>
+        </nav>
+
+        <div class="legal__body">
+          <p class="legal__nota">This is a translation for your convenience. If it differs from the Spanish version, the Spanish version governs.</p>
+
+          <section id="resumen" aria-labelledby="h-resumen-en">
+            <h2 id="h-resumen-en">In short</h2>
+            <ul>
+              <li>You can use the public map without an account. We don't ask for your name or email to show you where the bus is.</li>
+              <li>We don't use advertising or analytics cookies, and we don't sell data.</li>
+              <li>Arrival times are estimates. They can be off if the bus loses signal, changes its route or hits traffic.</li>
+              <li>A fleet's data (plates, engine, history) is only visible to that company's accounts.</li>
+              <li>You can ask us to show, correct or delete your data by writing to <a href="mailto:go503support@gmail.com">go503support@gmail.com</a>.</li>
+            </ul>
+            <p>This summary doesn't replace the full text below, which is what applies.</p>
+          </section>
+
+          <section id="aviso" aria-labelledby="h-aviso-en">
+            <h2 id="h-aviso-en">1. Who we are</h2>
+            <p>go503 is a service that shows in real time where San Salvador's buses are and how long they'll take to reach each stop. It also offers fleet owners a sensor and a dashboard to follow their buses, their maintenance and their trip times.</p>
+            <dl class="legal__datos">
+              <div><dt>Responsible party</dt><dd>Mateo</dd></div>
+              <div><dt>Trade name</dt><dd>go503</dd></div>
+              <div><dt>What it is</dt><dd>A student project, not yet registered as a business</dd></div>
+              <div><dt>Email</dt><dd><a href="mailto:go503support@gmail.com">go503support@gmail.com</a></dd></div>
+              <div><dt>Phone and WhatsApp</dt><dd><a href="https://wa.me/50372635254" rel="noopener">+503 7263-5254</a></dd></div>
+            </dl>
+            <p>The site is run from El Salvador and governed by its laws. Once go503 is registered as a business, we'll publish its tax ID (NIT) and its address for legal notices here.</p>
+          </section>
+
+          <section id="terminos" aria-labelledby="h-terminos-en">
+            <h2 id="h-terminos-en">2. Terms of use</h2>
+            <p>By using go503 you accept these terms. If you don't agree, please don't use the service. Companies accept them explicitly when they create their account.</p>
+
+            <h3>2.1 What go503 offers</h3>
+            <ul>
+              <li><strong>Public map:</strong> where the buses on published routes are, and the estimated time to each stop.</li>
+              <li><strong>Alerts:</strong> a notification on your phone when the bus is about to reach the stop you picked.</li>
+              <li><strong>Fleet dashboard:</strong> location, history, engine data, maintenance and reports for each company's buses. Access requires an invite code, which we give out when we sell the sensor.</li>
+              <li><strong>Driver app:</strong> turns the driver's phone into the bus's GPS for the length of a trip.</li>
+              <li><strong>Family links:</strong> private links that a school transport company gives to families so they can see where the minibus is.</li>
+            </ul>
+
+            <h3>2.2 Times are estimates</h3>
+            <p>We work out arrival times from the bus's position and from how long other buses took on the same stretch at the same time of day. It's an estimate, not a timetable. It can be wrong if the sensor loses signal, if the bus changes its route, or because of traffic, detours, accidents or technical failures. If a reading is old, the map says so.</p>
+            <p>go503 is not an emergency or safety system. Don't use it to decide whether a situation is dangerous. For school transport, the family link is a help and doesn't replace talking directly with the school or the transport provider.</p>
+
+            <h3>2.3 Company accounts</h3>
+            <ul>
+              <li>Whoever creates the account must be an adult and authorized to act for the company.</li>
+              <li>Keep your password and your sensor keys safe. If you think someone else has them, change them from the dashboard and let us know.</li>
+              <li>You're responsible for your buses' information (plates, names, routes) being correct.</li>
+              <li>If you use the driver app or family links, it's up to you to tell your drivers and the families what data is shown and why. You can use the text in section 3 for that.</li>
+              <li>Your fleet data belongs to you. You allow us to use it to provide the service and to show your buses' positions on public routes on the public map. Private routes, such as school routes, don't appear on the public map.</li>
+            </ul>
+
+            <h3>2.4 What's not allowed</h3>
+            <ul>
+              <li>Accessing, or trying to access, accounts, sensors or systems that aren't yours.</li>
+              <li>Sending fake positions, making up buses or tampering with map data.</li>
+              <li>Downloading the map or the data in bulk with automated tools, or deliberately overloading the service until it stops working.</li>
+              <li>Using go503 to track a person without their knowledge, to harass anyone or to commit crimes.</li>
+              <li>Reselling dashboard access without a written agreement with us.</li>
+            </ul>
+            <p>If someone does any of this, we may block their access, disable their keys, keep the information needed to investigate and, where appropriate, report it to the authorities.</p>
+
+            <h3>2.5 Availability</h3>
+            <p>We try to keep go503 running at all times, with reasonable maintenance and security measures. We can't guarantee it will never go down: there may be maintenance, internet or mobile network outages, failures at the providers we use, or events outside our control. Right now the server can take up to a minute to respond the first time each day. None of this removes the obligations the law places on us.</p>
+
+            <h3>2.6 Third-party services</h3>
+            <p>go503 uses maps, servers and code libraries from other companies (listed in section 3.5) and may link to other sites, such as WhatsApp. We don't run those services, and each one has its own terms.</p>
+
+            <h3>2.7 Limits of liability</h3>
+            <p>To the extent allowed by Salvadoran law, our liability is determined by the nature of the service, the circumstances of each case and our legal and contractual obligations. The public map is free and for information only. Nothing in these terms is meant to exclude liability that the law doesn't allow us to exclude, or to take away consumer rights that the law says can't be waived.</p>
+
+            <h3>2.8 Suspending and closing accounts</h3>
+            <p>You can close your company account at any time by writing to us. We may suspend an account if it breaks these terms, if agreed services aren't paid for, or if an authority orders it. Unless it's urgent or unlawful to do so, we'll warn you first and give you time to download your data.</p>
+
+            <h3>2.9 Changes to these terms</h3>
+            <p>If we change anything important, we'll announce it on this page and email companies at least 15 days in advance. Each version shows its date at the top. If a company doesn't accept the new version, it can close its account before the change takes effect.</p>
+
+            <h3>2.10 Governing law</h3>
+            <p>These terms are governed by the laws of El Salvador. Before starting any legal process, please write to us so we can look for a solution (section 8). If that doesn't work, the case goes to the competent courts of El Salvador. If you're a consumer, you can also go to the Defensoría del Consumidor (El Salvador's consumer protection agency).</p>
+          </section>
+
+          <section id="privacidad" aria-labelledby="h-privacidad-en">
+            <h2 id="h-privacidad-en">3. Privacy</h2>
+            <p>The party responsible for your data is the one listed in section 1. We handle personal data under El Salvador's Personal Data Protection Law (Ley para la Protección de Datos Personales, Legislative Decree No. 144 of 2024) and its Consumer Protection Law.</p>
+
+            <h3>3.1 What data we keep and for how long</h3>
+            <div class="legal__tabla" role="region" aria-label="Data we keep" tabindex="0">
+              <table>
+                <thead>
+                  <tr><th scope="col">When</th><th scope="col">What data</th><th scope="col">What for</th><th scope="col">How long</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">You view the map</th>
+                    <td>None of your data goes into our database. The server sees your IP address when it responds.</td>
+                    <td>To serve the page and limit abuse.</td>
+                    <td>The IP stays only in the server's memory for a few minutes and in our hosting provider's technical logs.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">You tap “Stops nearby”</th>
+                    <td>Your location, only if you allow it in your browser.</td>
+                    <td>To find stops within 1 km.</td>
+                    <td>Not stored. It's used for that search and then discarded.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">You ask for an alert</th>
+                    <td>The notification address your browser provides, plus the route and stop. It doesn't include your name or number.</td>
+                    <td>To send you the alert when the bus is close.</td>
+                    <td>Deleted once the alert is sent or, if unused, after 3 hours.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">You request the sensor</th>
+                    <td>Name, phone and, if you fill them in, company, email, city, number of buses and message.</td>
+                    <td>To reply and send you a quote.</td>
+                    <td>While the sales conversation lasts. If there's no purchase, it's deleted 12 months after the last contact, or sooner if you ask.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">You create a company account</th>
+                    <td>Email, password, company name, invite code, and the date and version of the terms you accepted.</td>
+                    <td>To give you dashboard access and to prove you accepted the terms.</td>
+                    <td>While the account exists. Once closed, it's deleted within 30 days, except what the law requires us to keep.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">A bus uses the sensor</th>
+                    <td>The bus's plate and name, GPS location, speed, kilometers, engine hours, temperature, fuel, faults and maintenance records.</td>
+                    <td>To show the bus on the dashboard and the map, estimate arrivals and flag maintenance.</td>
+                    <td>Detailed history: 7 days. Trips recorded to draw routes: 30 days. Current position, counters and maintenance: while the account exists. Per-stretch averages don't identify anyone.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">A driver uses the app</th>
+                    <td>The phone's location, only while a trip is active.</td>
+                    <td>So the bus appears on the map and the dashboard.</td>
+                    <td>Same as the sensor data.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">A company creates a family link</th>
+                    <td>The name the company gives the link. The link itself isn't stored, only a one-way fingerprint of it.</td>
+                    <td>So the family can see where the minibus is.</td>
+                    <td>Until the company revokes it or deletes the bus.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3.2 Why we're allowed to use it</h3>
+            <ul>
+              <li><strong>Your consent:</strong> your location for “Stops nearby”, alerts and the order form. You can withdraw it at any time.</li>
+              <li><strong>Our contract with the company:</strong> accounts, bus data and the driver app.</li>
+              <li><strong>Keeping the service secure:</strong> the temporary IP used to stop abuse.</li>
+              <li><strong>Legal obligations:</strong> sales and billing records the law requires us to keep.</li>
+            </ul>
+
+            <h3>3.3 Drivers and families</h3>
+            <p>With the driver app and family links, the transport company decides which buses are tracked and who can see them. In those cases go503 handles the data on the company's behalf, and the company must inform its drivers and the families. The driver's location is only sent while a trip is active, and the driver can end the trip at any time.</p>
+            <p>We don't ask for any data about children or teenagers. We recommend that companies don't put a minor's full name in a link's name: something like “Family 1” or “House in Colonia Escalón” is enough.</p>
+
+            <h3>3.4 Who we don't share it with</h3>
+            <p>We don't sell personal data, we don't use it for advertising, and we don't give it to other companies to market to you. We only hand it to an authority when a law or a court order requires it.</p>
+
+            <h3>3.5 Providers that help us</h3>
+            <p>We use these services to run go503. Some are in the United States, so your data may be stored there, under their security measures.</p>
+            <ul>
+              <li><strong>Supabase</strong> (United States): database and company accounts.</li>
+              <li><strong>Render</strong> (United States): the server that delivers the site.</li>
+              <li><strong>CARTO</strong> and <strong>OpenStreetMap</strong>: the map images. Your browser requests them directly, so they see your IP.</li>
+              <li><strong>OSRM project</strong>: works out which streets a route follows. It receives the stops' locations, not yours.</li>
+              <li><strong>unpkg</strong> and <strong>jsDelivr</strong>: deliver code libraries for the map and the dashboard. They see your IP.</li>
+              <li><strong>Your browser's notification service</strong> (Google, Mozilla, Apple or Microsoft): delivers the alerts.</li>
+              <li><strong>WhatsApp</strong>: when we send you a quote there, or when you write to us.</li>
+            </ul>
+
+            <h3>3.6 How we protect it</h3>
+            <ul>
+              <li>Everything travels encrypted (HTTPS).</li>
+              <li>We never see your password: our accounts provider stores it encrypted.</li>
+              <li>Sensor keys, driver app keys and family links are stored as one-way fingerprints.</li>
+              <li>The database can't be read directly from the internet: everything goes through our server, which checks who you are.</li>
+              <li>Company accounts can only be created with an invite code.</li>
+            </ul>
+            <p>No system is completely secure. If an incident affects your data, we'll tell you, and we'll notify the authority when the law requires it.</p>
+
+            <h3>3.7 Your rights</h3>
+            <p>You can ask us for:</p>
+            <ul class="legal__derechos">
+              <li><strong>Access:</strong> to know what data of yours we have.</li>
+              <li><strong>Rectification:</strong> to correct anything that's wrong.</li>
+              <li><strong>Cancellation:</strong> to delete it.</li>
+              <li><strong>Objection:</strong> to stop using it for a particular purpose.</li>
+              <li><strong>Portability:</strong> to receive a copy in a file.</li>
+              <li><strong>Erasure (right to be forgotten):</strong> to delete what's no longer needed.</li>
+              <li><strong>Restriction:</strong> to keep it without using it while a case is reviewed.</li>
+            </ul>
+            <p>Write to <a href="mailto:go503support@gmail.com">go503support@gmail.com</a> with your name, what you're asking for and something that lets us find you (your account email or the phone number you used to request the sensor). We'll reply within the time limits set by law. It's free. If you're not satisfied, you can go to El Salvador's data protection authority.</p>
+
+            <h3>3.8 Age</h3>
+            <p>Anyone can use the map. Company accounts can only be created by people aged 18 or older.</p>
+          </section>
+
+          <section id="navegador" aria-labelledby="h-navegador-en">
+            <h2 id="h-navegador-en">4. Cookies and what's stored in your browser</h2>
+            <p>go503 doesn't set its own cookies, nor advertising or analytics cookies. That's why we don't show you a cookie banner. If we ever add statistics tools, we'll ask for your permission first.</p>
+            <p>We do keep a few things in your browser's storage, only so the site works. They don't leave your phone or computer, except the dashboard session, which is used to sign you in.</p>
+            <div class="legal__tabla" role="region" aria-label="What's stored in your browser" tabindex="0">
+              <table>
+                <thead>
+                  <tr><th scope="col">Name</th><th scope="col">What for</th><th scope="col">How long</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row"><code>go503-tema</code></th><td>Remembers whether you picked light or dark mode.</td><td>Until you delete it.</td></tr>
+                  <tr><th scope="row"><code>go503-idioma</code></th><td>Remembers whether you picked Spanish or English.</td><td>Until you delete it.</td></tr>
+                  <tr><th scope="row"><code>go503-favoritas</code></th><td>Your favorite routes on the map.</td><td>Until you delete it.</td></tr>
+                  <tr><th scope="row"><code>go503-alertas-vistas</code></th><td>Dashboard alerts you've already seen.</td><td>Until you delete it.</td></tr>
+                  <tr><th scope="row">Supabase session (<code>sb-…-auth-token</code>)</th><td>Keeps you signed in to the fleet dashboard.</td><td>Until you sign out.</td></tr>
+                  <tr><th scope="row">Driver app data</th><td>The bus code and any GPS points that couldn't be sent for lack of signal.</td><td>Until you tap “Change bus”. The points, until they're sent.</td></tr>
+                  <tr><th scope="row">Offline copy</th><td>Saves pages and images so they open quickly.</td><td>Until the site updates or you delete it.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>To remove them, open your browser settings and clear the site data for go503. Map images and libraries come from the providers in section 3.5. As far as we've checked, they don't set cookies; each has its own policy.</p>
+          </section>
+
+          <section id="propiedad" aria-labelledby="h-propiedad-en">
+            <h2 id="h-propiedad-en">5. Intellectual property</h2>
+            <p>The go503 name, the logo, the site design, the texts, and the code for the site and the sensor belong to Mateo. You may not copy, sell or use them for another service without written permission. You're welcome to share links and screenshots of the map for personal use or to inform others.</p>
+            <p>We also use other people's work, under their licenses:</p>
+            <ul>
+              <li>Map data: © OpenStreetMap contributors, ODbL license. Map images: © CARTO.</li>
+              <li>Leaflet, to display the map (BSD license).</li>
+              <li>Atkinson Hyperlegible and Big Shoulders Display fonts (SIL Open Font License).</li>
+              <li>Supabase and web-push libraries, under their open-source licenses.</li>
+            </ul>
+            <p>If you think something on go503 uses your work without permission, write to us with the link, the work and why it's yours. We'll review it and, if appropriate, remove it.</p>
+          </section>
+
+          <section id="venta" aria-labelledby="h-venta-en">
+            <h2 id="h-venta-en">6. Buying the sensor</h2>
+            <p>Nothing is charged or paid on this site. The “Get the sensor” form is only for us to contact you. A sale is closed with a written quote that states, at a minimum:</p>
+            <ul>
+              <li>The total price including VAT, and whether it covers installation and the dashboard, and for how long.</li>
+              <li>Who pays for each sensor's SIM card and mobile data plan.</li>
+              <li>The payment method and the installation date.</li>
+              <li>The warranty: what it covers, how long it lasts and how to claim it.</li>
+              <li>What happens if you cancel before installation, and how the money is refunded.</li>
+            </ul>
+            <p>When you pay, we give you the corresponding receipt. If a sensor arrives with factory defects or doesn't work as offered, we'll repair it, replace it or refund you, as required by the Consumer Protection Law. No quote can take away the rights that law gives you.</p>
+          </section>
+
+          <section id="reclamos" aria-labelledby="h-reclamos-en">
+            <h2 id="h-reclamos-en">7. Report a problem</h2>
+            <p>Write to us if you see a mistake on the map, a security flaw, content that infringes someone's rights or any misuse. Tell us what happened, where and when, and send a screenshot if you can. We review every report in good faith. If you found a security flaw, please don't publish it while we fix it.</p>
+          </section>
+
+          <section id="contacto" aria-labelledby="h-contacto-en">
+            <h2 id="h-contacto-en">8. Complaints and contact</h2>
+            <p>For any complaint, claim or question about these texts:</p>
+            <ul>
+              <li>Email: <a href="mailto:go503support@gmail.com">go503support@gmail.com</a></li>
+              <li>WhatsApp: <a href="https://wa.me/50372635254" rel="noopener">+503 7263-5254</a></li>
+            </ul>
+            <p>We'll confirm we received your complaint and reply as soon as possible. If you're not satisfied, you can go to the <a href="https://www.defensoria.gob.sv/" rel="noopener">Defensoría del Consumidor</a> (in Spanish).</p>
+          </section>
+
+        </div>
+      </div>
     </section>
+    <!-- Deja solo el idioma elegido (idioma.js ya puso <html lang>): así los #enlaces sirven en los dos -->
+    <script>document.querySelectorAll(".legal [data-lang]").forEach((b) => { if (b.dataset.lang !== document.documentElement.lang) b.remove(); });</script>
   </main>
 
   <footer class="foot" data-reveal>

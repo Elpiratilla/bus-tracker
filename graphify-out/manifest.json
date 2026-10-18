@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792346069.1249588,
-    "seen": 1792346163.155405,
-    "ast_hash": "73a92bc429d79b45042945bb6dafe864",
+    "mtime": 1792350832.814822,
+    "seen": 1792350855.461026,
+    "ast_hash": "3f7d9c341c738d16c2f166343d5af972",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -576,9 +576,9 @@
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792349103.8206742,
-    "seen": 1792349143.4367669,
-    "ast_hash": "eebd1a3f613b90987d0415a973172eb7",
+    "mtime": 1792350832.8138893,
+    "seen": 1792350855.462395,
+    "ast_hash": "d094eaf63d27cae66b089ac7689eaa16",
     "semantic_hash": ""
   },
   "public/html/login.html": {

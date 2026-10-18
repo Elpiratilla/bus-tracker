@@ -792,6 +792,10 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .legal__side a { display: flex; align-items: center; min-height: 2.75rem; border-bottom: 1px solid var(--line); color: var(--tinta); font-weight: 700; text-decoration: none; }
 .legal__side a:hover { color: var(--anil); text-decoration: underline; text-decoration-color: var(--maiz); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 .legal__body { line-height: 1.65; }
+/* Sin JavaScript se queda el español (es el texto que vale) */
+html:not([lang="en"]) .legal [data-lang="en"], html[lang="en"] .legal [data-lang="es"] { display: none; }
+.legal__nota { padding: .8rem 1rem; background: var(--papel); border: 1px solid var(--line); border-radius: var(--r-md); color: var(--muted); font-size: .95rem; }
+.legal__nota + section { margin-top: 1.6rem; }
 .legal__body > section { scroll-margin-top: 1.5rem; }
 .legal__body > section + section { margin-top: clamp(2.5rem, 6vw, 3.5rem); padding-top: clamp(2.5rem, 6vw, 3.5rem); border-top: 1px solid var(--line); }
 .legal__body h2 { font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1; text-transform: uppercase; }

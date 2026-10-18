@@ -258,15 +258,9 @@
     "semantic_hash": "659ae002f3f00efdb5ca668fd9803dff"
   },
   "DESIGN.md": {
-    "mtime": 1792341328.884142,
-    "seen": 1792341333.598563,
-    "ast_hash": "2f20c072fe3540485407b6d42c613c39",
-    "semantic_hash": ""
-  },
-  "anti-slop/registro-001-2026-10-14.md": {
-    "mtime": 1792038346.0678408,
-    "seen": 1792038350.578977,
-    "ast_hash": "a28dbd3c7a9063c1a1ad5ee6d37081d8",
+    "mtime": 1792350121.734041,
+    "seen": 1792350136.0925162,
+    "ast_hash": "136103ca8562aa96eeb1bb2bef4d6f56",
     "semantic_hash": ""
   },
   "src/env.js": {
@@ -543,12 +537,6 @@
     "mtime": 1792307156.2604778,
     "seen": 1792307190.238673,
     "ast_hash": "b60056c1d2c9f8b9b248726d6a6dd17b",
-    "semantic_hash": ""
-  },
-  "REPORTE-FRONTEND.md": {
-    "mtime": 1792341328.8848102,
-    "seen": 1792341333.5985641,
-    "ast_hash": "a543688db83e594b0b8ab404fdbbf8a8",
     "semantic_hash": ""
   },
   "test/recorrido.test.js": {

@@ -37,14 +37,19 @@ function showMsg(text, kind = "error") {
 }
 
 async function call(path, body = {}) {
-  const res = await fetch(SERVIDOR + path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": cred.clave },
-    body: JSON.stringify({ busId: cred.busId, ...body }),
-  });
+  let res;
+  try {
+    res = await fetch(SERVIDOR + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": cred.clave },
+      body: JSON.stringify({ busId: cred.busId, ...body }),
+    });
+  } catch {
+    throw new Error("No hay conexión con go503. Revisa que tengas datos o wifi y vuelve a tocar.");
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    const err = new Error(data.error || `Error ${res.status}`);
+    const err = new Error(data.error || `go503 no respondió bien (error ${res.status}). Intenta de nuevo en un momento.`);
     err.status = res.status;
     throw err;
   }
@@ -107,6 +112,12 @@ function renderDetalle() {
   const viejo = s != null && s > 30;
   g.dataset.estado = gpsFalla || viejo ? "mal" : s == null ? "busca" : "ok";
   g.textContent = gpsFalla ? "Sin GPS" : s == null ? "Buscando GPS" : viejo ? `Sin enviar ${s} s` : `GPS ${s} s`;
+}
+
+// Primer estado, con aviso mientras llega (Render tarda si estaba dormido)
+function conectar() {
+  $("cargando").hidden = false;
+  return refresh().finally(() => { $("cargando").hidden = true; });
 }
 
 async function refresh() {
@@ -190,11 +201,15 @@ async function sendPosition() {
     });
     lastOk = Date.now();
     showMsg("");
+    // Un destello por cada ubicación enviada (marca un hecho real, no late sin parar)
+    $("gps").classList.remove("envio");
+    void $("gps").offsetWidth;
+    $("gps").classList.add("envio");
     // Trae la parada nueva si el bus llegó a una (próxima parada, paradas que ya pasó)
     estado = await api("estado");
     render();
   } catch (err) {
-    showMsg(`No se pudo mandar la ubicación: ${err.message}`);
+    showMsg(err.message);
   }
 }
 
@@ -212,7 +227,14 @@ async function keepAwake() {
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") keepAwake(); });
 
 // ---------- Botones ----------
+// Mientras el servidor responde, los botones no se pueden volver a tocar y se ve que está pasando algo
+function ocupado(si) {
+  $("v-app").querySelectorAll("button").forEach((b) => { b.disabled = si; });
+  if (si) showMsg("Avisando a go503…", "info");
+}
+
 async function viaje(accion, sentido) {
+  ocupado(true);
   try {
     estado = await api("viaje", { accion, sentido });
     showMsg(accion === "salir" ? "Buen viaje. Ya sales en el mapa." : "Trayecto terminado. Ya no sales en el mapa.", "ok");
@@ -220,7 +242,7 @@ async function viaje(accion, sentido) {
     render();
     keepAwake();
     sendPosition();
-  } catch (err) { showMsg(err.message); }
+  } catch (err) { showMsg(err.message); } finally { ocupado(false); }
 }
 
 // Terminar pide un segundo toque en 4 s: un roce sin querer no saca al bus del mapa
@@ -248,7 +270,7 @@ $("f-entrar").addEventListener("submit", (e) => {
   cred = { busId, clave };
   save(cred);
   showMsg("");
-  refresh();
+  conectar();
 });
 
 $("cerrar").addEventListener("click", () => {
@@ -271,7 +293,7 @@ if (hash.get("u") && hash.get("k")) {
   history.replaceState(null, "", location.pathname);
 }
 cred = load();
-if (cred) refresh(); else showEntrar();
+if (cred) conectar(); else showEntrar();
 startGps();
 setInterval(() => { renderDetalle(); sendPosition(); }, 1000);
 })();

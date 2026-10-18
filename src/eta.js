@@ -2,6 +2,7 @@
 // Lo usan GET /api/rutas/:id y las notificaciones.
 const { segments, trips, buses } = require("./store");
 const { distanceM } = require("./geo");
+const { enMapa } = require("./enMapa");
 
 const RECENT_TRIPS = 10;                 // promedio con los últimos N pasos por tramo
 const FALLBACK_SPEED_MS = 20 / 3.6;      // 20 km/h si un tramo aún no tiene mediciones
@@ -24,9 +25,9 @@ function legSeconds(route, dir, stops) {
 const other = (dir) => (dir === "ida" ? "regreso" : "ida");
 const finished = (route, t) => t.lastStopId === route.directions[t.dir || "ida"].at(-1)?.id;
 
-// Vueltas recientes de los buses de esta ruta
+// Vueltas recientes de los buses de esta ruta (sin los buses guardados: motor apagado o fuera de servicio)
 const recentTrips = (route) => Object.entries(trips)
-  .filter(([key, t]) => key.endsWith(`:${route.id}`) && Date.now() - t.updatedAt < STALE_MS)
+  .filter(([key, t]) => key.endsWith(`:${route.id}`) && Date.now() - t.updatedAt < STALE_MS && enMapa(buses[t.busId]))
   .map(([, t]) => t);
 
 // Vuelta más reciente en un sentido. Un bus que TERMINÓ el sentido contrario en la parada donde

@@ -1,4 +1,5 @@
 {
+  "1": "tracking.js",
   "4": "admin.js",
   "11": "eta.js",
   "24": "Dirección de diseño de go503",
@@ -20,5 +21,11 @@
   "40": "android/build.gradle",
   "41": "capacitor.settings.gradle",
   "42": "settings.gradle",
-  "43": "variables.gradle"
+  "43": "variables.gradle",
+  "44": "store.js",
+  "45": "db.js",
+  "46": "telemetry.js",
+  "47": "distanceM",
+  "48": "CI workflow (GitHub Actions)",
+  "49": "routes/motorista.js"
 }

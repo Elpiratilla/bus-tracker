@@ -4,6 +4,7 @@ const { routes, buses, units, retired } = require("../store");
 const { handlePosition, toTime } = require("../tracking");
 const { distanceM } = require("../geo");
 const { persist, saveBus } = require("../db");
+const { enMapa } = require("../enMapa");
 
 const LOG_EVERY_MS = 60 * 1000;      // historial de mantenimiento: un registro por minuto por bus
 const MAX_GAP_MS = 5 * 60 * 1000;    // más de 5 min sin señal: no se suman km ni horas de ese hueco
@@ -52,9 +53,18 @@ router.post("/", auth, (req, res) => {
 
   if (unit) updateCounters(unit, prev, position ? lat : null, lng, now, data);
 
+  // Desde cuándo está apagado el motor (si el sensor lo sabe): con más de 5 min sale del mapa
+  const apagadoDesde = data.ignition === false ? prev?.apagadoDesde ?? now
+    : data.ignition === true ? null : prev?.apagadoDesde ?? null;
+
+  // Encendió el motor después de estar apagado: un "Terminar trayecto" de antes ya no cuenta,
+  // vuelve a mandar el encendido (si el motorista usa la app, la próxima vez toca Salir)
+  const encendio = data.ignition === true && prev?.apagadoDesde;
+
   const knownRoute = routes.some((r) => r.id === routeId);
   buses[busId] = { ...prev, busId, ...(knownRoute && { routeId }), ...data,
-    ...(position && { lat, lng, atStop: position.atStop }), updatedAt: now };
+    ...(position && { lat, lng, atStop: position.atStop }), apagadoDesde,
+    ...(encendio && prev.enServicio === false && { enServicio: null }), updatedAt: now };
   res.status(201).json({ ok: true, ...(position && { position }) });
 
   // Guardar en Supabase: estado en vivo siempre, historial una vez por minuto
@@ -67,8 +77,8 @@ router.post("/", auth, (req, res) => {
 });
 
 // Posiciones públicas (sin datos del motor ni de la empresa). demo: bus del simulador, no una unidad registrada
-// El bus cuyo motorista tocó "Terminar trayecto" (enServicio false) no sale hasta que vuelva a salir
-router.get("/", (_req, res) => res.json(Object.values(buses).filter((b) => b.enServicio !== false).map((b) => ({
+// No salen los buses guardados: el motorista tocó "Terminar trayecto" o el motor lleva rato apagado (src/enMapa.js)
+router.get("/", (_req, res) => res.json(Object.values(buses).filter((b) => enMapa(b)).map((b) => ({
   busId: b.busId, routeId: b.routeId, lat: b.lat, lng: b.lng, atStop: b.atStop, updatedAt: b.updatedAt,
   demo: !units[b.busId],
 }))));

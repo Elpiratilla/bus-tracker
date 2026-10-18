@@ -22,21 +22,23 @@
 .top__nombre h1 { font-size: 1.45rem; overflow-wrap: anywhere; }
 .top__nombre small { display: block; color: var(--suave); font: 500 .9rem/1.3 var(--sans); }
 
-/* Estado del GPS: verde que late si manda, ámbar si busca, rojo si falla */
+/* Estado del GPS: verde si manda (destella con cada envío), ámbar si busca, rojo si falla */
 .gps { display: inline-flex; align-items: center; gap: .45rem; flex: none; padding: .35rem .7rem;
   border: 1px solid var(--borde); border-radius: 999px; color: var(--suave); font: 600 .85rem/1 var(--sans); }
 .gps::before { content: ""; width: .6rem; height: .6rem; border-radius: 50%; background: var(--suave); }
 .gps[data-estado="ok"] { color: var(--texto); }
-.gps[data-estado="ok"]::before { background: var(--torogoz); animation: late 1.6s infinite; }
+.gps[data-estado="ok"]::before { background: var(--torogoz); }
+.gps.envio::before { animation: envio .7s ease-out; }
 .gps[data-estado="busca"]::before { background: var(--maiz); }
 .gps[data-estado="mal"] { color: #FFB3B9; border-color: rgba(217, 67, 78, .5); }
 .gps[data-estado="mal"]::before { background: var(--alerta); }
-@keyframes late { from { box-shadow: 0 0 0 0 rgba(15, 163, 156, .7); } to { box-shadow: 0 0 0 .6rem rgba(15, 163, 156, 0); } }
+@keyframes envio { from { box-shadow: 0 0 0 0 rgba(15, 163, 156, .8); } to { box-shadow: 0 0 0 .6rem rgba(15, 163, 156, 0); } }
 
 /* ---------- Mensajes ---------- */
 .msg { margin-bottom: 1.1rem; padding: .8rem 1rem; border-radius: var(--r-sm); font-weight: 600; line-height: 1.4; }
-.msg--error { background: rgba(217, 67, 78, .16); color: #FFC4C9; box-shadow: inset 3px 0 0 var(--alerta); }
-.msg--ok { background: rgba(15, 163, 156, .16); color: #9BE7E1; box-shadow: inset 3px 0 0 var(--torogoz); }
+.msg--error { background: rgba(217, 67, 78, .16); color: #FFC4C9; }
+.msg--ok { background: rgba(15, 163, 156, .16); color: #9BE7E1; }
+.msg--info { background: var(--panel); color: var(--texto); }
 
 h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
 
@@ -58,12 +60,12 @@ h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
   cursor: pointer;
   transition: border-color .15s, transform .08s;
 }
-.rotulo:hover { border-color: rgba(242, 178, 46, .5); }
+.rotulo:hover { border-color: var(--suave); }
 .rotulo:active { transform: scale(.985); }
 .rotulo .fascia { grid-row: span 2; }
 .rotulo b { font: 400 1.65rem/1.1 var(--serif); }
 .rotulo small { color: var(--suave); font-size: .95rem; }
-.rotulo[disabled] { opacity: .5; cursor: progress; }
+.rotulo[disabled], .btn[disabled] { opacity: .5; cursor: progress; }
 
 /* ---------- En trayecto ---------- */
 .proxima { margin-bottom: 1.4rem; }
@@ -110,6 +112,6 @@ h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
 :focus-visible { outline-color: var(--maiz); }
 
 @media (prefers-reduced-motion: reduce) {
-  .gps[data-estado="ok"]::before { animation: none; }
+  .gps.envio::before { animation: none; }
   .rotulo, .btn { transition: none; }
 }

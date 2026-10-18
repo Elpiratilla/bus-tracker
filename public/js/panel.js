@@ -115,6 +115,7 @@ function estado(u) {
   if (!u.ultimaSenal) return "El sensor aún no transmite";
   if (!u.enLinea) return `Sin señal, última ${hace(u.ultimaSenal)}`;
   if (u.enServicio === false) return "Fuera de servicio";
+  if (u.motorApagado) return u.parada ? `Motor apagado en ${u.parada}` : "Motor apagado";
   return u.parada ? `En ${u.parada}` : "En ruta";
 }
 

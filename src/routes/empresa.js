@@ -167,6 +167,7 @@ router.get("/flota", requireCompany, (req, res) => {
     return {
       id: u.busId, nombre: u.name, placa: u.plate, tipo: u.type, ruta: u.routeId,
       enServicio: live.enServicio ?? null, // null: sensor sin app del motorista
+      motorApagado: Boolean(live.apagadoDesde), // el sensor dice que el motor está apagado
       lat: live.lat ?? null, lng: live.lng ?? null,
       velocidad: live.speed ?? null, rumbo: live.heading ?? null,
       enLinea: Boolean(live.updatedAt && now - live.updatedAt < ONLINE_MS),

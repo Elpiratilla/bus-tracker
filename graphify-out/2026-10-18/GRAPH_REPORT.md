@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-18)
 
 ## Corpus Check
-- 62 files · ~61,340 words
+- 62 files · ~61,709 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 25 file(s) not represented in the graph (top: .xml 10, .css 5, (none) 3)
 
 ## Summary
-- 575 nodes · 901 edges · 44 communities (30 shown, 14 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 56 edges (avg confidence: 0.84)
+- 578 nodes · 910 edges · 44 communities (30 shown, 14 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 58 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f8621ca3`
+- Built from commit: `d1723027`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -64,8 +64,6 @@
 10. `loadFlota()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Render env vars (Supabase, VAPID, BUS_API_KEY)` --shares_data_with--> `BUS_API_KEY`  [INFERRED]
-  render.yaml → firmware/README.md
 - `Rider live map (mapa.html)` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
   public/mapa.html → firmware/README.md
 - `Panel view: Flota en vivo` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
@@ -74,6 +72,8 @@
   public/panel.html → firmware/README.md
 - `Panel view: Mantenimiento` --shares_data_with--> `OBD-II over CAN (SN65HVD230)`  [INFERRED]
   public/panel.html → firmware/README.md
+- `Sensor product page (sensor.html)` --conceptually_related_to--> `go503 sensor (ESP32 + 4G + GPS)`  [INFERRED]
+  public/sensor.html → firmware/README.md
 
 ## Import Cycles
 - None detected.
@@ -90,8 +90,8 @@ Cohesion: 0.06
 Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+58 more)
 
 ### Community 1 - "ETA y rutas (geo)"
-Cohesion: 0.06
-Nodes (44): { createClient }, flush(), loadState(), ms(), persist(), queues, saveBus(), select() (+36 more)
+Cohesion: 0.05
+Nodes (50): { createClient }, flush(), loadState(), ms(), persist(), queues, saveBus(), select() (+42 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.07
@@ -130,7 +130,7 @@ Cohesion: 0.29
 Nodes (4): aGrados(), horaIso(), leerGps(), ponerHora()
 
 ### Community 11 - "eta.js"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (21): activeTrip(), { distanceM }, finished(), legProgress(), legSeconds(), other(), pickDirection(), recentTrips() (+13 more)
 
 ### Community 12 - "Firmware: OBD-II"
@@ -170,16 +170,16 @@ Cohesion: 0.22
 Nodes (8): Cambios hechos, Evaluación general, Pendiente para Mateo (no lo cambié porque es decisión tuya), Registro antislop 001 (2026-10-14), Revisado y se quedó igual (con su razón), Segunda ronda: mapa, panel, login y sensor (antislop-ui), Tercera ronda: panel con sesión y página del sensor, Verificación (navegador del app, servidor local)
 
 ### Community 26 - "auth.js"
-Cohesion: 0.11
-Nodes (14): crypto, hashKey(), { isProduction }, sameHash(), sensorAuth(), { units }, assert, express (+6 more)
+Cohesion: 0.20
+Nodes (8): assert, express, gps(), { hashKey }, motorista(), post(), store, test
 
 ### Community 27 - "app/package.json"
 Cohesion: 0.11
 Nodes (18): dependencies, @capacitor/android, @capacitor-community/background-geolocation, @capacitor/core, description, devDependencies, @capacitor/cli, name (+10 more)
 
 ### Community 28 - "js/motorista.js"
-Cohesion: 0.32
-Nodes (13): botonGrande(), call(), gpsApp(), keepAwake(), refresh(), render(), renderDetalle(), save() (+5 more)
+Cohesion: 0.27
+Nodes (16): call(), conectar(), desarmarTerminar(), gpsApp(), keepAwake(), ocupado(), refresh(), render() (+8 more)
 
 ### Community 31 - "copiar-web.js"
 Cohesion: 0.25
@@ -222,7 +222,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `express` connect `server.js` to `package.json`, `auth.js`?**
   _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `ETA y rutas (geo)` be split into smaller, more focused modules?**
-  _Cohesion score 0.05989110707803993 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0506558118498417 - nodes in this community are weakly interconnected._
 - **Why does `scripts` connect `scripts` to `package.json`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**

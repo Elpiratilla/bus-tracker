@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792304256.1176476,
-    "seen": 1792304292.2020018,
-    "ast_hash": "1288dfaf00ec699336a6fec87c52cad9",
+    "mtime": 1792305211.7003791,
+    "seen": 1792305239.7568488,
+    "ast_hash": "a4e2cd41214332728d701ad79bed3dd3",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "public/motorista.html": {
-    "mtime": 1792304247.212544,
-    "seen": 1792304292.202754,
-    "ast_hash": "d66236ce51cfc4f1634d910fa9d5cbff",
+    "mtime": 1792305205.2344866,
+    "seen": 1792305239.7579489,
+    "ast_hash": "d1f47b11950892b395e742a34132661f",
     "semantic_hash": ""
   },
   "app/android/app/src/main/res/drawable-land-hdpi/splash.png": {

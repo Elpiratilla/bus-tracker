@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792303956.3620102,
-    "seen": 1792304292.202004,
-    "ast_hash": "d7fb49de9ac71dac674b44c74eb21458",
+    "mtime": 1792305779.1500232,
+    "seen": 1792305820.724176,
+    "ast_hash": "fcff66cf1c2b3c0c343463ebe411d65a",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {
@@ -108,10 +108,10 @@
     "semantic_hash": ""
   },
   "src/eta.js": {
-    "mtime": 1791783345.5995183,
-    "seen": 1792036224.387999,
-    "ast_hash": "b1107c850587b5cf473b38fefaba57cb",
-    "semantic_hash": "b1107c850587b5cf473b38fefaba57cb"
+    "mtime": 1792305779.1492038,
+    "seen": 1792305820.724406,
+    "ast_hash": "3c8b2298d15d5da6717e2b88261a7773",
+    "semantic_hash": ""
   },
   "src/geo.js": {
     "mtime": 1791766881.5879297,
@@ -150,9 +150,9 @@
     "semantic_hash": "636e652e717d405160ac4faa1e573c60"
   },
   "src/routes/empresa.js": {
-    "mtime": 1792303882.99176,
-    "seen": 1792304292.2024388,
-    "ast_hash": "9059dbc1adca775659ac4b3b70e57703",
+    "mtime": 1792305779.149662,
+    "seen": 1792305820.724611,
+    "ast_hash": "c1b6505fb0e6813844b2d13ed6dde489",
     "semantic_hash": ""
   },
   "src/routes/routes.js": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/routes/telemetry.js": {
-    "mtime": 1792303997.2181113,
-    "seen": 1792304292.202445,
-    "ast_hash": "5d434ee60a00ccdfa6f14f7962ea9d35",
+    "mtime": 1792305806.3604875,
+    "seen": 1792305820.724714,
+    "ast_hash": "224986393c67905a4965d143b633902e",
     "semantic_hash": ""
   },
   "src/server.js": {
@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792304955.5330536,
-    "seen": 1792304993.53035,
-    "ast_hash": "235003f1112301bcc0dd37e6826bd214",
+    "mtime": 1792305211.7003791,
+    "seen": 1792305239.7568488,
+    "ast_hash": "a4e2cd41214332728d701ad79bed3dd3",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "public/motorista.html": {
-    "mtime": 1792304913.580605,
-    "seen": 1792304993.531465,
-    "ast_hash": "4e5c96249111ebd0476fe7b2836a875b",
+    "mtime": 1792305205.2344866,
+    "seen": 1792305239.7579489,
+    "ast_hash": "d1f47b11950892b395e742a34132661f",
     "semantic_hash": ""
   },
   "app/android/app/src/main/res/drawable-land-hdpi/splash.png": {
@@ -573,6 +573,18 @@
     "mtime": 1789138888.0,
     "seen": 1792304292.202893,
     "ast_hash": "85addb4159ecd3f76f02fbacd5ec86de",
+    "semantic_hash": ""
+  },
+  "src/enMapa.js": {
+    "mtime": 1792305778.927583,
+    "seen": 1792305820.724373,
+    "ast_hash": "4f34ea5948fac284336df4b3be0cc3f6",
+    "semantic_hash": ""
+  },
+  "test/encendido.test.js": {
+    "mtime": 1792305806.360819,
+    "seen": 1792305820.724809,
+    "ast_hash": "a6b6918441ba03769f2373dfe11b9fbf",
     "semantic_hash": ""
   }
 }

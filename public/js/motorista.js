@@ -136,6 +136,7 @@ async function refresh() {
     $("v-app").hidden = false;
     render();
     keepAwake();
+    startGps(); // la ubicación se pide hasta que el motorista ya entró, no al abrir la página
   } catch (err) {
     if (err.status === 401 || err.status === 404) {
       save(null);
@@ -185,16 +186,20 @@ async function gpsApp() {
   }
 }
 
+let gpsPedido = false;
 function startGps() {
-  if (NATIVA) return; // en la app lo maneja gpsApp()
+  if (NATIVA || gpsPedido) return; // en la app lo maneja gpsApp(); en el navegador se pide una sola vez
   if (!("geolocation" in navigator)) return showMsg("Este celular no tiene GPS en el navegador.");
+  gpsPedido = true;
   navigator.geolocation.watchPosition((p) => {
     pos = p;
     gpsFalla = false;
     sendPosition();
   }, (err) => {
     gpsFalla = true;
-    showMsg(err.code === 1 ? "Dale permiso de ubicación a esta página para que funcione." : "No se pudo leer el GPS. Sal a un lugar abierto.");
+    showMsg(err.code === 1
+      ? "El navegador no dejó usar la ubicación. Permítela para esta página (en el candado o en Ajustes del navegador) y recarga."
+      : "No se pudo leer el GPS. Sal a un lugar abierto.");
   }, { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 });
 }
 
@@ -303,6 +308,5 @@ if (hash.get("u") && hash.get("k")) {
 }
 cred = load();
 if (cred) conectar(); else showEntrar();
-startGps();
 setInterval(() => { renderDetalle(); sendPosition(); }, 1000);
 })();

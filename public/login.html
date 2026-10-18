@@ -8,12 +8,15 @@
   <title>Panel de empresas: Go503</title>
   <meta name="description" content="Entra al panel de go503 para seguir tu flota, su mantenimiento y sus tiempos.">
   <meta name="theme-color" content="#0E1438">
+  <!-- Tema elegido (claro/oscuro), el mismo de la portada y el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/empresa.css">
 </head>
@@ -26,6 +29,15 @@
         <h1>Tu flota, a la vista</h1>
         <p>Dónde va cada unidad, cuántos kilómetros lleva y cuándo le toca el cambio de aceite. Todo desde aquí.</p>
       </div>
+      <!-- Datos de ejemplo, y así lo dice la etiqueta -->
+      <figure class="auth__demo" aria-label="Ejemplo: así se ve tu panel">
+        <figcaption>Ejemplo: así se ve tu panel</figcaption>
+        <ul>
+          <li><span class="auth__ruta">101</span><b>Unidad 7</b><span class="auth__est auth__est--on">En ruta</span><small>34 km/h</small></li>
+          <li><span class="auth__ruta">101</span><b>Unidad 12</b><span class="auth__est auth__est--aviso">Aceite pronto</span><small>Faltan 350 km</small></li>
+          <li><span class="auth__ruta">42</span><b>Unidad 3</b><span class="auth__est">Sin señal</span><small>hace 2 h</small></li>
+        </ul>
+      </figure>
       <div>
         <div class="auth__route" aria-hidden="true">
           <i class="on"></i><b></b><i class="on"></i><b></b><i class="next"></i><b class="off"></b><i></i>

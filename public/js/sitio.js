@@ -41,6 +41,28 @@ if (menuBtn) {
   nav.querySelectorAll(".top__links a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
 }
 
+// Preguntas: cada una tiene su enlace (preguntas.html#bateria). Al abrirlo, esa pregunta se abre sola.
+function abrirPregunta() {
+  const d = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if (!d || d.tagName !== "DETAILS") return;
+  d.open = true;
+  d.scrollIntoView({ block: "center" });
+  d.querySelector("summary").focus({ preventScroll: true });
+}
+addEventListener("hashchange", abrirPregunta);
+abrirPregunta();
+// "Enlace a esta pregunta": se copia; si no se puede copiar, el enlace igual lleva a la pregunta
+document.querySelectorAll(".faq__link").forEach((a) => a.addEventListener("click", async (e) => {
+  try {
+    await navigator.clipboard.writeText(a.href);
+    e.preventDefault();
+    history.replaceState(null, "", a.hash);
+    const antes = a.textContent;
+    a.textContent = "Enlace copiado";
+    setTimeout(() => { a.textContent = antes; }, 1800);
+  } catch {}
+}));
+
 // Animaciones al bajar: se activan cuando la sección aparece en pantalla (una sola vez)
 const reveal = document.querySelectorAll("[data-reveal]");
 if ("IntersectionObserver" in window) {

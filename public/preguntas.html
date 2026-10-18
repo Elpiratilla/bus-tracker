@@ -14,9 +14,10 @@
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/landing.css">
 </head>
@@ -73,37 +74,45 @@
           <p>¿Tienes otra duda? <a href="/#pedir">Déjanos tu número</a> y te respondemos por WhatsApp.</p>
         </div>
         <div class="faq__list">
-          <details name="faq">
+          <details name="faq" id="funciona">
             <summary>¿Funciona con mi bus?</summary>
             <p>Sí. La ubicación funciona en cualquier bus. Si tu bus tiene conector OBD-II, el sensor lee la temperatura, el combustible y las fallas de su computadora. Si es de los que no tienen, le ponemos sensores propios para la temperatura, el combustible y el encendido.</p>
+            <a class="faq__link" href="#funciona">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="cables">
             <summary>¿Hay que cortar cables o tocar el motor?</summary>
             <p>No se corta ningún cable. Se conecta a la batería con su propio fusible y, en buses con computadora, al conector de diagnóstico. En buses sin computadora, el sensor de temperatura va sujeto con una abrazadera a la manguera del radiador, y el de combustible lee el cable del flotador sin desconectarlo: el medidor del tablero sigue funcionando igual.</p>
+            <a class="faq__link" href="#cables">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="sin-senal">
             <summary>¿Qué pasa si el bus entra a una zona sin señal?</summary>
             <p>El sensor guarda en su memoria lo que va midiendo, hasta unas 3 horas de recorrido, y lo manda en orden cuando vuelve la señal. No se pierde aunque se apague el bus.</p>
+            <a class="faq__link" href="#sin-senal">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="datos">
             <summary>¿Cuántos datos gasta?</summary>
             <p>Según nuestro cálculo, unos 200 MB al mes por unidad, con un chip de Claro, Tigo o Digicel. Para flotas conviene un plan de datos para equipos (IoT), que suele ser más barato.</p>
+            <a class="faq__link" href="#datos">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="bateria">
             <summary>¿Le baja la batería al bus?</summary>
             <p>Consume como 0.1 A, poco para una batería de bus. Va conectado para seguir reportando con el bus apagado, así sabes dónde quedó.</p>
+            <a class="faq__link" href="#bateria">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="privacidad">
             <summary>¿Quién ve los datos de mi flota?</summary>
             <p>Solo las cuentas de tu empresa, y solo se entra con un código de invitación. En el mapa público la gente ve dónde va el bus de su ruta, nada más: ni placas, ni motor, ni el nombre de tu empresa.</p>
+            <a class="faq__link" href="#privacidad">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="robo">
             <summary>¿Y si se roban o se daña un sensor?</summary>
             <p>Cada sensor tiene su propia clave. Lo desactivas desde el panel y deja de contar al momento. Con el bus apagado sigue reportando, así que también sirve para saber si alguien mueve la unidad.</p>
+            <a class="faq__link" href="#robo">Enlace a esta pregunta</a>
           </details>
-          <details name="faq">
+          <details name="faq" id="precio">
             <summary>¿Cuánto cuesta?</summary>
             <p>Depende de cuántas unidades tengas y de qué tipo son. Déjanos tus datos en el <a href="/#pedir">formulario de pedido</a> y te mandamos la cotización por WhatsApp.</p>
+            <a class="faq__link" href="#precio">Enlace a esta pregunta</a>
           </details>
         </div>
       </div>

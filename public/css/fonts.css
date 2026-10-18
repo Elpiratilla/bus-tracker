@@ -1,0 +1,32 @@
+/* go503: letras guardadas en el proyecto (no dependen de Google ni de otra conexión).
+   Solo el juego latino, que trae todo lo del español (á, ñ, ¿, ¡).
+   Licencia: SIL Open Font License 1.1 (Big Shoulders Display, Atkinson Hyperlegible Next y Mono). */
+
+@font-face {
+  font-family: "Big Shoulders Display";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("/fonts/big-shoulders-display-800.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/atkinson-next.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/atkinson-next-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible Mono";
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url("/fonts/atkinson-mono.woff2") format("woff2");
+}

@@ -8,12 +8,15 @@
   <title>Panel: Go503</title>
   <meta name="theme-color" content="#0E1438">
   <meta name="robots" content="noindex">
+  <!-- Tema elegido (claro/oscuro), el mismo de la portada y el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {}</script>
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/empresa.css">
@@ -48,7 +51,10 @@
         <p class="side__company" id="company"></p>
         <p class="side__email" id="email"></p>
         <button class="btn btn--line" type="button" id="logout">Cerrar sesión</button>
-        <button class="lang lang--side" type="button" data-idioma>English</button>
+        <div class="side__prefs">
+          <button class="lang lang--side" type="button" data-idioma>English</button>
+          <button class="lang lang--side" type="button" id="tema">Oscuro</button>
+        </div>
       </div>
     </aside>
 

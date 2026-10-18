@@ -112,7 +112,16 @@ function renderDetalle() {
   const viejo = s != null && s > 30;
   g.dataset.estado = gpsFalla || viejo ? "mal" : s == null ? "busca" : "ok";
   g.textContent = gpsFalla ? "Sin GPS" : s == null ? "Buscando GPS" : viejo ? `Sin enviar ${s} s` : `GPS ${s} s`;
+  // el aviso grande: para que el motorista lo vea de un vistazo, no solo en la etiqueta chiquita
+  const p = $("perdido");
+  const sinRed = !navigator.onLine;
+  p.hidden = !(gpsFalla || viejo || sinRed);
+  p.textContent = sinRed ? "El celular no tiene internet. La gente no ve el bus en el mapa hasta que vuelva la señal."
+    : gpsFalla ? "El GPS no responde. Revisa que la ubicación del celular esté prendida."
+    : viejo ? `Hace ${s} s que no se manda la ubicación. Revisa el internet del celular.` : "";
 }
+addEventListener("online", () => renderDetalle());
+addEventListener("offline", () => renderDetalle());
 
 // Primer estado, con aviso mientras llega (Render tarda si estaba dormido)
 function conectar() {

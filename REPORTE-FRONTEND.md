@@ -128,3 +128,26 @@ Lo que no se tocó y queda pendiente:
 - El formulario de pedido sigue pidiendo 7 campos de golpe (solo 2 obligatorios); se podría partir en dos pasos.
 - El mapa de calor de Reportes sigue mostrando todas las horas aunque estén vacías.
 - La app Android usa una copia de la página del motorista: correr `npm run web` dentro de `app/` para pasarle el diseño nuevo.
+
+## Segunda ronda: hacia 9 en todo (2026-10-18)
+
+| Página | Antes | Ronda 1 | Ahora | Qué cambió |
+|---|---|---|---|---|
+| Portada | 7.5 | 8.8 | **9.1** | Pedido corto: nombre, teléfono y unidades; lo demás en "Agregar más datos" (se abre solo si un error está ahí). Tablero sin bus: "Desde Terminal de Oriente hasta aquí tarda unos 19 min" (suma de los tramos medidos), en vez de solo "no viene ninguno". |
+| Mapa | 7.0 | 8.3 | **9.0** | Los minutos sobre el mapa se esconden si tapan el nombre de una parada. Asa en el teléfono: se arrastra o se toca para ver más mapa o más lista (también con flechas del teclado). Filas grises mientras carga. Buscador que ya se lee completo. Botones de tipo de 44 px. |
+| Entrar | 8.0 | 8.7 | **9.0** | Vista de ejemplo del panel en el lado oscuro (con la etiqueta "Ejemplo"). Modo oscuro. |
+| Panel | 6.5 | 8.0 | **9.0** | En el teléfono cada fila es una tarjeta. Unidades: "Editar" a la vista y lo demás en un menú "Más" (Eliminar separado y en rojo). Mantenimiento cabe sin deslizar. Mapa de calor solo con las horas que tienen viajes, colores de la marca. Modo oscuro con mapa oscuro y botón Claro/Oscuro. |
+| Motorista | 6.0 | 7.8 | **8.6** | Logo, y aviso grande en rojo cuando el GPS falla, no hay internet o la ubicación lleva más de 30 s sin mandarse. **No llega a 9 hasta probarlo en un bus real.** |
+| El sensor | 8.0 | 8.8 | **8.8** | Sin cambios: le falta una **foto real** del sensor instalado. |
+| Preguntas | 7.0 | 8.4 | **8.8** | Cada pregunta tiene su enlace (`preguntas.html#bateria`): al abrirlo se abre la pregunta, y el botón "Enlace a esta pregunta" lo copia para mandarlo por WhatsApp. Le falta un **precio o rango** en "¿Cuánto cuesta?". |
+| Sistema | 6.5 | — | **9.0** | Las letras ya vienen del proyecto (`public/fonts/`, 80 KB en total), sin pedir nada a Google; la de los títulos se precarga. |
+| **General** | **7.1** | **8.4** | **8.9** | |
+
+Medido otra vez: 0 pedidos a otros servidores al abrir la portada (salvo los mosaicos del mapa), 15 de 15 pruebas pasan, sin errores en la consola, en español e inglés.
+
+Para que lleguen a 9 las tres que faltan (esto lo tiene que dar Mateo):
+- **El sensor:** una foto del sensor instalado en un bus (detrás del tablero y las antenas).
+- **Preguntas:** un precio o rango para "¿Cuánto cuesta?" (por ejemplo "desde $X por unidad").
+- **Motorista:** una prueba de un trayecto completo en un bus real, con el celular en el cargador.
+
+La app Android usa una copia de la página del motorista: correr `npm run web` en `app/` (ya incluye las letras y el logo nuevos).

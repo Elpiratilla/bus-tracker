@@ -98,8 +98,14 @@ function render(data) {
   } else if (data.sinSenal) {
     const mins = Math.round((Date.now() - new Date(data.ultimaSenal)) / 60000);
     eta.append(el("span", "board__note", `El bus dejó de mandar señal hace ${mins} min. Mira otra ruta mientras tanto.`));
+  } else if (targetIdx === 0) {
+    eta.append(el("span", "board__note", `Todavía no sale ningún bus de la ${ruta}. Esta es la parada donde arranca.`));
   } else {
-    eta.append(el("span", "board__note", `Ahorita no viene ningún bus de la ${ruta} por aquí. Prueba con otra ruta o el otro sentido.`));
+    // minutos que tarda el bus desde que sale hasta tu parada (suma de los tramos medidos)
+    const desdeSalida = paradas.slice(1, targetIdx + 1).reduce((s, p) => s + (p.tramoMin || 0), 0);
+    eta.append(el("span", "board__note", desdeSalida
+      ? `Todavía no sale ningún bus de la ${ruta}. Desde ${paradas[0].nombre} hasta aquí tarda unos ${desdeSalida} min.`
+      : `Ahorita no viene ningún bus de la ${ruta} por aquí. Prueba con otra ruta o el otro sentido.`));
   }
   // los minutos voltean solo cuando cambian
   if (eta.textContent !== before) eta.firstChild.classList.add("flap");
@@ -265,7 +271,11 @@ function markBad(campo, texto) {
   err.textContent = texto;
   err.hidden = false;
   const input = campo && pedir.elements[campo];
-  if (input) { input.closest(".field").classList.add("is-bad"); input.focus(); }
+  if (input) {
+    input.closest("details")?.setAttribute("open", "");
+    input.closest(".field").classList.add("is-bad");
+    input.focus();
+  }
 }
 pedir.addEventListener("input", (e) => e.target.closest(".field")?.classList.remove("is-bad"));
 $("pedir-otra").addEventListener("click", () => {

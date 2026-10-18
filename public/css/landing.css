@@ -953,3 +953,51 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 ::view-transition-new(root) { animation: theme-in .35s ease both; }
 @keyframes theme-out { to { opacity: 0; } }
 @keyframes theme-in { from { opacity: 0; } }
+
+/* ---------- Pedido: lo opcional, plegado ---------- */
+.order__extra { grid-column: 1 / -1; border-top: 1px dashed var(--line); }
+.order__extra summary {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 2.75rem;
+  padding-top: .6rem;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+.order__extra summary::-webkit-details-marker { display: none; }
+.order__extra summary small { color: var(--muted); font-weight: 400; }
+.order__extra summary::before {
+  content: "+";
+  display: grid;
+  place-items: center;
+  width: 1.6rem; height: 1.6rem;
+  border: 2px solid var(--line-fuerte);
+  border-radius: 5px;
+  font: 800 1.1rem/1 var(--display);
+  transition: transform .2s var(--ease-out);
+}
+.order__extra[open] summary::before { content: "−"; }
+.order__extra summary:hover { color: var(--torogoz-texto); }
+.order__extra-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-top: .8rem; }
+.order__extra[open] .order__extra-fields { animation: rise .3s var(--ease-out); }
+.order__note { grid-column: 1 / -1; color: var(--muted); font-size: .92rem; }
+@media (max-width: 640px) { .order__extra-fields { grid-template-columns: 1fr; } }
+
+/* Enlace propio de cada pregunta: para mandarla por WhatsApp */
+.faq__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 2.75rem;
+  margin: -.6rem 0 .8rem;
+  color: var(--torogoz-texto);
+  font-size: .9rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.faq__link::before { content: "#"; font: 800 1.1rem/1 var(--display); }
+.faq__link:hover { text-decoration: underline; }
+.faq details { scroll-margin-top: 6rem; }
+.faq details:target summary { color: var(--torogoz-texto); }

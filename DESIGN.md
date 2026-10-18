@@ -32,6 +32,7 @@ Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa)
 - **Atkinson Hyperlegible Next** para el texto: hecha para leerse con poca vista; sirve con sol en la parada.
 - **Atkinson Hyperlegible Mono** para códigos, claves y datos en tablas.
 - En CSS: `--display`, `--sans`, `--mono` (`--serif` quedó como nombre viejo de `--display`).
+- Las letras están en `public/fonts/` y se declaran en `public/css/fonts.css` (licencia SIL OFL). No se piden a Google.
 
 ## Rediseño 2026-10-18: "rótulo y parada"
 
@@ -43,6 +44,9 @@ Pedido por Mateo con libertad creativa (reporte en `REPORTE-FRONTEND.md`).
 - **La franja** (`.franja`): maíz grueso + torogoz fino, como la pintada en los buses. Separa la portada, abre "¿Tienes buses?" y va en la orilla del login y arriba del motorista.
 - **Etiqueta** (`.kicker`): mayúsculas pequeñas con un pedacito de franja, encima de los títulos de sección.
 - **Mínimo 44 px** para todo lo que se toca.
+- **Tablas en el teléfono:** se vuelven tarjetas (`cards()` en `panel.js`): cada celda muestra el nombre de su columna.
+- **Acciones poco usadas** van en un menú "Más" (`moreMenu()` en `panel.js`); borrar va al final, separado y en rojo.
+- **Modo oscuro** en todas las páginas, también en el panel y el login.
 
 ## Motivo de identidad
 

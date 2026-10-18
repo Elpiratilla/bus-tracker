@@ -8,21 +8,25 @@
   <meta name="theme-color" content="#0E1438">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/motorista.css">
 </head>
 <body class="motorista">
   <main class="app">
     <header class="top">
+      <img class="top__logo" src="/img/go503-logo-oscuro.svg" alt="" width="38" height="44">
       <span class="fascia" id="numero" hidden></span>
       <div class="top__nombre"><h1 id="titulo">go503 motorista</h1><small id="subtitulo">Tu celular es el GPS del bus</small></div>
       <span class="gps" id="gps" hidden>GPS</span>
     </header>
 
     <p class="msg" id="msg" role="alert" hidden></p>
+    <!-- Solo en trayecto, cuando la ubicación deja de llegar: la gente ya no ve el bus -->
+    <p class="perdido" id="perdido" role="alert" hidden></p>
     <p class="suave" id="cargando" hidden>Conectando con go503. La primera vez del día puede tardar hasta un minuto.</p>
 
     <!-- Primera vez: código de la unidad y su clave (vienen en el enlace que da el panel) -->

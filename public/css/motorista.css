@@ -45,6 +45,14 @@
 .msg--ok { background: rgba(15, 163, 156, .16); color: #9BE7E1; }
 .msg--info { background: var(--panel); color: var(--texto); }
 
+/* logo solo mientras no hay ruta escogida; después manda el rótulo */
+.top__logo { flex: none; width: auto; height: 2.9rem; }
+.top:has(.fascia:not([hidden])) .top__logo { display: none; }
+
+/* Se perdió la señal: grande, rojo y arriba */
+.perdido { display: flex; gap: .7rem; margin-bottom: 1.1rem; padding: .9rem 1rem; background: var(--alerta); border-radius: var(--r-md); color: #fff; font-weight: 700; line-height: 1.4; }
+.perdido::before { content: "!"; display: grid; place-items: center; flex: none; width: 1.6rem; height: 1.6rem; background: #fff; border-radius: 50%; color: var(--alerta); font: 800 1.1rem/1 var(--display); }
+
 h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase; }
 
 /* ---------- Fuera de servicio: cada sentido es un rótulo que se toca ---------- */

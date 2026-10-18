@@ -14,9 +14,10 @@
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;700&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,500;0,700;1,400&family=Big+Shoulders+Display:wght@800&display=swap" rel="stylesheet">
+  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/landing.css">
 </head>
@@ -190,30 +191,37 @@
             <label for="p-nombre">Tu nombre</label>
             <input id="p-nombre" name="nombre" autocomplete="name" maxlength="80" required>
           </div>
-          <div class="field">
+          <div class="field field--half">
             <label for="p-telefono">Teléfono o WhatsApp</label>
             <input id="p-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="7123-4567" required>
-          </div>
-          <div class="field">
-            <label for="p-empresa">Empresa o cooperativa <small>(opcional)</small></label>
-            <input id="p-empresa" name="empresa" autocomplete="organization" maxlength="80">
           </div>
           <div class="field field--half">
             <label for="p-unidades">¿Cuántas unidades?</label>
             <input id="p-unidades" name="unidades" type="number" min="1" max="5000" inputmode="numeric" placeholder="10">
           </div>
-          <div class="field field--half">
-            <label for="p-ciudad">Ciudad</label>
-            <input id="p-ciudad" name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="San Salvador">
-          </div>
-          <div class="field">
-            <label for="p-correo">Correo <small>(opcional)</small></label>
-            <input id="p-correo" name="correo" type="email" autocomplete="email" maxlength="120">
-          </div>
-          <div class="field">
-            <label for="p-mensaje">¿Algo más que debamos saber? <small>(opcional)</small></label>
-            <textarea id="p-mensaje" name="mensaje" rows="3" maxlength="600" placeholder="Rutas, horarios, lo que necesites"></textarea>
-          </div>
+          <!-- Lo opcional queda guardado: con nombre y teléfono ya podemos escribirte -->
+          <details class="order__extra" id="pedir-extra">
+            <summary>Agregar más datos <small>(opcional)</small></summary>
+            <div class="order__extra-fields">
+              <div class="field">
+                <label for="p-empresa">Empresa o cooperativa</label>
+                <input id="p-empresa" name="empresa" autocomplete="organization" maxlength="80">
+              </div>
+              <div class="field field--half">
+                <label for="p-ciudad">Ciudad</label>
+                <input id="p-ciudad" name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="San Salvador">
+              </div>
+              <div class="field field--half">
+                <label for="p-correo">Correo</label>
+                <input id="p-correo" name="correo" type="email" autocomplete="email" maxlength="120">
+              </div>
+              <div class="field">
+                <label for="p-mensaje">¿Algo más que debamos saber?</label>
+                <textarea id="p-mensaje" name="mensaje" rows="3" maxlength="600" placeholder="Rutas, horarios, lo que necesites"></textarea>
+              </div>
+            </div>
+          </details>
+          <p class="order__note">Solo te pedimos tu nombre y un teléfono. Te escribimos en menos de un día hábil.</p>
           <!-- trampa para bots: escondido para las personas -->
           <div class="order__trap" aria-hidden="true"><label for="p-sitio">Sitio web</label><input id="p-sitio" name="sitio" tabindex="-1" autocomplete="off"></div>
           <p class="order__error" id="pedir-error" role="alert" hidden></p>

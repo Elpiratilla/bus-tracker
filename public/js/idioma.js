@@ -389,6 +389,26 @@
     "Combustible (última lectura)": "Fuel (last reading)",
     "Última lectura": "Last reading",
     "Sin datos recientes": "No recent data",
+    "Sin datos": "No data",
+    "Oscuro": "Dark",
+    "Enlace a esta pregunta": "Link to this question",
+    "Enlace copiado": "Link copied",
+    "Aceite pronto": "Oil change soon",
+    "Faltan {n} km": "{n} km to go",
+    "Agregar más datos": "Add more details",
+    "Solo te pedimos tu nombre y un teléfono. Te escribimos en menos de un día hábil.": "We only need your name and a phone number. We'll reach out within one business day.",
+    "Todavía no sale ningún bus de la {r}. Esta es la parada donde arranca.": "No {r} bus has left yet. This is the stop where it starts.",
+    "Todavía no sale ningún bus de la {r}. Desde {x} hasta aquí tarda unos {n} min.": "No {r} bus has left yet. From {x} to here it takes about {n} min.",
+    "Ver más mapa": "Show more map",
+    "Ver más lista": "Show more list",
+    "Servicio": "Service",
+    "Registrar servicio de {x}": "Log service for {x}",
+    "Claro": "Light",
+    "Más": "More",
+    "Más acciones de {x}": "More actions for {x}",
+    "Enlace del motorista": "Driver link",
+    "Nueva clave del sensor": "New sensor key",
+    "Minutos. Más rápido": "Minutes. Fastest",
     "Sin señal desde hace {n} horas": "No signal for {n} hours",
     "Sin señal desde hace {n} días": "No signal for {n} days",
     "Motor caliente: {n} °C": "Engine running hot: {n} °C",
@@ -660,7 +680,7 @@
   api.t = t;
 
   // ---------- Traducir la página y lo que se agregue después ----------
-  const ATTRS = ["placeholder", "aria-label", "title", "alt"];
+  const ATTRS = ["placeholder", "aria-label", "title", "alt", "data-label"];
   const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE", "INPUT"]);
   const skip = (el) => !el || SKIP.has(el.nodeName) || el.closest?.("[translate='no'], .notranslate");
 

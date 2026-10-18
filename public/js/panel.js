@@ -46,6 +46,51 @@ function button(text, cls, onClick) {
   return b;
 }
 
+// En el teléfono cada fila se muestra como tarjeta: cada celda lleva el nombre de su columna
+function cards(table) {
+  table.classList.add("table--cards");
+  const names = [...table.tHead.rows[0].cells].map((th) => th.textContent);
+  [...table.tBodies[0].rows].forEach((tr) => [...tr.cells].forEach((td, i) => { if (names[i]) td.dataset.label = names[i]; }));
+  return table;
+}
+
+// Menú "Más": las acciones que se usan poco quedan guardadas, para que no compitan con la principal
+let menuAbierto = null;
+function cerrarMenu() {
+  if (!menuAbierto) return;
+  menuAbierto.list.hidden = true;
+  menuAbierto.btn.setAttribute("aria-expanded", "false");
+  menuAbierto = null;
+}
+function moreMenu(etiqueta, items) {
+  const wrap = el("div", "more");
+  const list = el("div", "more__list");
+  list.hidden = true;
+  const btn = button("Más", "btn--ghost btn--sm more__btn", (e) => {
+    e.stopPropagation();
+    const abrir = list.hidden;
+    cerrarMenu();
+    if (!abrir) return;
+    list.hidden = false;
+    btn.setAttribute("aria-expanded", "true");
+    menuAbierto = { btn, list };
+    list.querySelector("button")?.focus();
+  });
+  btn.setAttribute("aria-haspopup", "true");
+  btn.setAttribute("aria-expanded", "false");
+  btn.setAttribute("aria-label", etiqueta);
+  items.forEach(([texto, fn, cls]) => {
+    const b = el("button", `more__item${cls ? ` ${cls}` : ""}`, texto);
+    b.type = "button";
+    b.addEventListener("click", () => { cerrarMenu(); btn.focus(); fn(); });
+    list.append(b);
+  });
+  wrap.append(btn, list);
+  return wrap;
+}
+document.addEventListener("click", (e) => { if (menuAbierto && !menuAbierto.list.contains(e.target)) cerrarMenu(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menuAbierto) { const b = menuAbierto.btn; cerrarMenu(); b.focus(); } });
+
 const msg = $("#msg");
 const fail = (err) => { console.error(err); showMsg(msg, err.message || "Algo falló. Intenta de nuevo."); };
 
@@ -97,14 +142,38 @@ let map = null;
 const markers = new Map();
 let fitted = false;
 
-function initMap() {
-  map = L.map("fleet-map", { zoomControl: false }).setView([13.699, -89.205], 12);
-  L.control.zoom({ position: "bottomright" }).addTo(map);
-  L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${CARTO_KEY}`, {
+let tiles = null;
+function setTiles() {
+  if (!map) return;
+  if (tiles) tiles.remove();
+  tiles = L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/${isDark() ? "dark_all" : "light_all"}/{z}/{x}/{y}.png?key=${CARTO_KEY}`, {
     maxZoom: 20, detectRetina: true,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
   }).addTo(map);
 }
+function initMap() {
+  map = L.map("fleet-map", { zoomControl: false }).setView([13.699, -89.205], 12);
+  L.control.zoom({ position: "bottomright" }).addTo(map);
+  setTiles();
+}
+
+// Modo claro / oscuro: el del teléfono, salvo que la persona escoja otro (se guarda igual que en la portada)
+const root = document.documentElement;
+const darkQuery = matchMedia("(prefers-color-scheme: dark)");
+function isDark() { return root.dataset.theme ? root.dataset.theme === "dark" : darkQuery.matches; }
+function applyTheme() {
+  const b = $("#tema");
+  b.textContent = isDark() ? "Claro" : "Oscuro";
+  b.setAttribute("aria-label", isDark() ? "Pasar a modo claro" : "Pasar a modo oscuro");
+  setTiles();
+}
+$("#tema").addEventListener("click", () => {
+  root.dataset.theme = isDark() ? "light" : "dark";
+  try { localStorage.setItem("go503-tema", root.dataset.theme); } catch {}
+  applyTheme();
+});
+darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
+applyTheme();
 
 function markerIcon(u) {
   const cls = `fleet-mk${u.enLinea ? "" : " fleet-mk--off"}${selected === u.id ? " fleet-mk--sel" : ""}`;
@@ -345,26 +414,28 @@ async function loadUnidades() {
     const wrap = el("div", "actions");
     wrap.append(
       button("Editar", "btn--ghost btn--sm", () => openUnidad(u)),
-      button("Motorista", "btn--ghost btn--sm", () => confirmar(
-        `Enlace del motorista de ${u.nombre}`,
-        "Se crea un enlace nuevo para la app del motorista. Si ya le habías mandado uno, ese deja de funcionar. El sensor no se afecta.",
-        "Crear enlace",
-        async () => showClave(await api(`/unidades/${u.id}/motorista`, { method: "POST" }), u.ruta))),
-      button("Clave del sensor", "btn--ghost btn--sm", () => confirmar(
-        `Nueva clave del sensor de ${u.nombre}`,
-        "La clave actual del sensor dejará de funcionar y tendrás que poner la nueva en su configuración. El enlace del motorista sigue igual.",
-        "Generar nueva clave",
-        async () => showClave(await api(`/unidades/${u.id}/clave`, { method: "POST" }), u.ruta))),
-      button("Eliminar", "btn--ghost btn--quitar btn--sm", () => confirmar(
-        `Eliminar ${u.nombre}`,
-        "Se borran la unidad y sus servicios. Su sensor dejará de aparecer en tu panel. Esto no se puede deshacer.",
-        "Eliminar unidad",
-        async () => { await api(`/unidades/${u.id}`, { method: "DELETE" }); loadUnidades(); })));
+      moreMenu(`Más acciones de ${u.nombre}`, [
+        ["Enlace del motorista", () => confirmar(
+          `Enlace del motorista de ${u.nombre}`,
+          "Se crea un enlace nuevo para la app del motorista. Si ya le habías mandado uno, ese deja de funcionar. El sensor no se afecta.",
+          "Crear enlace",
+          async () => showClave(await api(`/unidades/${u.id}/motorista`, { method: "POST" }), u.ruta))],
+        ["Nueva clave del sensor", () => confirmar(
+          `Nueva clave del sensor de ${u.nombre}`,
+          "La clave actual del sensor dejará de funcionar y tendrás que poner la nueva en su configuración. El enlace del motorista sigue igual.",
+          "Generar nueva clave",
+          async () => showClave(await api(`/unidades/${u.id}/clave`, { method: "POST" }), u.ruta))],
+        ["Eliminar unidad", () => confirmar(
+          `Eliminar ${u.nombre}`,
+          "Se borran la unidad y sus servicios. Su sensor dejará de aparecer en tu panel. Esto no se puede deshacer.",
+          "Eliminar unidad",
+          async () => { await api(`/unidades/${u.id}`, { method: "DELETE" }); loadUnidades(); }), "more__item--quitar"],
+      ]));
     actions.append(wrap);
     tr.append(name, el("td", null, u.ruta), el("td", null, TIPOS[u.tipo] || "–"), sensor, actions);
     table.tBodies[0].append(tr);
   });
-  root.replaceChildren(table);
+  root.replaceChildren(cards(table));
 }
 
 document.querySelectorAll("[data-nueva]").forEach((b) => b.addEventListener("click", () => openUnidad()));
@@ -522,24 +593,27 @@ async function loadMantenimiento() {
     const oilTd = el("td");
     oilTd.append(oil);
 
-    const motor = el("td");
+    const motor = el("td", "motor");
     motor.append(m.temperatura != null ? `${fmt(m.temperatura, 1)} °C` : "–",
       el("small", null, m.combustible != null ? `Combustible ${fmt(m.combustible)} %` : ""));
     if (!m.enLinea && m.temperatura != null) motor.append(el("small", null, "Última lectura"));
-    const fallas = el("td");
+    const fallas = el("td", "fallas");
     if (m.fallas.length) m.fallas.forEach((f) => fallas.append(el("span", "chip", f)));
-    else fallas.append(el("span", "muted", m.enLinea ? "Ninguna" : "Sin datos recientes"));
+    else fallas.append(el("span", "muted", m.enLinea ? "Ninguna" : "Sin datos"));
     const ultimo = el("td");
     if (m.ultimoServicio) ultimo.append(SERVICIOS[m.ultimoServicio.tipo] || m.ultimoServicio.tipo, el("small", null, `${fecha(m.ultimoServicio.fecha)}, a los ${fmt(m.ultimoServicio.km)} km`));
     else ultimo.append(el("span", "muted", "Ninguno"));
     const actions = el("td");
     const wrap = el("div", "actions");
-    wrap.append(button("Registrar servicio", "btn--ghost btn--sm", () => openServicio(m)));
+    // texto corto para que la tabla quepa sin deslizar; el lector de pantalla oye la acción completa
+    const srv = button("Servicio", "btn--ghost btn--sm", () => openServicio(m));
+    srv.setAttribute("aria-label", `Registrar servicio de ${m.nombre}`);
+    wrap.append(srv);
     actions.append(wrap);
     tr.append(name, km, oilTd, motor, fallas, ultimo, actions);
     table.tBodies[0].append(tr);
   });
-  root.replaceChildren(table);
+  root.replaceChildren(cards(table));
 }
 
 function updateBadge(list) {
@@ -573,7 +647,7 @@ $("#f-servicio").addEventListener("submit", async (e) => {
 });
 
 // ---------- Reportes ----------
-const RAMP = ["#E8ECF8", "#C3CBEA", "#8E9DD3", "#5568B0", "#2A3A82"]; // un solo tono: claro = rápido, oscuro = lento
+const RAMP = ["#EDE8DB", "#C9CFE6", "#8E9DD3", "#3B4A93", "#141B3D"]; // un solo tono: claro = rápido, oscuro = lento
 
 $("#r-dias").addEventListener("change", loadReportes);
 
@@ -587,13 +661,12 @@ async function loadReportes() {
 function renderTramos(tramos) {
   const root = $("#r-tramos");
   if (!tramos.length) return root.replaceChildren(el("p", "muted", "Todavía no hay viajes de tus unidades en este periodo. Aparecerán cuando completen tramos entre paradas."));
-  const hours = tramos.flatMap((t) => Object.keys(t.porHora).map(Number));
-  const h0 = Math.min(...hours), h1 = Math.max(...hours);
-  const cols = Array.from({ length: h1 - h0 + 1 }, (_, i) => h0 + i);
+  // solo las horas en que hubo viajes: una columna vacía no dice nada
+  const cols = [...new Set(tramos.flatMap((t) => Object.keys(t.porHora).map(Number)))].sort((a, b) => a - b);
 
   const table = el("table");
   const head = el("tr");
-  head.append(el("th", null, ""), ...cols.map((h) => el("th", null, `${h}:00`)), el("th", null, "Promedio"));
+  head.append(el("th", null, ""), ...cols.map((h) => el("th", null, `${h}:00`)), el("th", "avg", "Promedio"));
   table.append(el("thead"), el("tbody"));
   table.tHead.append(head);
 
@@ -611,7 +684,7 @@ function renderTramos(tramos) {
       if (v != null) {
         const step = hi === lo ? 2 : Math.round(((v - lo) / (hi - lo)) * (RAMP.length - 1));
         td.style.background = RAMP[step];
-        td.style.color = step >= 3 ? "#fff" : "var(--tinta)";
+        td.style.color = step >= 3 ? "#fff" : "#141B3D";
         td.addEventListener("pointermove", (e) => showTip(e, [`${t.desde} a ${t.hasta}, ${h}:00 a ${h + 1}:00  `, el("b", null, `${fmt(v, 1)} min`)]));
         td.addEventListener("pointerleave", hideTip);
       }
@@ -624,7 +697,7 @@ function renderTramos(tramos) {
   const legend = el("div", "legend");
   const ramp = el("span", "legend__ramp");
   RAMP.forEach((c) => { const s = el("span"); s.style.background = c; ramp.append(s); });
-  legend.append("Más rápido", ramp, "Más lento (comparado dentro de cada tramo)");
+  legend.append("Minutos. Más rápido", ramp, "Más lento (comparado dentro de cada tramo)");
   root.replaceChildren(table, legend);
 }
 
@@ -855,7 +928,7 @@ function renderClientes() {
     tr.append(who, contact, flota, estado, el("td", null, fecha(c.creado)), actions);
     table.tBodies[0].append(tr);
   });
-  root.replaceChildren(table);
+  root.replaceChildren(cards(table));
 }
 $("#cli-buscar").addEventListener("input", renderClientes);
 $("#cli-estado").addEventListener("change", renderClientes);
@@ -943,7 +1016,7 @@ function renderCodigos() {
     tr.append(code, el("td", c.nota ? "nota" : "nota muted", c.nota ?? "Sin nota"), estadoTd, el("td", null, fecha(c.creado)), actions);
     table.tBodies[0].append(tr);
   });
-  root.replaceChildren(table);
+  root.replaceChildren(cards(table));
 }
 $("#cod-buscar").addEventListener("input", renderCodigos);
 $("#cod-estado").addEventListener("change", renderCodigos);

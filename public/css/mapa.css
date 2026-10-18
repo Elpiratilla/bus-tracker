@@ -122,7 +122,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   border-radius: 10px;
 }
 .seg button {
-  min-height: calc(var(--tap) - 6px);
+  min-height: var(--tap);
   padding: .4rem .75rem;
   background: none;
   border: 0;
@@ -714,3 +714,38 @@ h1.flap { display: block; }
 }
 .lang:hover { color: var(--torogoz-texto); }
 .lang:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+
+/* ---------- Asa del panel: solo en el teléfono ---------- */
+.grip {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: var(--tap);
+  margin: -1rem 0 .2rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: grab;
+  touch-action: none;
+}
+.grip:active { cursor: grabbing; }
+.grip__bar { width: 3rem; height: 5px; background: var(--track); border-radius: 3px; transition: background-color .15s, width .15s; }
+.grip:hover .grip__bar, .grip:focus-visible .grip__bar { width: 3.6rem; background: var(--muted); }
+.grip:focus-visible { outline: 3px solid var(--torogoz); outline-offset: -3px; border-radius: 10px; }
+#map { transition: height .25s cubic-bezier(.2, .8, .3, 1); }
+@media (min-width: 900px) { .grip { display: none; } #map { height: 100vh !important; transition: none; } }
+
+/* ---------- Mientras carga: filas grises en vez de una lista vacía ---------- */
+.stop--skel .stop__dot { background: var(--line); border-color: var(--card); }
+.stop--skel::before { background: var(--line); }
+.skel { display: grid; gap: .4rem; align-self: center; grid-column: 2 / -1; }
+.skel i { display: block; height: .8rem; width: 55%; background: var(--line); border-radius: 4px; animation: skel 1.2s ease-in-out infinite alternate; }
+.skel i + i { width: 35%; height: .6rem; }
+@keyframes skel { to { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .skel i { animation: none; } }
+
+/* En pantallas muy angostas la lupa sobra: el buscador necesita ese espacio para "Ruta o parada" */
+@media (max-width: 420px) {
+  .search .ico { display: none; }
+  .search { padding: 0 .6rem; }
+}

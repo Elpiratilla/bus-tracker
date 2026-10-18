@@ -406,6 +406,7 @@ async function drawMap(data, lastIdx, nextIdx) {
 
   // Unidad
   trackVehicle(target);
+  requestAnimationFrame(ocultarChoques);
 
   // Encuadre: solo al abrir o cambiar de ruta
   if (fittedRoute !== ruta) {
@@ -414,6 +415,61 @@ async function drawMap(data, lastIdx, nextIdx) {
     map.fitBounds(L.latLngBounds(legs.flat()), { paddingTopLeft: [30, 120], paddingBottomRight: [30, 50] });
   }
 }
+
+// Los minutos entre paradas se esconden si tapan el nombre de una parada (o a otro minuto).
+// El dato no se pierde: también aparece en la lista ("10 min desde la anterior").
+function ocultarChoques() {
+  const caja = (n) => n.getBoundingClientRect();
+  const choca = (a, b) => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom;
+  const nombres = [...document.querySelectorAll("#map .stop-tip")].map(caja);
+  const puestas = [];
+  document.querySelectorAll("#map .leg").forEach((leg) => {
+    leg.style.visibility = "";
+    const r = caja(leg);
+    const tapa = nombres.some((n) => choca(r, n)) || puestas.some((p) => choca(r, p));
+    leg.style.visibility = tapa ? "hidden" : "";
+    if (!tapa) puestas.push(r);
+  });
+}
+map.on("zoomend", ocultarChoques);
+
+// ---------- Asa del panel (teléfono): más mapa o más lista ----------
+// Tres alturas del mapa: poca, normal y mucha. Se arrastra el asa o se toca para pasar a la siguiente.
+const ALTOS = [34, 62, 82]; // % de la pantalla
+let alto = 1;
+const grip = document.getElementById("grip");
+function setAlto(i, px) {
+  alto = Math.max(0, Math.min(ALTOS.length - 1, i));
+  const h = px ?? (innerHeight * ALTOS[alto]) / 100;
+  document.getElementById("map").style.height = `${Math.round(h)}px`;
+  grip.setAttribute("aria-label", alto === ALTOS.length - 1 ? "Ver más lista" : "Ver más mapa");
+  if (px == null) { map.invalidateSize(); ocultarChoques(); }
+}
+let arrastre = null;
+grip.addEventListener("pointerdown", (e) => {
+  if (matchMedia("(min-width: 900px)").matches) return;
+  arrastre = { y: e.clientY, h: document.getElementById("map").offsetHeight, movio: false };
+  grip.setPointerCapture(e.pointerId);
+});
+grip.addEventListener("pointermove", (e) => {
+  if (!arrastre) return;
+  const dy = e.clientY - arrastre.y;
+  if (Math.abs(dy) > 6) arrastre.movio = true;
+  if (arrastre.movio) setAlto(alto, Math.max(innerHeight * 0.25, Math.min(innerHeight * 0.88, arrastre.h + dy)));
+});
+grip.addEventListener("pointerup", () => {
+  if (!arrastre) return;
+  const { movio } = arrastre;
+  arrastre = null;
+  if (!movio) return setAlto(alto === ALTOS.length - 1 ? 0 : alto + 1); // un toque: siguiente altura
+  // al soltar, se acomoda a la altura más cercana
+  const pct = (document.getElementById("map").offsetHeight / innerHeight) * 100;
+  setAlto(ALTOS.reduce((best, v, i) => (Math.abs(v - pct) < Math.abs(ALTOS[best] - pct) ? i : best), 0));
+});
+grip.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); setAlto(alto + 1); }
+  if (e.key === "ArrowUp") { e.preventDefault(); setAlto(alto - 1); }
+});
 
 // ---------- Avisos "tu bus está cerca" (Web Push) ----------
 const api = (path) => `${CONFIG.API_BASE}${path}`;

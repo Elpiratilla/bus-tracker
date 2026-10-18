@@ -19,6 +19,8 @@ let pos = null;       // última posición del GPS
 let lastSent = 0;
 let lastOk = 0;
 let wakeLock = null;
+let gpsFalla = false;   // sin permiso o sin señal: el aviso de arriba se pone rojo
+let confirmar = null;   // "Terminar trayecto" pide un segundo toque
 
 function load() {
   try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; }
@@ -53,13 +55,17 @@ const api = (path, body) => call(`/api/motorista/${path}`, body);
 // ---------- Pantalla ----------
 const nuevo = (tag, text) => { const n = document.createElement(tag); if (text != null) n.textContent = text; return n; };
 
-// Botón grande con una línea chica abajo ("Sale de Terminal de Oriente")
-function botonGrande(clase, texto, detalle, onClick) {
-  const b = nuevo("button", texto);
+// Rótulo de un sentido, como el letrero del bus: número de ruta, destino y de dónde sale
+function rotulo(ruta, d) {
+  const b = nuevo("button");
   b.type = "button";
-  b.className = `btn ${clase} btn--big`;
-  b.append(nuevo("small", detalle));
-  b.addEventListener("click", onClick);
+  b.className = "rotulo";
+  const n = nuevo("span", ruta);
+  n.className = "fascia";
+  n.setAttribute("aria-hidden", "true");
+  b.append(n, nuevo("b", d.destino), nuevo("small", `Sale de ${d.origen}`));
+  b.setAttribute("aria-label", `Salir hacia ${d.destino}, desde ${d.origen}`);
+  b.addEventListener("click", () => viaje("salir", d.id));
   return b;
 }
 
@@ -67,35 +73,40 @@ function render() {
   const s = estado;
   const actual = s.sentidos.find((d) => d.id === s.sentido);
   const otro = s.sentidos.find((d) => d.id !== s.sentido);
-  $("titulo").textContent = s.unidad || `Ruta ${s.ruta}`;
-  $("subtitulo").textContent = `Ruta ${s.ruta} · unidad ${cred.busId}`;
-  $("estado").className = `estado${s.enServicio ? " estado--on" : ""}`;
-  $("e-texto").textContent = s.enServicio ? `En trayecto hacia ${actual.destino}` : "Fuera de servicio";
+  $("numero").hidden = !s.enServicio; // fuera de servicio el número ya va en cada rótulo
+  $("numero").textContent = s.ruta;
+  // En trayecto, arriba va el destino como en el rótulo del bus; si no, el nombre de la unidad
+  $("titulo").textContent = s.enServicio ? actual.destino : s.unidad || `Ruta ${s.ruta}`;
+  $("subtitulo").textContent = s.enServicio ? `${s.unidad || "Ruta " + s.ruta}, en trayecto` : `Fuera de servicio, unidad ${cred.busId}`;
   $("v-salir").hidden = s.enServicio;
   $("v-viaje").hidden = !s.enServicio;
-  $("sentidos").replaceChildren(...s.sentidos.map((d, i) =>
-    botonGrande(i ? "btn--maiz" : "btn--torogoz", `Hacia ${d.destino}`, `Sale de ${d.origen}`, () => viaje("salir", d.id))));
+  $("sentidos").replaceChildren(...s.sentidos.map((d) => rotulo(s.ruta, d)));
   if (s.enServicio) {
+    const enTerminal = !s.siguiente;
+    $("proxima-titulo").textContent = enTerminal ? "Llegaste a la terminal" : "Próxima parada";
     $("siguiente").textContent = s.siguiente || actual.destino;
-    $("hacia").textContent = s.siguiente ? `Vas hacia ${actual.destino}` : "Llegaste a la terminal";
-    $("vuelta").replaceChildren(`Dar la vuelta: hacia ${otro.destino}`, nuevo("small", "Al llegar a la terminal"));
     $("paradas").replaceChildren(...s.paradas.map((p) => {
       const li = nuevo("li", p.nombre);
-      if (p.paso) li.className = "ya-paso";
+      li.className = p.paso ? "paso" : p.nombre === s.siguiente ? "sigue" : "";
       return li;
     }));
+    // Dar la vuelta solo resalta al llegar a la terminal
+    $("vuelta").className = `btn grande ${enTerminal ? "btn--maiz" : "btn--vuelta"}`;
+    $("vuelta").replaceChildren(`Dar la vuelta hacia ${otro.destino}`, nuevo("small", enTerminal ? "Empieza el regreso" : "Al llegar a la terminal"));
   }
+  if (!s.enServicio) desarmarTerminar(); // se redibuja cada 5 s: no borrar el primer toque de Terminar
   renderDetalle();
 }
 
+// Aviso del GPS arriba a la derecha (solo en trayecto)
 function renderDetalle() {
-  if (!estado) return;
-  let t;
-  if (estado.enServicio) {
-    const s = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null;
-    t = !pos ? "Buscando GPS…" : s == null ? "Mandando ubicación…" : `Ubicación enviada hace ${s} s`;
-  } else t = "Escoge hacia dónde sales para que la gente vea el bus en el mapa.";
-  $("e-detalle").textContent = t;
+  const g = $("gps");
+  g.hidden = !estado?.enServicio;
+  if (g.hidden) return;
+  const s = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null;
+  const viejo = s != null && s > 30;
+  g.dataset.estado = gpsFalla || viejo ? "mal" : s == null ? "busca" : "ok";
+  g.textContent = gpsFalla ? "Sin GPS" : s == null ? "Buscando GPS" : viejo ? `Sin enviar ${s} s` : `GPS ${s} s`;
 }
 
 async function refresh() {
@@ -103,7 +114,6 @@ async function refresh() {
     estado = await api("estado");
     $("v-entrar").hidden = true;
     $("v-app").hidden = false;
-    $("cerrar").hidden = false;
     render();
     keepAwake();
   } catch (err) {
@@ -119,7 +129,10 @@ async function refresh() {
 function showEntrar() {
   $("v-entrar").hidden = false;
   $("v-app").hidden = true;
-  $("cerrar").hidden = true;
+  $("numero").hidden = true;
+  $("gps").hidden = true;
+  $("titulo").textContent = "go503 motorista";
+  $("subtitulo").textContent = "Tu celular es el GPS del bus";
 }
 
 // ---------- GPS ----------
@@ -135,9 +148,11 @@ async function gpsApp() {
       distanceFilter: 0,
     }, (loc, err) => {
       if (err) {
+        gpsFalla = true;
         if (err.code === "NOT_AUTHORIZED") showMsg("Dale permiso de ubicación a go503 Motorista (Permitir siempre) en los ajustes del celular.");
         return;
       }
+      gpsFalla = false;
       pos = { timestamp: loc.time ?? Date.now(), coords: { latitude: loc.latitude, longitude: loc.longitude,
         accuracy: loc.accuracy, speed: loc.speed, heading: loc.bearing } };
       sendPosition();
@@ -155,8 +170,10 @@ function startGps() {
   if (!("geolocation" in navigator)) return showMsg("Este celular no tiene GPS en el navegador.");
   navigator.geolocation.watchPosition((p) => {
     pos = p;
+    gpsFalla = false;
     sendPosition();
   }, (err) => {
+    gpsFalla = true;
     showMsg(err.code === 1 ? "Dale permiso de ubicación a esta página para que funcione." : "No se pudo leer el GPS. Sal a un lugar abierto.");
   }, { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 });
 }
@@ -206,7 +223,19 @@ async function viaje(accion, sentido) {
   } catch (err) { showMsg(err.message); }
 }
 
-$("terminar").addEventListener("click", () => viaje("terminar"));
+// Terminar pide un segundo toque en 4 s: un roce sin querer no saca al bus del mapa
+function desarmarTerminar() {
+  clearTimeout(confirmar);
+  confirmar = null;
+  delete $("terminar").dataset.confirmar;
+  $("terminar").textContent = "Terminar trayecto";
+}
+$("terminar").addEventListener("click", () => {
+  if (confirmar) return viaje("terminar");
+  $("terminar").dataset.confirmar = "";
+  $("terminar").textContent = "Toca otra vez para terminar";
+  confirmar = setTimeout(desarmarTerminar, 4000);
+});
 $("vuelta").addEventListener("click", () => viaje("salir", estado.sentidos.find((d) => d.id !== estado.sentido).id));
 
 $("f-entrar").addEventListener("submit", (e) => {

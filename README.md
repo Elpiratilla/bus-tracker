@@ -133,17 +133,15 @@ Los textos que ve el público están en [`public/html/legal.html`](public/html/l
 ### Falta completar antes de publicar
 
 > [!IMPORTANT]
-> Todo lo que falta aparece en `legal.html` marcado en amarillo (`<mark class="falta">`). Para encontrarlo:
->
-> ```bash
-> grep -n 'class="falta"' public/html/legal.html
-> ```
+> Todo lo que falta aparece en `legal.html` marcado en amarillo.
 
-- [ ] Nombre legal o razón social del responsable, NIT, NRC (si aplica) y representante legal (si es una sociedad)
-- [ ] Dirección para notificaciones, correo y WhatsApp de contacto
-- [ ] Titular de los derechos sobre el nombre, el logo y el código
-- [ ] Plazo para borrar solicitudes de venta sin compra (propuesta: 24 meses), y borrarlas de verdad en la tabla `leads`
+- [x] Responsable y titular de los derechos: Mateo
+- [x] Correo (go503support@gmail.com) y WhatsApp (7263-5254)
+- [x] Plazo para borrar solicitudes de venta sin compra: 12 meses
+- [ ] Nombre legal completo del responsable (como aparece en el DUI), NIT y NRC (si aplica)
+- [ ] Dirección para notificaciones
 - [ ] Plazo para responder reclamos (propuesta: 10 días hábiles)
+- [ ] Borrar de verdad las solicitudes de la tabla `leads` que pasen 12 meses sin compra
 - [ ] Revisar si hay que inscribirse como proveedor ante la Defensoría del Consumidor
 - [ ] Que un abogado salvadoreño revise los textos antes de vender el primer sensor
 

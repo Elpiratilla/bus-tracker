@@ -3,6 +3,8 @@ const { supa, authMessage, $, showMsg } = window.go503;
 
 const msg = $("#msg");
 const VIEWS = ["v-entrar", "v-crear", "v-olvide", "v-nueva", "v-correo"];
+// Versión de /legal.html que acepta quien crea la cuenta: si cambian los términos, subirla
+const TERMINOS_VERSION = "2026-10-18";
 
 function show(view) {
   VIEWS.forEach((id) => { $(`#${id}`).hidden = id !== view; });
@@ -122,6 +124,7 @@ $("#f-crear").addEventListener("submit", (e) => {
   if (empresa.length < 2) return showMsg(msg, "Escribe el nombre de tu empresa.");
   if (!email) return showMsg(msg, "Escribe tu correo.");
   if (password.length < 8) return showMsg(msg, "La contraseña debe tener al menos 8 caracteres.");
+  if (!$("#c-acepto").checked) return showMsg(msg, "Para crear la cuenta tienes que aceptar los términos y la política de privacidad.");
 
   busy(e.target, "Creando cuenta…", async () => {
     // 1. El código debe existir y estar libre antes de crear la cuenta
@@ -138,7 +141,8 @@ $("#f-crear").addEventListener("submit", (e) => {
     const sb = await supa();
     const { data, error } = await sb.auth.signUp({
       email, password,
-      options: { data: { empresa, codigo }, emailRedirectTo: `${location.origin}/panel.html` },
+      // Constancia de la aceptación: versión de legal.html y fecha (queda en los datos del usuario en Supabase)
+      options: { data: { empresa, codigo, terminos_version: TERMINOS_VERSION, terminos_aceptados: new Date().toISOString() }, emailRedirectTo: `${location.origin}/panel.html` },
     });
     if (error) return showMsg(msg, authMessage(error));
     if (data.session) return location.replace("panel.html"); // sin confirmación de correo

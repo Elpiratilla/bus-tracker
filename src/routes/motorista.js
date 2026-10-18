@@ -1,4 +1,4 @@
-// App del motorista (public/paginas/motorista.html): el celular del motorista hace de sensor del bus.
+// App del motorista (public/html/motorista.html): el celular del motorista hace de sensor del bus.
 // Entra con el id de la unidad y su clave (header x-api-key, igual que el sensor).
 // Todo va por POST porque la autenticación lee busId del cuerpo.
 const router = require("express").Router();

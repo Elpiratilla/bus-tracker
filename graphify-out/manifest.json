@@ -42,15 +42,15 @@
     "semantic_hash": ""
   },
   "public/js/acceso.js": {
-    "mtime": 1792343928.3696074,
-    "seen": 1792343959.454928,
-    "ast_hash": "4711d82ee98f639b53cae56f31fe3d41",
+    "mtime": 1792346059.5615976,
+    "seen": 1792346163.155404,
+    "ast_hash": "a9bfe03feb040577d8db36dd0af6209d",
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792341984.2414699,
-    "seen": 1792342132.543988,
-    "ast_hash": "795dda79f5cd21cd4020887281f6f4aa",
+    "mtime": 1792346069.1249588,
+    "seen": 1792346163.155405,
+    "ast_hash": "73a92bc429d79b45042945bb6dafe864",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1792343934.4930656,
-    "seen": 1792343959.455483,
-    "ast_hash": "2c3578337cad06e070f2f9ea5364a297",
+    "mtime": 1792346099.9575284,
+    "seen": 1792346163.156204,
+    "ast_hash": "c5b6bb6398f3e7e34d6ef7b547fab0db",
     "semantic_hash": ""
   },
   "src/store.js": {
@@ -342,9 +342,9 @@
     "semantic_hash": ""
   },
   "app/copiar-web.js": {
-    "mtime": 1792343934.2493036,
-    "seen": 1792343959.454653,
-    "ast_hash": "f0adde70f2a244d76a237dedc1b8a64f",
+    "mtime": 1792346099.9609642,
+    "seen": 1792346163.155106,
+    "ast_hash": "b180331771d67a0ebf1e9c48171fe75e",
     "semantic_hash": ""
   },
   "app/package.json": {
@@ -360,9 +360,9 @@
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
-    "mtime": 1792343934.252166,
-    "seen": 1792343959.455376,
-    "ast_hash": "0a54f60206178b706acc75e572d3d74f",
+    "mtime": 1792346104.320994,
+    "seen": 1792346163.156092,
+    "ast_hash": "a7669ddeace8063fa9f6240b3b8275f1",
     "semantic_hash": ""
   },
   "test/motorista.test.js": {
@@ -575,46 +575,58 @@
     "ast_hash": "fc09149f1acd1aae3db28ef014af8a83",
     "semantic_hash": ""
   },
-  "public/paginas/index.html": {
-    "mtime": 1792343928.3691924,
-    "seen": 1792343959.456,
-    "ast_hash": "560ecb29c74a83e716522bead8dbc468",
+  "README.md": {
+    "mtime": 1792346122.9285913,
+    "seen": 1792346163.156692,
+    "ast_hash": "86745f933ed24c9a9bdc70ffd7c27768",
     "semantic_hash": ""
   },
-  "public/paginas/login.html": {
-    "mtime": 1792343928.3718772,
-    "seen": 1792343959.456001,
-    "ast_hash": "909bbbfd470993eea6f2315d9caf86eb",
+  "public/html/index.html": {
+    "mtime": 1792346039.1065867,
+    "seen": 1792346163.156794,
+    "ast_hash": "428b1e7f86ac3f4d07a44c3a456202cc",
     "semantic_hash": ""
   },
-  "public/paginas/mapa.html": {
+  "public/html/legal.html": {
+    "mtime": 1792346000.0589552,
+    "seen": 1792346163.1567948,
+    "ast_hash": "2aa19880c562e7a99adb174b3309570e",
+    "semantic_hash": ""
+  },
+  "public/html/login.html": {
+    "mtime": 1792346039.1344223,
+    "seen": 1792346163.156798,
+    "ast_hash": "083cfc68fb16b80aa0d8daab394367f9",
+    "semantic_hash": ""
+  },
+  "public/html/mapa.html": {
     "mtime": 1792343928.3723042,
-    "seen": 1792343959.4560032,
+    "seen": 1792346163.1568,
     "ast_hash": "9f8c85a87622f8ec0c54b3313ddf1949",
     "semantic_hash": ""
   },
-  "public/paginas/motorista.html": {
-    "mtime": 1792343928.3724968,
-    "seen": 1792343959.456005,
-    "ast_hash": "a6f56594d0b73d46408589a898685cf0",
+  "public/html/motorista.html": {
+    "mtime": 1792346091.9747598,
+    "seen": 1792346163.156802,
+    "ast_hash": "7bf6bcf014944538cdabfdedd98c599b",
     "semantic_hash": ""
   },
-  "public/paginas/panel.html": {
+  "public/html/panel.html": {
     "mtime": 1792343928.3729558,
-    "seen": 1792343959.4560058,
+    "seen": 1792346163.1568031,
     "ast_hash": "9e796dd8e5c8585d8adac56c7a1355aa",
     "semantic_hash": ""
   },
-  "public/paginas/preguntas.html": {
-    "mtime": 1792343928.373284,
-    "seen": 1792343959.456008,
-    "ast_hash": "ac35f21028a80ef2c4b4b7ce54f21ac2",
+  "public/html/preguntas.html": {
+    "mtime": 1792346027.4443607,
+    "seen": 1792346163.156804,
+    "ast_hash": "7125d00b1c4b33a8d56eb3bd524c60ad",
     "semantic_hash": ""
   },
-  "public/paginas/sensor.html": {
-    "mtime": 1792343928.3737082,
-    "seen": 1792343959.456009,
-    "ast_hash": "b987a7bf1bd551b17e088ebcc4bc2583",
+  "public/html/sensor.html": {
+    "mtime": 1792346027.458062,
+    "seen": 1792346163.156806,
+    "ast_hash": "cb959364963bd4ec09ace2d299a39551",
     "semantic_hash": ""
   }
 }

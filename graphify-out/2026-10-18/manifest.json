@@ -42,9 +42,9 @@
     "semantic_hash": ""
   },
   "public/js/acceso.js": {
-    "mtime": 1792343857.7549002,
-    "seen": 1792343899.703893,
-    "ast_hash": "9d358bead1f1d768be23103f2feb1837",
+    "mtime": 1792343928.3696074,
+    "seen": 1792343959.454928,
+    "ast_hash": "4711d82ee98f639b53cae56f31fe3d41",
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
@@ -54,9 +54,9 @@
     "semantic_hash": ""
   },
   "public/js/landing.js": {
-    "mtime": 1792343857.7586715,
-    "seen": 1792343899.7039318,
-    "ast_hash": "118acbb492ce2b8ee755e8084ab88be7",
+    "mtime": 1792343928.3699684,
+    "seen": 1792343959.454966,
+    "ast_hash": "8c01c50ab3919f7023049d9b8d826636",
     "semantic_hash": ""
   },
   "public/js/mapa.js": {
@@ -66,27 +66,27 @@
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792343857.7720656,
-    "seen": 1792343899.703937,
-    "ast_hash": "5b2e4f31a3fcd368f05a9a4481da81f4",
+    "mtime": 1792343928.3707235,
+    "seen": 1792343959.4550028,
+    "ast_hash": "74d08665667cb8f4658a957b399279c4",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {
-    "mtime": 1792343857.7751498,
-    "seen": 1792343899.703938,
-    "ast_hash": "4341e0f0710e944db8328b195e8028d4",
+    "mtime": 1792343928.3711202,
+    "seen": 1792343959.455005,
+    "ast_hash": "925e2f89a649f68d467e9352e552e5e5",
     "semantic_hash": ""
   },
   "public/js/sesion.js": {
-    "mtime": 1792343857.7791002,
-    "seen": 1792343899.7039402,
-    "ast_hash": "3cb0d29002c130a22eeee7411ebe1953",
+    "mtime": 1792343928.371303,
+    "seen": 1792343959.455006,
+    "ast_hash": "a5ad04af0e56a208cba2d8b39758bb25",
     "semantic_hash": ""
   },
   "public/js/sitio.js": {
-    "mtime": 1792343857.7822974,
-    "seen": 1792343899.7039418,
-    "ast_hash": "0c24c0be0f950702dfdd1909db53fff1",
+    "mtime": 1792343928.371604,
+    "seen": 1792343959.455007,
+    "ast_hash": "f3a5510ff9a731cc848334b1b8d39ff4",
     "semantic_hash": ""
   },
   "public/sw.js": {
@@ -96,9 +96,9 @@
     "semantic_hash": "7d1ca9fbd03683be2d11bccdd1e9d514"
   },
   "src/alerts.js": {
-    "mtime": 1792343857.8108332,
-    "seen": 1792343899.703945,
-    "ast_hash": "e111d0771a365e435956f581f6b7de15",
+    "mtime": 1792343928.3742764,
+    "seen": 1792343959.4550421,
+    "ast_hash": "7f5d8befffa9263304011b7e58b27e3a",
     "semantic_hash": ""
   },
   "src/db.js": {
@@ -168,9 +168,9 @@
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1792343866.8160672,
-    "seen": 1792343899.7040179,
-    "ast_hash": "1a9f7c9bde3c9f1e54bdea3aa5cfce46",
+    "mtime": 1792343934.4930656,
+    "seen": 1792343959.455483,
+    "ast_hash": "2c3578337cad06e070f2f9ea5364a297",
     "semantic_hash": ""
   },
   "src/store.js": {
@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "tools/admin.js": {
-    "mtime": 1792343857.8794546,
-    "seen": 1792343899.704247,
-    "ast_hash": "c42d3e298a47d4b484a1fd9c6bd5abc7",
+    "mtime": 1792343928.375251,
+    "seen": 1792343959.4557729,
+    "ast_hash": "91eefa27df901d126f6b66e0d2e9fcd9",
     "semantic_hash": ""
   },
   "tools/codigo.js": {
@@ -213,12 +213,6 @@
     "mtime": 1792339043.7982466,
     "seen": 1792339226.540956,
     "ast_hash": "a17cfbdd63e9160e3db6fecec9391cb7",
-    "semantic_hash": ""
-  },
-  "public/index.html": {
-    "mtime": 1792343857.7515879,
-    "seen": 1792343899.704422,
-    "ast_hash": "44bc5753a163a7d68c5caf527fa9701f",
     "semantic_hash": ""
   },
   "render.yaml": {
@@ -288,8 +282,8 @@
     "semantic_hash": ""
   },
   "app/android/app/capacitor.build.gradle": {
-    "mtime": 1792343894.677799,
-    "seen": 1792343899.703213,
+    "mtime": 1792343954.4698489,
+    "seen": 1792343959.45428,
     "ast_hash": "b02aa56af0dd39a729f2ecade85da150",
     "semantic_hash": ""
   },
@@ -318,8 +312,8 @@
     "semantic_hash": ""
   },
   "app/android/capacitor.settings.gradle": {
-    "mtime": 1792343894.6776755,
-    "seen": 1792343899.703459,
+    "mtime": 1792343954.4697125,
+    "seen": 1792343959.45451,
     "ast_hash": "42b1f8735bfafda61d0031b261fcc3a5",
     "semantic_hash": ""
   },
@@ -348,9 +342,9 @@
     "semantic_hash": ""
   },
   "app/copiar-web.js": {
-    "mtime": 1792343857.74789,
-    "seen": 1792343899.7036061,
-    "ast_hash": "59e1c025e01b20f9ee8993b1facc6b47",
+    "mtime": 1792343934.2493036,
+    "seen": 1792343959.454653,
+    "ast_hash": "f0adde70f2a244d76a237dedc1b8a64f",
     "semantic_hash": ""
   },
   "app/package.json": {
@@ -360,15 +354,15 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792343857.766848,
-    "seen": 1792343899.703935,
-    "ast_hash": "d1500a5a7ffad9097bb132638471c517",
+    "mtime": 1792343928.3702986,
+    "seen": 1792343959.455002,
+    "ast_hash": "e84f4c21d83da03c81ad10b9af828ec2",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
-    "mtime": 1792343857.849765,
-    "seen": 1792343899.704011,
-    "ast_hash": "94ea050e76f6100f5b1150d395c8f006",
+    "mtime": 1792343934.252166,
+    "seen": 1792343959.455376,
+    "ast_hash": "0a54f60206178b706acc75e572d3d74f",
     "semantic_hash": ""
   },
   "test/motorista.test.js": {
@@ -581,40 +575,46 @@
     "ast_hash": "fc09149f1acd1aae3db28ef014af8a83",
     "semantic_hash": ""
   },
-  "public/login/index.html": {
-    "mtime": 1792343857.8918424,
-    "seen": 1792343899.704424,
-    "ast_hash": "d5e7ab05903c1aca65c646f77d1a8b24",
+  "public/paginas/index.html": {
+    "mtime": 1792343928.3691924,
+    "seen": 1792343959.456,
+    "ast_hash": "560ecb29c74a83e716522bead8dbc468",
     "semantic_hash": ""
   },
-  "public/mapa/index.html": {
-    "mtime": 1792343857.895483,
-    "seen": 1792343899.704426,
+  "public/paginas/login.html": {
+    "mtime": 1792343928.3718772,
+    "seen": 1792343959.456001,
+    "ast_hash": "909bbbfd470993eea6f2315d9caf86eb",
+    "semantic_hash": ""
+  },
+  "public/paginas/mapa.html": {
+    "mtime": 1792343928.3723042,
+    "seen": 1792343959.4560032,
     "ast_hash": "9f8c85a87622f8ec0c54b3313ddf1949",
     "semantic_hash": ""
   },
-  "public/motorista/index.html": {
-    "mtime": 1792343857.8989353,
-    "seen": 1792343899.704428,
+  "public/paginas/motorista.html": {
+    "mtime": 1792343928.3724968,
+    "seen": 1792343959.456005,
     "ast_hash": "a6f56594d0b73d46408589a898685cf0",
     "semantic_hash": ""
   },
-  "public/panel/index.html": {
-    "mtime": 1792343857.903008,
-    "seen": 1792343899.7044291,
+  "public/paginas/panel.html": {
+    "mtime": 1792343928.3729558,
+    "seen": 1792343959.4560058,
     "ast_hash": "9e796dd8e5c8585d8adac56c7a1355aa",
     "semantic_hash": ""
   },
-  "public/preguntas/index.html": {
-    "mtime": 1792343857.906491,
-    "seen": 1792343899.70443,
-    "ast_hash": "70b007be7f9d27ceedd504fa397d0d24",
+  "public/paginas/preguntas.html": {
+    "mtime": 1792343928.373284,
+    "seen": 1792343959.456008,
+    "ast_hash": "ac35f21028a80ef2c4b4b7ce54f21ac2",
     "semantic_hash": ""
   },
-  "public/sensor/index.html": {
-    "mtime": 1792343857.910315,
-    "seen": 1792343899.704431,
-    "ast_hash": "d77e7540d42e5b7800098f884bb553cb",
+  "public/paginas/sensor.html": {
+    "mtime": 1792343928.3737082,
+    "seen": 1792343959.456009,
+    "ast_hash": "b987a7bf1bd551b17e088ebcc4bc2583",
     "semantic_hash": ""
   }
 }

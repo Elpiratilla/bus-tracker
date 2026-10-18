@@ -6,7 +6,7 @@ const path = require("path");
 const PUBLIC = path.join(__dirname, "..", "public");
 const WWW = path.join(__dirname, "www");
 const ARCHIVOS = {
-  "paginas/motorista.html": "index.html", // la app abre index.html
+  "html/motorista.html": "index.html", // la app abre index.html
   "js/motorista.js": "js/motorista.js",
   "css/base.css": "css/base.css",
   "css/fonts.css": "css/fonts.css",

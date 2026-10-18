@@ -15,9 +15,9 @@ const app = express();
 app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "300kb" })); // alcanza para un recorrido de 4,000 puntos
-// Las páginas viven juntas en public/paginas/, pero se abren en la raíz: /mapa.html, /panel.html...
+// Las páginas viven juntas en public/html/, pero se abren en la raíz: /mapa.html, /panel.html...
 // El resto (css, js, img, fonts, sw.js, manifest) sale de public/ como siempre.
-app.use(express.static(path.join(__dirname, "..", "public", "paginas")));
+app.use(express.static(path.join(__dirname, "..", "public", "html")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use("/api/telemetry", require("./routes/telemetry"));

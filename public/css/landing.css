@@ -721,6 +721,8 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .order__done p { color: var(--muted); max-width: 36ch; }
 .order__done .btn { margin-top: .6rem; }
 .order__more { margin-top: .7rem; color: var(--muted); }
+.order__legal { margin-top: .6rem; color: var(--muted); font-size: .88rem; }
+.order__legal a { color: inherit; font-weight: 700; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }
 .order__more a { color: var(--tinta); font-weight: 700; text-decoration-color: var(--maiz); text-decoration-thickness: 3px; text-underline-offset: 3px; }
 
 /* ---------- Pie: la calle de noche ---------- */
@@ -775,6 +777,50 @@ button.strip__name--mine:hover { color: var(--maiz-claro); }
 .page-top p { max-width: 38rem; margin-top: 1.3rem; color: var(--muted); font-size: clamp(1.1rem, 1.6vw, 1.22rem); line-height: 1.6; animation: rise .6s ease-out .15s both; }
 .page-top + main .kit { padding-top: clamp(2.5rem, 6vw, 4rem); }
 .page-top + main .faq { margin-top: clamp(2.5rem, 6vw, 4rem); }
+
+/* ---------- Legal y privacidad: índice fijo a la izquierda, texto largo a la derecha ---------- */
+.legal { margin-top: clamp(2.5rem, 6vw, 4rem); background: var(--card); border-block: 1px solid var(--line); }
+.legal__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 46rem);
+  gap: clamp(2rem, 6vw, 5rem);
+  padding-block: clamp(3rem, 7vw, 5rem);
+}
+.legal__side { align-self: start; position: sticky; top: 2rem; }
+.legal__ver { color: var(--muted); font-size: .9rem; line-height: 1.5; }
+.legal__side ol { margin: 1rem 0 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.legal__side a { display: flex; align-items: center; min-height: 2.75rem; border-bottom: 1px solid var(--line); color: var(--tinta); font-weight: 700; text-decoration: none; }
+.legal__side a:hover { color: var(--anil); text-decoration: underline; text-decoration-color: var(--maiz); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+.legal__body { line-height: 1.65; }
+.legal__body > section { scroll-margin-top: 1.5rem; }
+.legal__body > section + section { margin-top: clamp(2.5rem, 6vw, 3.5rem); padding-top: clamp(2.5rem, 6vw, 3.5rem); border-top: 1px solid var(--line); }
+.legal__body h2 { font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1; text-transform: uppercase; }
+.legal__body h3 { margin-top: 2rem; font-size: 1.15rem; }
+.legal__body p, .legal__body ul { margin-top: .9rem; }
+.legal__body ul { padding-left: 1.2rem; }
+.legal__body li + li { margin-top: .45rem; }
+.legal__body a { color: var(--tinta); font-weight: 700; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.legal__body code { font-family: var(--mono); font-size: .88em; overflow-wrap: anywhere; }
+.legal__datos { margin-top: 1.2rem; border-top: 1px solid var(--line); }
+.legal__datos div { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: .3rem 1rem; padding: .7rem 0; border-bottom: 1px solid var(--line); }
+.legal__datos dt { font-weight: 700; }
+.legal__datos dd { margin: 0; }
+/* Las tablas anchas se desplazan dentro de su caja, nunca la página entera */
+.legal__tabla { margin-top: 1.2rem; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-md, 10px); }
+.legal__tabla:focus-visible { outline: 3px solid var(--maiz); outline-offset: 2px; }
+.legal__tabla table { width: 100%; min-width: 40rem; border-collapse: collapse; font-size: .95rem; line-height: 1.5; }
+.legal__tabla th, .legal__tabla td { padding: .75rem .9rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.legal__tabla thead th { background: var(--papel); font-size: .85rem; text-transform: uppercase; letter-spacing: .04em; }
+.legal__tabla tbody tr:last-child > * { border-bottom: 0; }
+/* Datos que el dueño todavía tiene que llenar: se notan a propósito */
+mark.falta { padding: 0 .25em; background: var(--maiz); color: var(--noche); border-radius: 4px; }
+@media (max-width: 900px) {
+  .legal__inner { grid-template-columns: minmax(0, 1fr); }
+  .legal__side { position: static; }
+}
+@media (max-width: 560px) {
+  .legal__datos div { grid-template-columns: minmax(0, 1fr); }
+}
 
 /* Cierre: un letrero maíz grande con la acción */
 .next {

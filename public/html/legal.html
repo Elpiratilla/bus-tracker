@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <!-- Idioma (español / inglés): antes que todo lo demás -->
+  <script src="/js/idioma.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Legal y privacidad · Go503</title>
+  <meta name="description" content="Quién está detrás de go503, las reglas de uso, qué datos guardamos, por cuánto tiempo y cómo pedir que los borremos.">
+  <meta name="theme-color" content="#F3F5FB">
+  <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
+  <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+  <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-moon" viewBox="0 0 24 24">
+      <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <header class="page-top">
+    <nav class="top wrap" aria-label="Principal">
+      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <button class="top__menu" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
+      <div class="top__links" id="top-links">
+        <a href="/mapa.html">Mapa en vivo</a>
+        <a href="/#empresas">Para empresas</a>
+        <a href="/sensor.html">El sensor</a>
+        <a href="/preguntas.html">Preguntas</a>
+        <button class="lang" type="button" data-idioma>English</button>
+        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          <span class="theme__knob" aria-hidden="true"></span>
+        </button>
+        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+      </div>
+    </nav>
+    <div class="page-top__body wrap">
+      <h1>Legal y privacidad</h1>
+      <p>Quién está detrás de go503, las reglas para usarlo y qué hacemos con tus datos. Lo escribimos para que se entienda; si algo no queda claro, pregúntanos.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- Versión de estos textos: si cambia, cambiar también TERMINOS_VERSION en public/js/acceso.js -->
+    <section class="legal" aria-label="Documentos legales">
+      <div class="legal__inner wrap">
+        <nav class="legal__side" aria-label="En esta página">
+          <p class="legal__ver">Versión 2026-10-18<br>Vigente desde el 18 de octubre de 2026</p>
+          <ol>
+            <li><a href="#resumen">En corto</a></li>
+            <li><a href="#aviso">Quiénes somos</a></li>
+            <li><a href="#terminos">Términos de uso</a></li>
+            <li><a href="#privacidad">Privacidad</a></li>
+            <li><a href="#navegador">Cookies y navegador</a></li>
+            <li><a href="#propiedad">Propiedad intelectual</a></li>
+            <li><a href="#venta">Venta del sensor</a></li>
+            <li><a href="#reclamos">Reclamos y contacto</a></li>
+          </ol>
+        </nav>
+
+        <div class="legal__body">
+
+          <section id="resumen" aria-labelledby="h-resumen">
+            <h2 id="h-resumen">En corto</h2>
+            <ul>
+              <li>El mapa público se usa sin cuenta. No te pedimos nombre ni correo para ver dónde va el bus.</li>
+              <li>No usamos cookies de publicidad ni de analítica, y no vendemos datos.</li>
+              <li>Los minutos de llegada son estimados. Pueden fallar si el bus pierde señal, cambia de recorrido o hay tráfico.</li>
+              <li>Los datos de una flota (placas, motor, historial) solo los ven las cuentas de esa empresa.</li>
+              <li>Puedes pedirnos ver, corregir o borrar tus datos escribiendo a <mark class="falta">[correo de contacto]</mark>.</li>
+            </ul>
+            <p>Este resumen no reemplaza los textos de abajo, que son los que valen.</p>
+          </section>
+
+          <section id="aviso" aria-labelledby="h-aviso">
+            <h2 id="h-aviso">1. Quiénes somos</h2>
+            <p>go503 es un servicio para ver en tiempo real dónde van los buses de San Salvador y cuánto les falta para llegar a cada parada. También ofrece a los dueños de flotas un sensor y un panel para seguir sus unidades, su mantenimiento y sus tiempos de recorrido.</p>
+            <dl class="legal__datos">
+              <div><dt>Responsable</dt><dd><mark class="falta">[Nombre legal de la persona o razón social de la empresa]</mark></dd></div>
+              <div><dt>Nombre comercial</dt><dd>go503</dd></div>
+              <div><dt>NIT</dt><dd><mark class="falta">[NIT]</mark></dd></div>
+              <div><dt>NRC</dt><dd><mark class="falta">[NRC, si estás inscrito como contribuyente de IVA]</mark></dd></div>
+              <div><dt>Representante legal</dt><dd><mark class="falta">[Solo si el responsable es una sociedad]</mark></dd></div>
+              <div><dt>Dirección para notificaciones</dt><dd><mark class="falta">[Dirección completa]</mark>, El Salvador</dd></div>
+              <div><dt>Correo</dt><dd><mark class="falta">[correo de contacto]</mark></dd></div>
+              <div><dt>Teléfono y WhatsApp</dt><dd><mark class="falta">[número]</mark></dd></div>
+            </dl>
+            <p>El sitio se administra desde El Salvador y se rige por sus leyes.</p>
+          </section>
+
+          <section id="terminos" aria-labelledby="h-terminos">
+            <h2 id="h-terminos">2. Términos de uso</h2>
+            <p>Al usar go503 aceptas estos términos. Si no estás de acuerdo, no uses el servicio. Las empresas los aceptan de forma expresa al crear su cuenta.</p>
+
+            <h3>2.1 Qué ofrece go503</h3>
+            <ul>
+              <li><strong>Mapa público:</strong> la posición de los buses de las rutas publicadas y el tiempo estimado a cada parada.</li>
+              <li><strong>Avisos:</strong> una notificación en tu celular cuando el bus está por llegar a la parada que escogiste.</li>
+              <li><strong>Panel de empresas:</strong> ubicación, historial, datos del motor, mantenimiento y reportes de las unidades de cada empresa. Se entra solo con un código de invitación que entregamos al vender el sensor.</li>
+              <li><strong>App del motorista:</strong> convierte el celular del motorista en el GPS de la unidad mientras dura un trayecto.</li>
+              <li><strong>Enlaces para familias:</strong> enlaces privados que una empresa de transporte escolar da a las familias para ver dónde va el microbús.</li>
+            </ul>
+
+            <h3>2.2 Los tiempos son estimados</h3>
+            <p>Calculamos los minutos de llegada con la posición del bus y con lo que han tardado otros buses en el mismo tramo y a la misma hora. Es una estimación, no un horario. Puede fallar si el sensor pierde señal, si el bus cambia de recorrido, por tráfico, desvíos, accidentes o fallas técnicas. Si un dato está viejo, el mapa lo indica.</p>
+            <p>go503 no es un sistema de emergencia ni de seguridad. No lo uses para decidir si una situación es peligrosa. En el transporte escolar, el enlace de la familia sirve como ayuda y no sustituye la comunicación directa con el colegio o el transportista.</p>
+
+            <h3>2.3 Cuentas de empresa</h3>
+            <ul>
+              <li>Quien crea la cuenta debe ser mayor de edad y tener autorización para representar a la empresa.</li>
+              <li>Cuida tu contraseña y las claves de tus sensores. Si crees que alguien más las tiene, cámbialas desde el panel y avísanos.</li>
+              <li>Eres responsable de que la información de tus unidades (placas, nombres, rutas) sea correcta.</li>
+              <li>Si usas la app del motorista o los enlaces para familias, tú le explicas a tus motoristas y a las familias qué datos se ven y para qué. Te damos el texto de la sección 3 para que lo uses.</li>
+              <li>Tus datos de flota son tuyos. Nos das permiso de usarlos para prestarte el servicio y para mostrar en el mapa público la posición de tus buses en rutas públicas. Las rutas privadas, como las escolares, no salen en el mapa público.</li>
+            </ul>
+
+            <h3>2.4 Lo que no se permite</h3>
+            <ul>
+              <li>Entrar o intentar entrar a cuentas, sensores o sistemas que no son tuyos.</li>
+              <li>Mandar posiciones falsas, inventar buses o alterar los datos del mapa.</li>
+              <li>Descargar el mapa o los datos de forma masiva y automática, o cargar el servicio a propósito hasta que deje de funcionar.</li>
+              <li>Usar go503 para seguir a una persona sin su conocimiento, para acosar o para cometer delitos.</li>
+              <li>Revender el acceso al panel sin un acuerdo escrito con nosotros.</li>
+            </ul>
+            <p>Si alguien hace esto, podemos bloquear su acceso, desactivar sus claves, guardar la información necesaria para investigar y, cuando corresponda, informar a las autoridades.</p>
+
+            <h3>2.5 Disponibilidad</h3>
+            <p>Procuramos que go503 esté funcionando siempre, con mantenimiento y medidas de seguridad razonables. No podemos garantizar que nunca se interrumpa: puede haber mantenimiento, fallas de internet o de la red celular, fallas de los proveedores que usamos o situaciones fuera de nuestro control. Hoy el servidor puede tardar hasta un minuto en responder la primera vez del día. Esto no quita las obligaciones que la ley nos impone.</p>
+
+            <h3>2.6 Servicios de otros</h3>
+            <p>go503 usa mapas, servidores y librerías de otras empresas (las nombramos en la sección 3.5) y puede enlazar a otros sitios, como WhatsApp. No administramos esos servicios y cada uno tiene sus propias condiciones.</p>
+
+            <h3>2.7 Límites de responsabilidad</h3>
+            <p>En la medida que permite la ley de El Salvador, nuestra responsabilidad se determina según la naturaleza del servicio, las circunstancias de cada caso y nuestras obligaciones legales y contractuales. El mapa público es gratuito y de carácter informativo. Nada en estos términos pretende excluir responsabilidades que la ley no permite excluir, ni quitar a los consumidores derechos que la ley declara irrenunciables.</p>
+
+            <h3>2.8 Suspensión y cierre de cuentas</h3>
+            <p>Puedes cerrar tu cuenta de empresa cuando quieras escribiéndonos. Podemos suspender una cuenta si incumple estos términos, si no se pagan los servicios acordados o si lo ordena una autoridad. Salvo que sea urgente o ilegal hacerlo, te avisamos antes y te damos un plazo para descargar tus datos.</p>
+
+            <h3>2.9 Cambios a estos términos</h3>
+            <p>Si cambiamos algo importante, lo avisamos en esta página y por correo a las empresas con al menos 15 días de anticipación. Cada versión lleva su fecha arriba. Si una empresa no está de acuerdo con la versión nueva, puede cerrar su cuenta antes de que entre en vigor.</p>
+
+            <h3>2.10 Ley aplicable</h3>
+            <p>Estos términos se rigen por las leyes de El Salvador. Antes de cualquier proceso, te pedimos escribirnos para buscar una solución (sección 8). Si no se resuelve, el caso va a los tribunales competentes de El Salvador. Si eres consumidor, también puedes acudir a la Defensoría del Consumidor.</p>
+          </section>
+
+          <section id="privacidad" aria-labelledby="h-privacidad">
+            <h2 id="h-privacidad">3. Privacidad</h2>
+            <p>El responsable de tus datos es quien aparece en la sección 1. Tratamos los datos personales según la Ley para la Protección de Datos Personales de El Salvador (Decreto Legislativo n.º 144, de 2024) y la Ley de Protección al Consumidor.</p>
+
+            <h3>3.1 Qué datos guardamos y por cuánto tiempo</h3>
+            <div class="legal__tabla" role="region" aria-label="Datos que guardamos" tabindex="0">
+              <table>
+                <thead>
+                  <tr><th scope="col">Cuándo</th><th scope="col">Qué datos</th><th scope="col">Para qué</th><th scope="col">Cuánto tiempo</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Ves el mapa</th>
+                    <td>Ningún dato tuyo en nuestra base. El servidor ve tu dirección IP al responder.</td>
+                    <td>Responder la página y limitar abusos.</td>
+                    <td>La IP queda solo en la memoria del servidor unos minutos y en los registros técnicos de nuestro proveedor de servidores.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Tocas «Paradas cerca»</th>
+                    <td>Tu ubicación, solo si le das permiso al navegador.</td>
+                    <td>Buscar las paradas a menos de 1 km.</td>
+                    <td>No se guarda. Se usa para esa búsqueda y se descarta.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Pides un aviso</th>
+                    <td>La dirección de notificaciones que da tu navegador, la ruta y la parada. No incluye tu nombre ni tu número.</td>
+                    <td>Mandarte el aviso cuando el bus esté cerca.</td>
+                    <td>Se borra al mandar el aviso o, si no se usa, a las 3 horas.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Pides el sensor</th>
+                    <td>Nombre, teléfono y, si los escribes, empresa, correo, ciudad, número de unidades y mensaje.</td>
+                    <td>Responderte y mandarte la cotización.</td>
+                    <td>Mientras haya conversación de venta. Si no hay compra, se borra a los <mark class="falta">[24 meses]</mark> del último contacto, o antes si lo pides.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Creas una cuenta de empresa</th>
+                    <td>Correo, contraseña, nombre de la empresa, código de invitación y la fecha y versión de los términos que aceptaste.</td>
+                    <td>Darte acceso al panel y probar que aceptaste los términos.</td>
+                    <td>Mientras la cuenta exista. Al cerrarla, se borra en un plazo de 30 días, salvo lo que la ley nos obligue a conservar.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Una unidad usa el sensor</th>
+                    <td>Placa y nombre de la unidad, ubicación GPS, velocidad, kilómetros, horas de motor, temperatura, combustible, fallas y registros de mantenimiento.</td>
+                    <td>Mostrar la unidad en el panel y en el mapa, calcular llegadas y avisar del mantenimiento.</td>
+                    <td>Historial detallado: 7 días. Vueltas grabadas para dibujar recorridos: 30 días. Posición actual, contadores y mantenimiento: mientras la cuenta exista. Los promedios por tramo no identifican a nadie.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Un motorista usa la app</th>
+                    <td>La ubicación del celular, solo mientras el trayecto está activo.</td>
+                    <td>Que el bus aparezca en el mapa y en el panel.</td>
+                    <td>Igual que los datos del sensor.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Una empresa crea un enlace para familias</th>
+                    <td>El nombre que la empresa le pone al enlace. El enlace mismo no se guarda: solo una huella que no se puede revertir.</td>
+                    <td>Que la familia vea dónde va el microbús.</td>
+                    <td>Hasta que la empresa lo anule o borre la unidad.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>3.2 Por qué podemos usarlos</h3>
+            <ul>
+              <li><strong>Tu consentimiento:</strong> la ubicación para «Paradas cerca», los avisos y el formulario de pedido. Puedes retirarlo cuando quieras.</li>
+              <li><strong>El contrato con la empresa:</strong> las cuentas, los datos de las unidades y la app del motorista.</li>
+              <li><strong>La seguridad del servicio:</strong> la IP temporal para frenar abusos.</li>
+              <li><strong>Obligaciones legales:</strong> los datos de ventas y facturación que la ley pide conservar.</li>
+            </ul>
+
+            <h3>3.3 Motoristas y familias</h3>
+            <p>Con la app del motorista y con los enlaces para familias, la empresa de transporte decide qué unidades se siguen y quién las ve. En esos casos go503 trata los datos por cuenta de la empresa, y la empresa debe informar a sus motoristas y a las familias. La ubicación del motorista solo se manda mientras el trayecto está activo, y el motorista puede terminarlo cuando quiera.</p>
+            <p>No pedimos datos de niñas, niños ni adolescentes. Recomendamos a las empresas que no pongan el nombre completo de un menor en el nombre de un enlace: basta algo como «Familia 1» o «Casa colonia Escalón».</p>
+
+            <h3>3.4 Con quién no los compartimos</h3>
+            <p>No vendemos datos personales, no los usamos para publicidad y no se los damos a otras empresas para que te ofrezcan cosas. Solo los entregamos a una autoridad cuando una ley o una orden judicial nos obliga.</p>
+
+            <h3>3.5 Proveedores que nos ayudan</h3>
+            <p>Para funcionar usamos estos servicios. Algunos están en Estados Unidos, así que tus datos pueden guardarse allá, con sus medidas de seguridad.</p>
+            <ul>
+              <li><strong>Supabase</strong> (Estados Unidos): base de datos y cuentas de empresa.</li>
+              <li><strong>Render</strong> (Estados Unidos): el servidor que responde la página.</li>
+              <li><strong>CARTO</strong> y <strong>OpenStreetMap</strong>: las imágenes del mapa. Tu navegador se las pide directamente, así que ven tu IP.</li>
+              <li><strong>Proyecto OSRM</strong>: dibuja por qué calles va una ruta. Recibe la ubicación de las paradas, no la tuya.</li>
+              <li><strong>unpkg</strong> y <strong>jsDelivr</strong>: entregan librerías de código del mapa y del panel. Ven tu IP.</li>
+              <li><strong>El servicio de notificaciones de tu navegador</strong> (Google, Mozilla, Apple o Microsoft): entrega los avisos.</li>
+              <li><strong>WhatsApp</strong>: cuando te escribimos por ahí la cotización, o cuando tú nos escribes.</li>
+            </ul>
+
+            <h3>3.6 Cómo los cuidamos</h3>
+            <ul>
+              <li>Todo viaja cifrado (HTTPS).</li>
+              <li>No vemos tu contraseña: la guarda cifrada nuestro proveedor de cuentas.</li>
+              <li>Las claves de los sensores, de la app del motorista y de los enlaces para familias se guardan como una huella que no se puede revertir.</li>
+              <li>La base de datos no se puede leer directamente desde internet: todo pasa por nuestro servidor, que revisa quién eres.</li>
+              <li>Las cuentas de empresa solo se crean con un código de invitación.</li>
+            </ul>
+            <p>Ningún sistema es totalmente seguro. Si ocurre un incidente que afecte tus datos, te avisamos y avisamos a la autoridad cuando la ley lo pida.</p>
+
+            <h3>3.7 Tus derechos</h3>
+            <p>Puedes pedirnos:</p>
+            <ul class="legal__derechos">
+              <li><strong>Acceso:</strong> saber qué datos tuyos tenemos.</li>
+              <li><strong>Rectificación:</strong> corregir los que estén mal.</li>
+              <li><strong>Cancelación:</strong> que los borremos.</li>
+              <li><strong>Oposición:</strong> que dejemos de usarlos para algo.</li>
+              <li><strong>Portabilidad:</strong> recibir una copia en un archivo.</li>
+              <li><strong>Olvido:</strong> que se borren los que ya no hacen falta.</li>
+              <li><strong>Limitación:</strong> que los guardemos sin usarlos mientras se revisa un caso.</li>
+            </ul>
+            <p>Escríbenos a <mark class="falta">[correo de contacto]</mark> con tu nombre, lo que pides y un dato para ubicarte (el correo de tu cuenta o el teléfono con el que pediste el sensor). Te respondemos dentro de los plazos que fija la ley. Es gratis. Si no quedas conforme, puedes acudir a la autoridad de protección de datos de El Salvador.</p>
+
+            <h3>3.8 Edad</h3>
+            <p>El mapa lo puede usar cualquier persona. Las cuentas de empresa solo las pueden crear personas mayores de 18 años.</p>
+          </section>
+
+          <section id="navegador" aria-labelledby="h-navegador">
+            <h2 id="h-navegador">4. Cookies y lo que se guarda en tu navegador</h2>
+            <p>go503 no instala cookies propias, ni de publicidad, ni de analítica. Por eso no te mostramos un aviso de cookies. Si algún día agregamos herramientas de estadísticas, te pediremos permiso antes.</p>
+            <p>Sí guardamos algunas cosas en el almacenamiento de tu navegador, solo para que la página funcione. No salen de tu celular o computadora, salvo la sesión del panel, que se usa para entrar.</p>
+            <div class="legal__tabla" role="region" aria-label="Lo que se guarda en tu navegador" tabindex="0">
+              <table>
+                <thead>
+                  <tr><th scope="col">Nombre</th><th scope="col">Para qué</th><th scope="col">Cuánto dura</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row"><code>go503-tema</code></th><td>Recordar si escogiste modo claro u oscuro.</td><td>Hasta que lo borres.</td></tr>
+                  <tr><th scope="row"><code>go503-idioma</code></th><td>Recordar si escogiste español o inglés.</td><td>Hasta que lo borres.</td></tr>
+                  <tr><th scope="row"><code>go503-favoritas</code></th><td>Tus rutas favoritas en el mapa.</td><td>Hasta que lo borres.</td></tr>
+                  <tr><th scope="row"><code>go503-alertas-vistas</code></th><td>Las alertas del panel que ya viste.</td><td>Hasta que lo borres.</td></tr>
+                  <tr><th scope="row">Sesión de Supabase (<code>sb-…-auth-token</code>)</th><td>Mantenerte dentro del panel de empresas.</td><td>Hasta que cierres sesión.</td></tr>
+                  <tr><th scope="row">Datos de la app del motorista</th><td>El código de la unidad y los puntos GPS que no se pudieron mandar por falta de señal.</td><td>Hasta que toques «Cambiar de unidad». Los puntos, hasta que se manden.</td></tr>
+                  <tr><th scope="row">Copia para usar sin señal</th><td>Guardar páginas e imágenes para que abran rápido.</td><td>Hasta que se actualice la página o la borres.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Para borrarlos, entra a la configuración de tu navegador y borra los datos del sitio go503. Las imágenes del mapa y las librerías vienen de los proveedores de la sección 3.5. Según lo que revisamos, no instalan cookies; cada uno tiene su propia política.</p>
+          </section>
+
+          <section id="propiedad" aria-labelledby="h-propiedad">
+            <h2 id="h-propiedad">5. Propiedad intelectual</h2>
+            <p>El nombre go503, el logo, el diseño de la página, los textos, el código del sitio y del sensor son de <mark class="falta">[titular de los derechos]</mark>. No puedes copiarlos, venderlos ni usarlos para otro servicio sin permiso escrito. Puedes compartir enlaces y capturas del mapa para uso personal o para informar.</p>
+            <p>También usamos obras de otras personas, con sus licencias:</p>
+            <ul>
+              <li>Datos del mapa: © colaboradores de OpenStreetMap, licencia ODbL. Imágenes del mapa: © CARTO.</li>
+              <li>Leaflet, para mostrar el mapa (licencia BSD).</li>
+              <li>Letras Atkinson Hyperlegible y Big Shoulders Display (SIL Open Font License).</li>
+              <li>Librerías de Supabase y web-push, con sus licencias abiertas.</li>
+            </ul>
+            <p>Si crees que algo en go503 usa una obra tuya sin permiso, escríbenos con el enlace, la obra y por qué es tuya. Lo revisamos y, si corresponde, lo quitamos.</p>
+          </section>
+
+          <section id="venta" aria-labelledby="h-venta">
+            <h2 id="h-venta">6. Venta del sensor</h2>
+            <p>En este sitio no se cobra ni se paga nada. El formulario «Pedir el sensor» solo es para que te contactemos. La venta se cierra con una cotización por escrito que dice, como mínimo:</p>
+            <ul>
+              <li>El precio total con IVA, y si incluye instalación, el panel y por cuánto tiempo.</li>
+              <li>Quién paga el chip y el plan de datos celular de cada sensor.</li>
+              <li>La forma de pago y la fecha de instalación.</li>
+              <li>La garantía: qué cubre, cuánto dura y cómo se pide.</li>
+              <li>Qué pasa si cancelas antes de la instalación y cómo se devuelve el dinero.</li>
+            </ul>
+            <p>Al pagar te damos el comprobante que corresponda. Si un sensor llega con fallas de fábrica o no funciona como se ofreció, lo reparamos, lo cambiamos o te devolvemos el dinero, según la Ley de Protección al Consumidor. Ninguna cotización puede quitarte los derechos que esa ley te da.</p>
+          </section>
+
+          <section id="reclamos" aria-labelledby="h-reclamos">
+            <h2 id="h-reclamos">7. Reportar un problema</h2>
+            <p>Escríbenos si ves un error en el mapa, una falla de seguridad, contenido que viola derechos o cualquier uso indebido. Cuéntanos qué pasó, dónde y cuándo, y si puedes, manda una captura. Revisamos cada reporte de buena fe. Si encontraste una falla de seguridad, no la publiques mientras la arreglamos.</p>
+          </section>
+
+          <section id="contacto" aria-labelledby="h-contacto">
+            <h2 id="h-contacto">8. Reclamos y contacto</h2>
+            <p>Para cualquier queja, reclamo o pregunta sobre estos textos:</p>
+            <ul>
+              <li>Correo: <mark class="falta">[correo de contacto]</mark></li>
+              <li>WhatsApp: <mark class="falta">[número]</mark></li>
+              <li>Dirección: <mark class="falta">[dirección para notificaciones]</mark></li>
+            </ul>
+            <p>Te confirmamos que recibimos tu reclamo y te damos una respuesta en un plazo de <mark class="falta">[10 días hábiles]</mark>. Si no quedas conforme, puedes acudir a la <a href="https://www.defensoria.gob.sv/" rel="noopener">Defensoría del Consumidor</a>.</p>
+          </section>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot" data-reveal>
+    <div class="foot__inner wrap">
+    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
+    <span class="foot__road" aria-hidden="true">
+      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
+    </span>
+    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
+    <p>Hecho en El Salvador por gente que también espera el bus.</p>
+    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a><a href="/legal.html" aria-current="page">Legal y privacidad</a></nav>
+    </div>
+  </footer>
+
+  <script src="/js/sitio.js" defer></script>
+</body>
+</html>

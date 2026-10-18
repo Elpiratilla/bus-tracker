@@ -701,3 +701,8 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
   .rec { grid-template-columns: 1fr; }
   .rec__map { height: 60vh; min-height: 320px; }
 }
+
+/* Aceptación de términos al crear la cuenta: casilla grande, fácil de tocar */
+.acepto { display: flex; align-items: flex-start; gap: .65rem; font-size: .92rem; line-height: 1.45; cursor: pointer; }
+.acepto input { flex: none; width: 1.3rem; height: 1.3rem; margin: .1rem 0 0; accent-color: var(--anil); }
+.acepto a { color: inherit; font-weight: 700; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }

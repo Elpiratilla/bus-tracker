@@ -40,6 +40,10 @@ jobs:
             node --check "$f" || exit 1
           done
 
+      # Las pruebas de test/ (sin Supabase: todo en memoria)
+      - name: Pruebas
+        run: npm test
+
       # Arranca el servidor y prueba las mismas rutas que usa Render y el navegador
       - name: Prueba de humo del servidor
         env:

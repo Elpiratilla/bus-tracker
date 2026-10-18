@@ -48,9 +48,9 @@
     "semantic_hash": "4711d82ee98f639b53cae56f31fe3d41"
   },
   "public/js/idioma.js": {
-    "mtime": 1792339064.0677035,
-    "seen": 1792339226.5400388,
-    "ast_hash": "507dc884486b521312fcc39b20658cb0",
+    "mtime": 1792341984.2414699,
+    "seen": 1792342132.543988,
+    "ast_hash": "795dda79f5cd21cd4020887281f6f4aa",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -60,15 +60,15 @@
     "semantic_hash": ""
   },
   "public/js/mapa.js": {
-    "mtime": 1792336390.6892698,
-    "seen": 1792336730.738636,
-    "ast_hash": "d7287468a5a3e62fdd018cc5ab8f5ddb",
+    "mtime": 1792341906.2469702,
+    "seen": 1792342132.5440261,
+    "ast_hash": "37fe82f5174c03c38921d43bd21c5383",
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792339060.6002622,
-    "seen": 1792339226.540142,
-    "ast_hash": "a8a97f8c3ad4b2eefa8f024bb36c2eb1",
+    "mtime": 1792341984.239212,
+    "seen": 1792342132.544064,
+    "ast_hash": "74d08665667cb8f4658a957b399279c4",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {
@@ -102,9 +102,9 @@
     "semantic_hash": ""
   },
   "src/db.js": {
-    "mtime": 1792339014.8316784,
-    "seen": 1792339226.5403059,
-    "ast_hash": "3f29bca1cffe359cbbfdbe7ea4db9b50",
+    "mtime": 1792341849.6218028,
+    "seen": 1792342132.544232,
+    "ast_hash": "51b246c2490a7ff3af3aae0372e2881e",
     "semantic_hash": ""
   },
   "src/eta.js": {
@@ -144,9 +144,9 @@
     "semantic_hash": "636e652e717d405160ac4faa1e573c60"
   },
   "src/routes/empresa.js": {
-    "mtime": 1792339060.599525,
-    "seen": 1792339226.540531,
-    "ast_hash": "8fee7b954034d5c2a65feac5b36d36a9",
+    "mtime": 1792341867.6104472,
+    "seen": 1792342132.544501,
+    "ast_hash": "1edfd51b1121537d868172b22cc565c7",
     "semantic_hash": ""
   },
   "src/routes/routes.js": {
@@ -156,9 +156,9 @@
     "semantic_hash": ""
   },
   "src/routes/rutas.js": {
-    "mtime": 1792303835.3592122,
-    "seen": 1792304292.2024431,
-    "ast_hash": "97ae0a109680568d2a2bf1b78333b2eb",
+    "mtime": 1792341849.6227534,
+    "seen": 1792342132.5445719,
+    "ast_hash": "382ba68040bd6c284b3fdfaa3384a4c5",
     "semantic_hash": ""
   },
   "src/routes/telemetry.js": {
@@ -168,21 +168,21 @@
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1792339189.410931,
-    "seen": 1792339226.5406022,
-    "ast_hash": "616d52d158f507354d4236f8164efed9",
+    "mtime": 1792341877.7057877,
+    "seen": 1792342132.544608,
+    "ast_hash": "776b83d9f4ac69820cb4140b2e3d9699",
     "semantic_hash": ""
   },
   "src/store.js": {
-    "mtime": 1792303835.3599813,
-    "seen": 1792304292.202448,
-    "ast_hash": "8535aec55fa2fe650cb6c76c33f36b68",
-    "semantic_hash": "8535aec55fa2fe650cb6c76c33f36b68"
+    "mtime": 1792341849.6213217,
+    "seen": 1792342132.54461,
+    "ast_hash": "8e81f3b06ee5cbcdbe6fedd70c49822b",
+    "semantic_hash": ""
   },
   "src/tracking.js": {
-    "mtime": 1792339014.8303225,
-    "seen": 1792339226.5406349,
-    "ast_hash": "7a2057fad4155cba8e252d727b89f165",
+    "mtime": 1792341855.241752,
+    "seen": 1792342132.544611,
+    "ast_hash": "db707837abf624daf6f30965517ebc18",
     "semantic_hash": ""
   },
   "tools/admin.js": {
@@ -234,9 +234,9 @@
     "semantic_hash": ""
   },
   "public/panel.html": {
-    "mtime": 1792336601.2337184,
-    "seen": 1792336730.739964,
-    "ast_hash": "7c03d728602097a373f69700fbae20dd",
+    "mtime": 1792341984.2384093,
+    "seen": 1792342132.545176,
+    "ast_hash": "9e796dd8e5c8585d8adac56c7a1355aa",
     "semantic_hash": ""
   },
   "public/preguntas.html": {
@@ -603,6 +603,18 @@
     "mtime": 1792339091.1061523,
     "seen": 1792339226.540731,
     "ast_hash": "51c22b8b204f810a3d3588c87f7c5f3e",
+    "semantic_hash": ""
+  },
+  "src/trazos.js": {
+    "mtime": 1792342119.2512693,
+    "seen": 1792342132.5446131,
+    "ast_hash": "a8da79386917fbd687c49905543296fe",
+    "semantic_hash": ""
+  },
+  "test/trazos.test.js": {
+    "mtime": 1792342119.2516549,
+    "seen": 1792342132.544776,
+    "ast_hash": "fc09149f1acd1aae3db28ef014af8a83",
     "semantic_hash": ""
   }
 }

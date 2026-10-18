@@ -115,10 +115,11 @@ function renderDetalle() {
   // el aviso grande: para que el motorista lo vea de un vistazo, no solo en la etiqueta chiquita
   const p = $("perdido");
   const sinRed = !navigator.onLine;
+  const cola = leerCola().length ? " El recorrido se sigue guardando en el celular y se manda solo cuando vuelva." : "";
   p.hidden = !(gpsFalla || viejo || sinRed);
-  p.textContent = sinRed ? "El celular no tiene internet. La gente no ve el bus en el mapa hasta que vuelva la señal."
+  p.textContent = sinRed ? `El celular no tiene internet. La gente no ve el bus en el mapa hasta que vuelva la señal.${cola}`
     : gpsFalla ? "El GPS no responde. Revisa que la ubicación del celular esté prendida."
-    : viejo ? `Hace ${s} s que no se manda la ubicación. Revisa el internet del celular.` : "";
+    : viejo ? `Hace ${s} s que no se manda la ubicación. Revisa el internet del celular.${cola}` : "";
 }
 addEventListener("online", () => renderDetalle());
 addEventListener("offline", () => renderDetalle());
@@ -207,24 +208,76 @@ async function sendPosition() {
   if (!estado?.enServicio || !pos || Date.now() - lastSent < SEND_MS) return;
   lastSent = Date.now();
   const c = pos.coords;
+  const punto = {
+    lat: c.latitude, lng: c.longitude, ts: new Date(pos.timestamp).toISOString(),
+    ...(c.speed != null && { speed: Math.round(c.speed * 3.6) }),
+    ...(c.heading != null && !Number.isNaN(c.heading) && { heading: Math.round(c.heading) }),
+  };
+  if (!navigator.onLine) return guardar(punto); // sin internet ni se intenta: va directo a la cola
   try {
-    await call("/api/telemetry", {
-      lat: c.latitude, lng: c.longitude, ts: new Date(pos.timestamp).toISOString(),
-      ...(c.speed != null && { speed: Math.round(c.speed * 3.6) }),
-      ...(c.heading != null && !Number.isNaN(c.heading) && { heading: Math.round(c.heading) }),
-    });
-    lastOk = Date.now();
-    showMsg("");
-    // Un destello por cada ubicación enviada (marca un hecho real, no late sin parar)
-    $("gps").classList.remove("envio");
-    void $("gps").offsetWidth;
-    $("gps").classList.add("envio");
+    await call("/api/telemetry", punto);
+  } catch (err) {
+    if (!err.status) guardar(punto); // no llegó al servidor (sin señal): se manda después
+    return showMsg(err.message);
+  }
+  lastOk = Date.now();
+  ultimoEnviado = Date.parse(punto.ts);
+  showMsg("");
+  // Un destello por cada ubicación enviada (marca un hecho real, no late sin parar)
+  $("gps").classList.remove("envio");
+  void $("gps").offsetWidth;
+  $("gps").classList.add("envio");
+  try {
     // Trae la parada nueva si el bus llegó a una (próxima parada, paradas que ya pasó)
     estado = await api("estado");
     render();
-  } catch (err) {
-    showMsg(err.message);
-  }
+  } catch (err) { showMsg(err.message); }
+}
+
+// ---------- Cola sin señal ----------
+// Igual que el sensor (firmware/go503_sensor/cola.h): sin señal, las ubicaciones se guardan en el
+// celular con su hora y se mandan al volver el internet. El servidor las pone en el historial del
+// dueño (km, vueltas) sin mover el bus en el mapa. Una por minuto alcanza: el historial guarda
+// una por minuto. 240 = 4 horas sin señal; si se llena, se van las más viejas.
+const COLA_KEY = "go503-motorista-cola";
+const COLA_MAX = 240;
+const COLA_CADA_MS = 60 * 1000;
+let vaciando = false;
+let ultimoEnviado = 0; // hora del GPS de la última ubicación en vivo que llegó
+
+function leerCola() {
+  try {
+    const c = JSON.parse(localStorage.getItem(COLA_KEY));
+    return c?.busId === cred?.busId && Array.isArray(c.puntos) ? c.puntos : [];
+  } catch { return []; }
+}
+function escribirCola(puntos) {
+  try {
+    puntos.length ? localStorage.setItem(COLA_KEY, JSON.stringify({ busId: cred.busId, puntos }))
+      : localStorage.removeItem(COLA_KEY);
+  } catch {}
+}
+function guardar(punto) {
+  const puntos = leerCola();
+  const ultimo = puntos.at(-1);
+  if (ultimo && Date.parse(punto.ts) - Date.parse(ultimo.ts) < COLA_CADA_MS) return;
+  escribirCola([...puntos, punto].slice(-COLA_MAX));
+}
+
+// De 3 en 3 y en orden, como el sensor. Si el servidor rechaza uno (400), se bota y se sigue.
+// Primero tiene que llegar una ubicación en vivo: si llegara antes una vieja, el mapa pondría el
+// bus donde estaba hace media hora (el servidor solo trata como atrasadas las más viejas que la última).
+async function vaciarCola() {
+  if (vaciando || !cred || !navigator.onLine) return;
+  vaciando = true;
+  try {
+    for (let i = 0; i < 3; i++) {
+      const [punto] = leerCola();
+      if (!punto || Date.parse(punto.ts) >= ultimoEnviado) break;
+      try { await call("/api/telemetry", punto); } catch (err) { if (!err.status || err.status >= 500) break; }
+      escribirCola(leerCola().slice(1));
+    }
+  } finally { vaciando = false; }
 }
 
 // La pantalla no se apaga durante el trayecto (si se apaga, el navegador deja de mandar el GPS).
@@ -308,5 +361,5 @@ if (hash.get("u") && hash.get("k")) {
 }
 cred = load();
 if (cred) conectar(); else showEntrar();
-setInterval(() => { renderDetalle(); sendPosition(); }, 1000);
+setInterval(() => { renderDetalle(); sendPosition(); vaciarCola(); }, 1000);
 })();

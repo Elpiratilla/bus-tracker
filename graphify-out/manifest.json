@@ -204,10 +204,10 @@
     "semantic_hash": "b0db1dfce0437866cc84b353043c6cef"
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1792303835.352819,
-    "seen": 1792304292.202555,
-    "ast_hash": "6e129128b480e6aa5b5f26b2a0d35efb",
-    "semantic_hash": "6e129128b480e6aa5b5f26b2a0d35efb"
+    "mtime": 1792343030.2255626,
+    "seen": 1792343193.335544,
+    "ast_hash": "29f71880e5d9e8daf5a2d2834130ebc9",
+    "semantic_hash": ""
   },
   "firmware/README.md": {
     "mtime": 1792339043.7982466,
@@ -318,8 +318,8 @@
     "semantic_hash": ""
   },
   "app/android/app/capacitor.build.gradle": {
-    "mtime": 1792304262.4172492,
-    "seen": 1792304292.201557,
+    "mtime": 1792343185.882898,
+    "seen": 1792343193.333686,
     "ast_hash": "b02aa56af0dd39a729f2ecade85da150",
     "semantic_hash": ""
   },
@@ -348,8 +348,8 @@
     "semantic_hash": ""
   },
   "app/android/capacitor.settings.gradle": {
-    "mtime": 1792304262.4171221,
-    "seen": 1792304292.2015638,
+    "mtime": 1792343185.8827872,
+    "seen": 1792343193.333909,
     "ast_hash": "42b1f8735bfafda61d0031b261fcc3a5",
     "semantic_hash": ""
   },
@@ -390,9 +390,9 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792336528.8771744,
-    "seen": 1792336730.7386382,
-    "ast_hash": "8265c38e0c12c6ae73d1690294551f28",
+    "mtime": 1792343184.283422,
+    "seen": 1792343193.334482,
+    "ast_hash": "e84f4c21d83da03c81ad10b9af828ec2",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {

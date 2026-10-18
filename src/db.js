@@ -102,4 +102,12 @@ function saveBus(busId) {
     ...(unit && { odometer_km: unit.odometerKm, engine_hours: unit.engineHours }) }), `bus:${busId}`);
 }
 
-module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow };
+// El historial crece una fila por minuto por bus: sin borrar, llena el plan gratis de Supabase en semanas.
+// El panel lee como mucho 72 h (GET /unidades/:id/historial); se guardan 7 días.
+const HISTORIAL_DIAS = 7;
+function limpiarHistorial() {
+  const antes = new Date(Date.now() - HISTORIAL_DIAS * 86400000).toISOString();
+  persist("limpiar historial", (db) => db.from("telemetry").delete().lt("ts", antes));
+}
+
+module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow, limpiarHistorial };

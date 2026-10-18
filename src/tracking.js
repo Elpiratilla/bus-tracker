@@ -15,10 +15,11 @@ const DIRS = ["ida", "regreso"];
 const other = (dir) => (dir === "ida" ? "regreso" : "ida");
 const stopIndex = (route, dir, stopId) => route.directions[dir].findIndex((s) => s.id === stopId);
 
-// Hora del evento: la del sensor si es válida, si no la del servidor
+// Hora del evento: la del sensor si es válida, si no la del servidor.
+// Nunca en el futuro: un reloj adelantado dejaría al bus "en línea" para siempre.
 function toTime(ts) {
   const t = ts ? new Date(ts).getTime() : NaN;
-  return Number.isFinite(t) ? t : Date.now();
+  return Number.isFinite(t) ? Math.min(t, Date.now()) : Date.now();
 }
 
 function saveSegment(busId, route, dir, from, to, seconds, now) {
@@ -126,4 +127,4 @@ function endTrip(busId, route) {
   saveTrip(busId, route.id);
 }
 
-module.exports = { registerPass, handlePosition, startTrip, endTrip, toTime, STOP_RADIUS_M, DIRS };
+module.exports = { handlePosition, startTrip, endTrip, toTime };

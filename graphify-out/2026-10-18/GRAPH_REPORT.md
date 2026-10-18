@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-18)
 
 ## Corpus Check
-- 67 files · ~65,068 words
+- 67 files · ~67,279 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 25 file(s) not represented in the graph (top: .xml 10, .css 5, (none) 3)
+- Unclassified: 30 file(s) not represented in the graph (top: .xml 10, .css 6, .woff2 4)
 
 ## Summary
-- 614 nodes · 961 edges · 51 communities (37 shown, 14 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 59 edges (avg confidence: 0.84)
+- 627 nodes · 989 edges · 51 communities (37 shown, 14 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 64 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `03ca4f11`
+- Built from commit: `3ec80759`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,10 +59,10 @@
 - codigo.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `openDetalle()` - 11 edges
-2. `renderChips()` - 10 edges
-3. `loadUnidades()` - 10 edges
-4. `loadMantenimiento()` - 10 edges
+1. `loadUnidades()` - 12 edges
+2. `openDetalle()` - 11 edges
+3. `loadMantenimiento()` - 11 edges
+4. `renderChips()` - 10 edges
 5. `distanceM()` - 10 edges
 6. `render()` - 9 edges
 7. `render()` - 9 edges
@@ -71,15 +71,15 @@
 10. `loadFlota()` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Rediseño 2026-10-18: "rótulo y parada"` --references--> `cards()`  [INFERRED]
+  DESIGN.md → public/js/panel.js
+- `Rediseño 2026-10-18: "rótulo y parada"` --references--> `moreMenu()`  [INFERRED]
+  DESIGN.md → public/js/panel.js
 - `Render env vars (Supabase, VAPID, BUS_API_KEY)` --shares_data_with--> `BUS_API_KEY`  [INFERRED]
   render.yaml → firmware/README.md
 - `Rider live map (mapa.html)` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
   public/mapa.html → firmware/README.md
 - `Panel view: Flota en vivo` --shares_data_with--> `POST /api/telemetry`  [INFERRED]
-  public/panel.html → firmware/README.md
-- `Panel view: Mantenimiento` --shares_data_with--> `GPS odometer`  [INFERRED]
-  public/panel.html → firmware/README.md
-- `Panel view: Mantenimiento` --shares_data_with--> `OBD-II over CAN (SN65HVD230)`  [INFERRED]
   public/panel.html → firmware/README.md
 
 ## Import Cycles
@@ -94,15 +94,15 @@
 
 ### Community 0 - "Panel de administración"
 Cohesion: 0.06
-Nodes (66): ADMIN_VIEWS, alertas, button(), clientes, closeAlertas(), closeDetalle(), codigos, confirmar() (+58 more)
+Nodes (74): Rediseño 2026-10-18: "rótulo y parada", ADMIN_VIEWS, alertas, applyTheme(), button(), cards(), cerrarMenu(), clientes (+66 more)
 
 ### Community 1 - "tracking.js"
 Cohesion: 0.23
 Nodes (14): persist(), DIRS, endTrip(), handlePosition(), { nearestStop }, other(), { persist }, registerExit() (+6 more)
 
 ### Community 2 - "Mapa de pasajeros"
-Cohesion: 0.07
-Nodes (57): animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bellButton(), buscar, cargarAlertas() (+49 more)
+Cohesion: 0.06
+Nodes (61): ALTOS, animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bellButton(), buscar (+53 more)
 
 ### Community 3 - "Datos y autenticación"
 Cohesion: 0.06
@@ -169,8 +169,8 @@ Cohesion: 1.00
 Nodes (3): go503 Brand Palette (blue #1E4FBF, navy #0E1F3D, amber #F2B230), go503 Brand, go503 Logo (light variant)
 
 ### Community 24 - "Dirección de diseño de go503"
-Cohesion: 0.22
-Nodes (8): Diales, Dirección de diseño de go503, Identidad, Motivo de identidad, Paleta (en `public/css/base.css`), Rediseño 2026-10-18: "rótulo y parada", Reglas de contenido, Tipografía (cambió el 2026-10-18)
+Cohesion: 0.25
+Nodes (7): Diales, Dirección de diseño de go503, Identidad, Motivo de identidad, Paleta (en `public/css/base.css`), Reglas de contenido, Tipografía (cambió el 2026-10-18)
 
 ### Community 25 - "Registro antislop 001 (2026-10-14)"
 Cohesion: 0.22
@@ -197,8 +197,8 @@ Cohesion: 0.25
 Nodes (7): engines, node, name, private, version, dotenv, web-push
 
 ### Community 33 - "Detalle por página"
-Cohesion: 0.14
-Nodes (13): App del motorista — 6.0, Detalle por página, El sensor — 8.0, Entrar — 8.0, Mapa — 7.0, Nota general: **7.1 / 10**, Notas después del rediseño, Panel de empresas — 6.5 (+5 more)
+Cohesion: 0.13
+Nodes (14): App del motorista — 6.0, Detalle por página, El sensor — 8.0, Entrar — 8.0, Mapa — 7.0, Nota general: **7.1 / 10**, Notas después del rediseño, Panel de empresas — 6.5 (+6 more)
 
 ### Community 34 - "copiar-web.js"
 Cohesion: 0.25
@@ -242,23 +242,23 @@ Nodes (3): @supabase/supabase-js, { createClient }, crypto
 
 ## Knowledge Gaps
 - **22 isolated node(s):** `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core`, `@capacitor/cli`, `dotenv` (+17 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 290 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 293 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `@supabase/supabase-js` connect `codigo.js` to `package.json`, `Datos y autenticación`, `admin.js`?**
-  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
 - **What connects `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core` to the rest of the system?**
   _22 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Panel de administración` be split into smaller, more focused modules?**
-  _Cohesion score 0.06151062867480778 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.05621621621621622 - nodes in this community are weakly interconnected._
 - **Why does `express` connect `server.js` to `package.json`, `auth.js`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
-  _Cohesion score 0.06654567453115548 - nodes in this community are weakly interconnected._
-- **Why does `scripts` connect `scripts` to `package.json`?**
+  _Cohesion score 0.061343204653622425 - nodes in this community are weakly interconnected._
+- **Why does `confirmar()` connect `Panel de administración` to `js/motorista.js`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **Should `Datos y autenticación` be split into smaller, more focused modules?**
   _Cohesion score 0.061979648473635525 - nodes in this community are weakly interconnected._

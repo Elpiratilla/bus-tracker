@@ -10,6 +10,8 @@ const LOG_EVERY_MS = 60 * 1000;      // historial de mantenimiento: un registro 
 const MAX_GAP_MS = 5 * 60 * 1000;    // más de 5 min sin señal: no se suman km ni horas de ese hueco
 const MAX_SPEED_KMH = 150;           // saltos más rápidos que esto son errores del GPS
 const lastLog = {};
+// Lo que manda el firmware (go503_sensor.ino) y la app del motorista; lo demás se ignora
+const CAMPOS = ["speed", "heading", "fuel", "engineTemp", "rpm", "dtc", "ignition", "odometerKm", "obdSpeed", "hardBrakes"];
 
 const validCoord = (lat, lng) =>
   typeof lat === "number" && typeof lng === "number" &&
@@ -21,7 +23,8 @@ function updateCounters(unit, prev, lat, lng, now, data) {
   const okGap = dt > 0 && dt < MAX_GAP_MS;
 
   if (typeof data.odometerKm === "number") unit.odometerKm = data.odometerKm; // del motor (OBD)
-  else if (okGap && prev.lat != null && lat != null) {
+  // Sin okGap: después de una zona sin señal se suma la recta entre los dos puntos (mejor que perderlo)
+  else if (dt > 0 && prev.lat != null && lat != null) {
     const km = distanceM(prev, { lat, lng }) / 1000;
     if (km / (dt / 3600000) < MAX_SPEED_KMH) unit.odometerKm += km;
   }
@@ -38,11 +41,19 @@ router.post("/", auth, (req, res) => {
   if (retired.has(busId)) return res.status(410).json({ error: "Esta unidad fue eliminada del panel" });
 
   const unit = units[busId];
-  const { routeId: sentRoute, ...data } = rest;
-  const routeId = sentRoute || unit?.routeId; // si el sensor no la manda, la que asignó la empresa
+  const data = Object.fromEntries(CAMPOS.filter((k) => rest[k] !== undefined).map((k) => [k, rest[k]]));
+  const routeId = rest.routeId || unit?.routeId; // si el sensor no la manda, la que asignó la empresa
   const now = toTime(ts);
   const prev = buses[busId];
   let position = null;
+
+  // Mensaje atrasado (guardado sin señal y mandado después): solo va al historial.
+  // Si moviera el bus, el mapa lo mostraría donde estaba hace media hora.
+  if (prev?.updatedAt && now < prev.updatedAt) {
+    if (lat !== undefined && !validCoord(lat, lng)) return res.status(400).json({ error: "lat/lng inválidos" });
+    res.status(201).json({ ok: true, atrasado: true });
+    return logHistory(busId, now, lat !== undefined ? lat : null, lat !== undefined ? lng : null, data);
+  }
 
   if (lat !== undefined || lng !== undefined) {
     if (!validCoord(lat, lng)) return res.status(400).json({ error: "lat/lng inválidos" });
@@ -69,12 +80,16 @@ router.post("/", auth, (req, res) => {
 
   // Guardar en Supabase: estado en vivo siempre, historial una vez por minuto
   saveBus(busId);
-  if (!(now - lastLog[busId] < LOG_EVERY_MS)) {
-    lastLog[busId] = now;
-    persist("historial", (db) => db.from("telemetry").insert({ bus_id: busId, ts: new Date(now).toISOString(),
-      lat: position ? lat : null, lng: position ? lng : null, data }));
-  }
+  logHistory(busId, now, position ? lat : null, position ? lng : null, data);
 });
+
+// Historial: un registro por minuto por bus. abs(): los mensajes atrasados (más viejos que el
+// último guardado) también entran, así no queda un hueco donde no hubo señal.
+function logHistory(busId, now, lat, lng, data) {
+  if (Math.abs(now - lastLog[busId]) < LOG_EVERY_MS) return;
+  lastLog[busId] = now;
+  persist("historial", (db) => db.from("telemetry").insert({ bus_id: busId, ts: new Date(now).toISOString(), lat, lng, data }));
+}
 
 // Posiciones públicas (sin datos del motor ni de la empresa). demo: bus del simulador, no una unidad registrada
 // No salen los buses guardados: el motorista tocó "Terminar trayecto" o el motor lleva rato apagado (src/enMapa.js)

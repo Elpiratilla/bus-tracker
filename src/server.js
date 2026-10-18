@@ -17,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
 
-app.use("/api/checkpoints", require("./routes/checkpoints"));
 app.use("/api/telemetry", require("./routes/telemetry"));
 app.use("/api/buses", require("./routes/telemetry"));
 app.use("/api/routes", require("./routes/routes"));
@@ -42,9 +41,12 @@ app.use((err, _req, res, _next) => {
 const PORT = process.env.PORT || 3000;
 
 // Primero carga lo guardado en Supabase; si falla, no arranca vacío (pisaría los datos guardados)
-require("./db").loadState()
+const { loadState, limpiarHistorial } = require("./db");
+loadState()
   .then(() => {
     require("./alerts").startAlerts();
+    limpiarHistorial();
+    setInterval(limpiarHistorial, 60 * 60 * 1000);
     app.listen(PORT, () => console.log(`API lista en http://localhost:${PORT}`));
   })
   .catch((err) => {

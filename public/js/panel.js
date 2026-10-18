@@ -548,7 +548,8 @@ $("#c-ok").addEventListener("click", async () => {
 const ESTADO_ACEITE = {
   "vencido": { icon: "i-stop", orden: 0 },
   "pronto": { icon: "i-warn", orden: 1 },
-  "al-dia": { icon: "i-ok", orden: 2 },
+  "sin-registro": { icon: "i-warn", orden: 2 },
+  "al-dia": { icon: "i-ok", orden: 3 },
 };
 
 async function loadMantenimiento() {
@@ -562,7 +563,7 @@ async function loadMantenimiento() {
       button("Registrar unidad", "btn--anil", () => openUnidad()));
     return root.replaceChildren(empty);
   }
-  list.sort((a, b) => ESTADO_ACEITE[a.estadoAceite].orden - ESTADO_ACEITE[b.estadoAceite].orden || b.kmDesdeAceite - a.kmDesdeAceite);
+  list.sort((a, b) => ESTADO_ACEITE[a.estadoAceite].orden - ESTADO_ACEITE[b.estadoAceite].orden || (b.kmDesdeAceite ?? 0) - (a.kmDesdeAceite ?? 0));
 
   const table = el("table", "table");
   const head = el("tr");
@@ -579,9 +580,10 @@ async function loadMantenimiento() {
     km.append(`${fmt(m.odometroKm, m.odometroKm < 100 ? 1 : 0)} km`, el("small", null, `${fmt(m.horasMotor, 1)} h de motor`));
 
     // Aceite: barra + ícono + texto (el estado nunca va solo en color)
-    const pct = Math.min(100, (m.kmDesdeAceite / m.intervaloAceiteKm) * 100);
+    const pct = Math.min(100, ((m.kmDesdeAceite ?? 0) / m.intervaloAceiteKm) * 100);
     const falta = m.intervaloAceiteKm - m.kmDesdeAceite;
-    const texto = m.estadoAceite === "vencido" ? `Vencido por ${fmt(-falta)} km` : m.estadoAceite === "pronto" ? `Pronto: faltan ${fmt(falta)} km` : `Al día: faltan ${fmt(falta)} km`;
+    const texto = m.estadoAceite === "sin-registro" ? "Registra el último cambio de aceite"
+      : m.estadoAceite === "vencido" ? `Vencido por ${fmt(-falta)} km` : m.estadoAceite === "pronto" ? `Pronto: faltan ${fmt(falta)} km` : `Al día: faltan ${fmt(falta)} km`;
     const oil = el("div", `oil oil--${m.estadoAceite}`);
     const bar = el("div", "oil__bar");
     const fill = el("span");
@@ -617,7 +619,7 @@ async function loadMantenimiento() {
 }
 
 function updateBadge(list) {
-  const n = list.filter((m) => m.estadoAceite !== "al-dia").length;
+  const n = list.filter((m) => m.estadoAceite === "vencido" || m.estadoAceite === "pronto").length;
   const badge = $("#badge-mant");
   badge.hidden = !n;
   badge.textContent = n;

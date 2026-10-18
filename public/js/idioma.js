@@ -518,6 +518,7 @@
     "Vencido por {n} km": "Overdue by {n} km",
     "Pronto: faltan {n} km": "Soon: {n} km left",
     "Al día: faltan {n} km": "Up to date: {n} km left",
+    "Registra el último cambio de aceite": "Log the last oil change",
     "Cada {n} km": "Every {n} km",
     "Registrar servicio": "Log service",
     "Registrar servicio de {x}": "Log service for {x}",

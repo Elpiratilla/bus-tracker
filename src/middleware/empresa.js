@@ -60,6 +60,8 @@ function rateLimit(max, windowMs) {
   const hits = new Map();
   return (req, res, next) => {
     const now = Date.now();
+    // Las IPs que ya vencieron se olvidan, si no el Map crece con cada visitante hasta reiniciar
+    if (hits.size > 10000) for (const [ip, e] of hits) if (e.reset <= now) hits.delete(ip);
     const h = hits.get(req.ip);
     const entry = h && h.reset > now ? h : { n: 0, reset: now + windowMs };
     entry.n += 1;

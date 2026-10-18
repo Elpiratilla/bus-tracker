@@ -9,11 +9,10 @@
   "28": "js/motorista.js",
   "29": "ExampleInstrumentedTest.java",
   "30": "MainActivity.java",
-  "31": "rutas.js",
+  "31": "db.js",
   "32": "package.json",
   "33": "Detalle por página",
-  "34": "copiar-web.js",
-  "35": "scripts",
+  "34": "recorrido.test.js",
   "36": "server.js",
   "37": "gradlew",
   "38": "app/build.gradle",
@@ -22,11 +21,6 @@
   "41": "capacitor.settings.gradle",
   "42": "settings.gradle",
   "43": "variables.gradle",
-  "44": "store.js",
-  "45": "dependencies",
   "46": "telemetry.js",
-  "47": "distanceM",
-  "48": "CI workflow (GitHub Actions)",
-  "49": "routes/motorista.js",
-  "50": "codigo.js"
+  "49": "routes/motorista.js"
 }

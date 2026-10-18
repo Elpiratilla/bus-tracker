@@ -16,7 +16,8 @@ Otras cosas que hace:
 - **Sin fix de GPS no manda posición**, porque el servidor rechaza `0,0`. Los datos del motor sí se mandan.
 - Una velocidad menor a 3 km/h se manda como `0`, y con el bus parado no se manda `heading`.
 - **Cola sin señal**: en un túnel o en una zona sin cobertura, los mensajes se guardan en la
-  flash del ESP32 (LittleFS) con su hora del GPS (`ts`). Al volver la señal se mandan en orden.
+  flash del ESP32 (LittleFS) con su hora del GPS (`ts`). Al volver la señal se mandan en orden,
+  de 3 en 3; mientras tanto la posición nueva va directo, así el mapa no muestra al bus atrasado.
   Como están en la flash, no se pierden aunque se apague el bus. Caben unos 300 KB, como 3 horas de
   recorrido. Si se llena, se descarta la mitad más vieja.
 - **Reconexión automática**: revisa la red cada 15 a 60 s. Si pasa 10 minutos sin red, reinicia el módulo 4G.

@@ -307,13 +307,14 @@ router.get("/mantenimiento", requireCompany, async (req, res, next) => {
     res.json(list.map((u) => {
       const mine = services.filter((s) => s.bus_id === u.busId);
       const oil = mine.find((s) => s.kind === "aceite");
-      const desde = u.odometerKm - (oil ? oil.odometer_km : 0);
+      // Sin cambio registrado no se sabe: restar contra 0 daba "vencido por 145,000 km" a un bus recién registrado
+      const desde = oil ? u.odometerKm - oil.odometer_km : null;
       const live = buses[u.busId] || {};
       return {
         id: u.busId, nombre: u.name, placa: u.plate,
         odometroKm: round1(u.odometerKm), horasMotor: round1(u.engineHours),
-        intervaloAceiteKm: u.oilIntervalKm, kmDesdeAceite: round1(desde),
-        estadoAceite: desde >= u.oilIntervalKm ? "vencido" : desde >= u.oilIntervalKm * 0.9 ? "pronto" : "al-dia",
+        intervaloAceiteKm: u.oilIntervalKm, kmDesdeAceite: desde == null ? null : round1(desde),
+        estadoAceite: desde == null ? "sin-registro" : desde >= u.oilIntervalKm ? "vencido" : desde >= u.oilIntervalKm * 0.9 ? "pronto" : "al-dia",
         temperatura: live.engineTemp ?? null, combustible: live.fuel ?? null,
         enLinea: Boolean(live.updatedAt && Date.now() - live.updatedAt < ONLINE_MS),
         fallas: Array.isArray(live.dtc) ? live.dtc.slice(0, 10) : [],
@@ -363,7 +364,7 @@ router.get("/alertas", requireCompany, async (req, res, next) => {
       if (Array.isArray(live.dtc) && live.dtc.length) add(u, "falla", "grave", `Falla del motor: ${live.dtc.slice(0, 3).join(", ")}`, live.updatedAt);
 
       const oil = oils.find((s) => s.bus_id === u.busId);
-      const desde = u.odometerKm - (oil ? oil.odometer_km : 0);
+      const desde = oil ? u.odometerKm - oil.odometer_km : -Infinity; // sin cambio registrado: no hay alerta
       if (desde >= u.oilIntervalKm) add(u, "aceite", "grave", `Cambio de aceite vencido por ${Math.round(desde - u.oilIntervalKm)} km`, null);
       else if (desde >= u.oilIntervalKm * 0.9) add(u, "aceite", "aviso", `Cambio de aceite en ${Math.round(u.oilIntervalKm - desde)} km`, null);
     }

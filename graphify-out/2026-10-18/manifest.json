@@ -48,27 +48,27 @@
     "semantic_hash": "4711d82ee98f639b53cae56f31fe3d41"
   },
   "public/js/idioma.js": {
-    "mtime": 1792308364.047863,
-    "seen": 1792308765.843523,
-    "ast_hash": "a9a1c117bc593540ecb34cd77a42699e",
+    "mtime": 1792336572.5293305,
+    "seen": 1792336730.738633,
+    "ast_hash": "d23f8af48144cf51bd8584f5dfe94d20",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
-    "mtime": 1792039650.623386,
-    "seen": 1792039908.348209,
-    "ast_hash": "78c8ca1d5f127df3340ac47690db5a85",
+    "mtime": 1792336455.967279,
+    "seen": 1792336730.738635,
+    "ast_hash": "8c01c50ab3919f7023049d9b8d826636",
     "semantic_hash": ""
   },
   "public/js/mapa.js": {
-    "mtime": 1792308527.597244,
-    "seen": 1792308765.843564,
-    "ast_hash": "82b47373f544e7a77ffc3575e45f00a6",
+    "mtime": 1792336390.6892698,
+    "seen": 1792336730.738636,
+    "ast_hash": "d7287468a5a3e62fdd018cc5ab8f5ddb",
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792308546.9333563,
-    "seen": 1792308765.843603,
-    "ast_hash": "efb30ecca7dd7bb0045f48478256688c",
+    "mtime": 1792336322.0737507,
+    "seen": 1792336730.738639,
+    "ast_hash": "271a93842d562401d7460250b2d4c720",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {
@@ -84,9 +84,9 @@
     "semantic_hash": "a5ad04af0e56a208cba2d8b39758bb25"
   },
   "public/js/sitio.js": {
-    "mtime": 1792308223.4902067,
-    "seen": 1792308765.8436842,
-    "ast_hash": "9b14d51d3c190ca6a71beb6de9d70fac",
+    "mtime": 1792336697.87316,
+    "seen": 1792336730.7387369,
+    "ast_hash": "f3a5510ff9a731cc848334b1b8d39ff4",
     "semantic_hash": ""
   },
   "public/sw.js": {
@@ -222,39 +222,39 @@
     "semantic_hash": "1d3e2cc801b46c4685fe1da78b75551e"
   },
   "public/index.html": {
-    "mtime": 1792308411.8080268,
-    "seen": 1792308765.8446898,
-    "ast_hash": "e8d97abdf02996d50514a2fb9f3d21fd",
+    "mtime": 1792336601.232328,
+    "seen": 1792336730.739958,
+    "ast_hash": "560ecb29c74a83e716522bead8dbc468",
     "semantic_hash": ""
   },
   "public/login.html": {
-    "mtime": 1792308188.1003044,
-    "seen": 1792308765.844692,
-    "ast_hash": "14f579ae10e6c118ba2378db4fddea16",
+    "mtime": 1792336601.2329445,
+    "seen": 1792336730.73996,
+    "ast_hash": "909bbbfd470993eea6f2315d9caf86eb",
     "semantic_hash": ""
   },
   "public/mapa.html": {
-    "mtime": 1792308188.1011586,
-    "seen": 1792308765.844693,
-    "ast_hash": "4237e646d5d3f5f8d1f19605d17de0d3",
+    "mtime": 1792336601.2325752,
+    "seen": 1792336730.7399611,
+    "ast_hash": "9f8c85a87622f8ec0c54b3313ddf1949",
     "semantic_hash": ""
   },
   "public/panel.html": {
-    "mtime": 1792308594.2894487,
-    "seen": 1792308765.844696,
-    "ast_hash": "21aee1ad1dba54e52f8bb433853652df",
+    "mtime": 1792336601.2337184,
+    "seen": 1792336730.739964,
+    "ast_hash": "7c03d728602097a373f69700fbae20dd",
     "semantic_hash": ""
   },
   "public/preguntas.html": {
-    "mtime": 1792308216.5453064,
-    "seen": 1792308765.8446982,
-    "ast_hash": "e1a18f5f4f589c85da7981dc539c4dce",
+    "mtime": 1792336601.2333088,
+    "seen": 1792336730.739965,
+    "ast_hash": "ac35f21028a80ef2c4b4b7ce54f21ac2",
     "semantic_hash": ""
   },
   "public/sensor.html": {
-    "mtime": 1792308216.544958,
-    "seen": 1792308765.844699,
-    "ast_hash": "64999fc0d03b908116f78b838bc84fcb",
+    "mtime": 1792336601.2342107,
+    "seen": 1792336730.7399669,
+    "ast_hash": "b987a7bf1bd551b17e088ebcc4bc2583",
     "semantic_hash": ""
   },
   "render.yaml": {
@@ -300,9 +300,9 @@
     "semantic_hash": "659ae002f3f00efdb5ca668fd9803dff"
   },
   "DESIGN.md": {
-    "mtime": 1792308758.4768195,
-    "seen": 1792308765.844618,
-    "ast_hash": "cb76ad14be1d92d5d871d36699102ace",
+    "mtime": 1792336725.7358737,
+    "seen": 1792336730.739887,
+    "ast_hash": "ead4d09b16d6a31c51f9f7fc04c39f2c",
     "semantic_hash": ""
   },
   "anti-slop/registro-001-2026-10-14.md": {
@@ -384,9 +384,9 @@
     "semantic_hash": ""
   },
   "app/copiar-web.js": {
-    "mtime": 1792304202.6957574,
-    "seen": 1792304292.20157,
-    "ast_hash": "2d8517aa949b9a42ba8f62929c16f2f7",
+    "mtime": 1792336601.2345316,
+    "seen": 1792336730.738316,
+    "ast_hash": "06941d5dd8f61fea671a37edd50b0b9f",
     "semantic_hash": ""
   },
   "app/package.json": {
@@ -396,9 +396,9 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792305211.7003791,
-    "seen": 1792305239.7568488,
-    "ast_hash": "a4e2cd41214332728d701ad79bed3dd3",
+    "mtime": 1792336528.8771744,
+    "seen": 1792336730.7386382,
+    "ast_hash": "8265c38e0c12c6ae73d1690294551f28",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
@@ -414,9 +414,9 @@
     "semantic_hash": ""
   },
   "public/motorista.html": {
-    "mtime": 1792308188.1022081,
-    "seen": 1792308765.844695,
-    "ast_hash": "3c28a8ae088e376dea84fc3dbf360bf1",
+    "mtime": 1792336601.2338912,
+    "seen": 1792336730.739962,
+    "ast_hash": "a6f56594d0b73d46408589a898685cf0",
     "semantic_hash": ""
   },
   "app/android/app/src/main/res/drawable-land-hdpi/splash.png": {
@@ -594,9 +594,9 @@
     "semantic_hash": ""
   },
   "REPORTE-FRONTEND.md": {
-    "mtime": 1792308754.3906388,
-    "seen": 1792308765.84462,
-    "ast_hash": "0ad3682595dfa1e54ba2ad640d2ecbd4",
+    "mtime": 1792336725.7352524,
+    "seen": 1792336730.7398882,
+    "ast_hash": "558f362c37cf72fe1562110529039bbd",
     "semantic_hash": ""
   }
 }

@@ -126,8 +126,9 @@ String armarMensaje(const LecturaGps* g, bool conMotor) {
 // ---------- Mandar o guardar ----------
 void despachar(const String& json) {
   Serial.printf("[MSG] %s\n", json.c_str());
-  // Si ya hay cola, el mensaje nuevo va al final para respetar el orden
-  if (colaPendiente() || enviarJson(json) == ENVIO_ERROR) agregarACola(json);
+  // El nuevo va directo aunque haya cola: así el mapa muestra dónde está el bus AHORA.
+  // La cola se manda aparte (enviarCola) y el servidor la guarda solo en el historial.
+  if (enviarJson(json) == ENVIO_ERROR) agregarACola(json);
 }
 
 // ¿Cada cuánto mandar estando detenido? Poco tiempo = semáforo o parada; mucho = estacionado

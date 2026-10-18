@@ -22,18 +22,31 @@
 | Maíz | `#F2B22E` | El acento: la unidad, lo próximo, el botón de pedir. Solo en el momento clave. |
 | Torogoz | `#0FA39C` | En línea y tramo recorrido. |
 | Alerta | `#D9434E` | Fallas y vencidos. Nada más. |
-| Papel | `#F3F5FB` | Fondo claro. |
+| Papel | `#F5F2EA` | Fondo claro: pared encalada, cálido. `--papel-2` (`#EDE8DB`) para bandas y pestañas. |
 
 Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa); el torogoz es el ave nacional.
 
-## Tipografía
+## Tipografía (cambió el 2026-10-18)
 
-- **Young Serif** para títulos y números grandes: recuerda los rótulos pintados a mano de los buses.
-- **Figtree** para el texto: se lee bien en pantallas pequeñas y con sol.
+- **Big Shoulders Display** (solo grosor 800) para títulos, números de ruta y minutos: condensada como los letreros de destino del bus. Títulos grandes en MAYÚSCULAS.
+- **Atkinson Hyperlegible Next** para el texto: hecha para leerse con poca vista; sirve con sol en la parada.
+- **Atkinson Hyperlegible Mono** para códigos, claves y datos en tablas.
+- En CSS: `--display`, `--sans`, `--mono` (`--serif` quedó como nombre viejo de `--display`).
+
+## Rediseño 2026-10-18: "rótulo y parada"
+
+Pedido por Mateo con libertad creativa (reporte en `REPORTE-FRONTEND.md`).
+
+- **Superficies planas con borde**: tarjetas importantes con borde de 2 px (`--line-fuerte`) y sombra dura de color (`8px 8px 0` maíz o torogoz), nunca sombras difusas.
+- **Botones-placa**: esquinas de 6 px y un borde de abajo (`--edge`) que desaparece al tocar: el botón se hunde como el timbre de bajada.
+- **Letreros de noche**: el tablero, el lado del login, el panel lateral y el motorista usan fondo noche con puntos de luz (radial-gradient de 7 px), como letrero de destino.
+- **La franja** (`.franja`): maíz grueso + torogoz fino, como la pintada en los buses. Separa la portada, abre "¿Tienes buses?" y va en la orilla del login y arriba del motorista.
+- **Etiqueta** (`.kicker`): mayúsculas pequeñas con un pedacito de franja, encima de los títulos de sección.
+- **Mínimo 44 px** para todo lo que se toca.
 
 ## Motivo de identidad
 
-- El **rótulo de ruta** (`.fascia`): número en maíz sobre añil con filete amarillo, como el que va pintado en el bus.
+- El **rótulo de ruta** (`.fascia`): número en maíz sobre noche con filete amarillo, como el que va pintado en el bus.
 - La **línea de paradas**: un recorrido con puntos, el bus avanzando. Se repite en el tablero, en "Así sabemos dónde va tu bus" y en el pie de página.
 
 ## Diales

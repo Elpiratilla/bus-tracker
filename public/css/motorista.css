@@ -7,24 +7,29 @@
   --suave: #A9B2D0;
   --borde: rgba(243, 245, 251, .14);
   min-height: 100dvh;
-  background: var(--noche);
+  /* puntos de luz de letrero de destino, y la franja de los buses arriba */
+  background:
+    linear-gradient(var(--maiz) 0 6px, transparent 6px 7px, var(--torogoz) 7px 10px, transparent 10px) top / 100% 10px no-repeat,
+    radial-gradient(circle, rgba(255, 255, 255, .045) 1px, transparent 1.3px) 0 0 / 7px 7px,
+    var(--noche);
   color: var(--texto);
   color-scheme: dark;
 }
 
-.app { width: min(520px, 100% - 2rem); margin-inline: auto; padding: 1rem 0 2.5rem; }
+.app { width: min(520px, 100% - 2rem); margin-inline: auto; padding: 1.8rem 0 2.5rem; }
+@media (min-width: 700px) { .app { padding-top: clamp(2rem, 8vh, 5rem); } }
 .suave { color: var(--suave); }
 
 /* ---------- Arriba: rótulo de la ruta y el GPS ---------- */
 .top { display: flex; align-items: center; gap: .8rem; padding: .3rem 0 1.4rem; }
-.top .fascia { min-width: 3.6rem; height: 2.9rem; font-size: 1.5rem; }
+.top .fascia { min-width: 3.8rem; height: 3.1rem; font-size: 2rem; }
 .top__nombre { flex: 1; min-width: 0; }
-.top__nombre h1 { font-size: 1.45rem; overflow-wrap: anywhere; }
+.top__nombre h1 { font-size: 2rem; text-transform: uppercase; overflow-wrap: anywhere; }
 .top__nombre small { display: block; color: var(--suave); font: 500 .9rem/1.3 var(--sans); }
 
 /* Estado del GPS: verde si manda (destella con cada envío), ámbar si busca, rojo si falla */
 .gps { display: inline-flex; align-items: center; gap: .45rem; flex: none; padding: .35rem .7rem;
-  border: 1px solid var(--borde); border-radius: 999px; color: var(--suave); font: 600 .85rem/1 var(--sans); }
+  min-height: 2.5rem; border: 1px solid var(--borde); border-radius: var(--r-sm); color: var(--suave); font: 600 .85rem/1 var(--sans); }
 .gps::before { content: ""; width: .6rem; height: .6rem; border-radius: 50%; background: var(--suave); }
 .gps[data-estado="ok"] { color: var(--texto); }
 .gps[data-estado="ok"]::before { background: var(--torogoz); }
@@ -40,7 +45,7 @@
 .msg--ok { background: rgba(15, 163, 156, .16); color: #9BE7E1; }
 .msg--info { background: var(--panel); color: var(--texto); }
 
-h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
+h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase; }
 
 /* ---------- Fuera de servicio: cada sentido es un rótulo que se toca ---------- */
 .rotulos { display: grid; gap: .8rem; }
@@ -54,23 +59,24 @@ h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
   background: var(--panel);
   border: 2px solid transparent;
   border-radius: var(--r-md);
+  box-shadow: 0 4px 0 #070A22;
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
   transition: border-color .15s, transform .08s;
 }
-.rotulo:hover { border-color: var(--suave); }
-.rotulo:active { transform: scale(.985); }
+.rotulo:hover { border-color: var(--maiz); }
+.rotulo:active { transform: translateY(4px); box-shadow: none; }
 .rotulo .fascia { grid-row: span 2; }
-.rotulo b { font: 400 1.65rem/1.1 var(--serif); }
+.rotulo b { font: 800 2.1rem/1 var(--display); text-transform: uppercase; }
 .rotulo small { color: var(--suave); font-size: .95rem; }
 .rotulo[disabled], .btn[disabled] { opacity: .5; cursor: progress; }
 
 /* ---------- En trayecto ---------- */
 .proxima { margin-bottom: 1.4rem; }
-.proxima small { color: var(--suave); font-weight: 600; }
-.proxima p { margin-top: .15rem; color: var(--maiz); font: 400 clamp(2.3rem, 11vw, 3.2rem)/1.05 var(--serif); overflow-wrap: anywhere; }
+.proxima small { color: var(--suave); font-weight: 700; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+.proxima p { margin-top: .2rem; color: var(--maiz); font: 800 clamp(3rem, 14vw, 4.4rem)/.92 var(--display); text-transform: uppercase; text-shadow: 0 0 22px rgba(242, 178, 46, .3); overflow-wrap: anywhere; }
 
 /* Línea de paradas: verde lo recorrido, maíz la próxima */
 .linea { list-style: none; margin: 0 0 1.6rem; padding: 0; }
@@ -90,9 +96,9 @@ h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
 .acciones { display: grid; gap: .7rem; }
 .grande { flex-direction: column; gap: .2rem; min-height: 4.4rem; border-radius: var(--r-md); font-size: 1.2rem; }
 .grande small { font-size: .9rem; font-weight: 500; opacity: .85; }
-.btn--vuelta { background: none; border-color: var(--borde); color: var(--texto); }
+.btn--vuelta { --edge: #070A22; background: var(--panel); border-color: var(--borde); color: var(--texto); }
 .btn--vuelta:hover { border-color: var(--suave); }
-.btn--terminar { background: none; border-color: rgba(217, 67, 78, .6); color: #FFB3B9; }
+.btn--terminar { --edge: #070A22; background: none; border-color: rgba(217, 67, 78, .6); color: #FFB3B9; }
 /* Segundo toque: ya en rojo lleno, para no terminar sin querer */
 .btn--terminar[data-confirmar] { background: var(--alerta); border-color: var(--alerta); color: #fff; }
 
@@ -100,14 +106,14 @@ h2.pregunta { margin-bottom: .9rem; font-size: 1.5rem; }
 
 /* ---------- Entrar ---------- */
 .field { display: grid; gap: .4rem; margin-bottom: 1rem; }
-.field label { font-weight: 600; }
+.field label { font-weight: 700; }
 .input { width: 100%; min-height: 3.2rem; padding: .7rem .9rem; background: var(--panel); border: 2px solid var(--borde);
   border-radius: var(--r-sm); color: var(--texto); font: 500 1.05rem/1.3 var(--sans); }
 .input::placeholder { color: var(--suave); opacity: .7; }
 .input:focus { outline: none; border-color: var(--maiz); }
 
 .pie { margin-top: 2.2rem; padding-top: 1rem; border-top: 1px solid var(--borde); }
-.btn--quieto { min-height: 2.6rem; padding: .5rem 1rem; background: none; border-color: var(--borde); color: var(--suave); font-size: .9rem; }
+.btn--quieto { min-height: 2.75rem; padding: .5rem 1rem; box-shadow: none; background: none; border-color: var(--borde); color: var(--suave); font-size: .9rem; }
 
 :focus-visible { outline-color: var(--maiz); }
 

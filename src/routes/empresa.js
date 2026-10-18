@@ -220,11 +220,13 @@ router.post("/unidades", requireCompany, async (req, res, next) => {
     if (myUnits(req).length >= 200) return res.status(400).json({ error: "Llegaste al límite de 200 unidades" });
 
     const id = `U-${randomId(6)}`;
-    const clave = newApiKey();
+    const clave = newApiKey();          // la del sensor ESP32
+    const claveMotorista = newApiKey(); // la de la app del motorista (separada)
     const row = await select(db.from("buses").insert({ id, company_id: req.company.id, ...fields,
-      api_key_hash: hashKey(clave), updated_at: new Date().toISOString() }).select("*").single());
+      api_key_hash: hashKey(clave), driver_key_hash: hashKey(claveMotorista),
+      updated_at: new Date().toISOString() }).select("*").single());
     units[id] = unitFromRow(row);
-    res.status(201).json({ id, clave });
+    res.status(201).json({ id, clave, claveMotorista });
   } catch (err) { next(err); }
 });
 
@@ -249,6 +251,18 @@ router.post("/unidades/:id/clave", requireCompany, async (req, res, next) => {
     await select(db.from("buses").update({ api_key_hash: hashKey(clave) }).eq("id", unit.busId).select("id"));
     unit.apiKeyHash = hashKey(clave);
     res.json({ id: unit.busId, clave });
+  } catch (err) { next(err); }
+});
+
+// Enlace nuevo para la app del motorista. El anterior deja de servir; el sensor no se toca.
+router.post("/unidades/:id/motorista", requireCompany, async (req, res, next) => {
+  try {
+    const unit = myUnit(req);
+    if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
+    const claveMotorista = newApiKey();
+    await select(db.from("buses").update({ driver_key_hash: hashKey(claveMotorista) }).eq("id", unit.busId).select("id"));
+    unit.driverKeyHash = hashKey(claveMotorista);
+    res.json({ id: unit.busId, claveMotorista });
   } catch (err) { next(err); }
 });
 

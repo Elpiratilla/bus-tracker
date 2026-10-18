@@ -563,7 +563,7 @@ function render(data) {
     ...(next
       ? eta !== null && eta > 0
         ? ["Llega en ", Object.assign(el("strong"), { textContent: `${eta} min` })]
-        : [Object.assign(el("strong"), { className: eta !== null && eta <= 0 ? "now" : "", textContent: etaLabel })]
+        : [Object.assign(el("strong"), { className: eta !== null && eta <= 0 ? "now" : "none", textContent: etaLabel })]
       : [])
   );
   // los minutos voltean solo cuando cambian
@@ -593,7 +593,9 @@ function render(data) {
         : state === "next" ? etaLabel
         : p.etaA ? `${hhmm(p.etaA)} aprox.` : "Sin estimado";
 
-      li.append(el("span", "stop__dot"), name, el("span", "stop__time", time));
+      // sin estimado: se muestra más suave, para que resalten las paradas que sí tienen hora
+      const timeEl = el("span", time === "Sin estimado" || time === "Sin señal" ? "stop__time stop__time--none" : "stop__time", time);
+      li.append(el("span", "stop__dot"), name, timeEl);
       if (alertasOn && state !== "done") li.append(bellButton(ruta, data.sentido || "ida", hacia, p));
       return li;
     })

@@ -33,7 +33,7 @@ const ms = (t) => (t ? new Date(t).getTime() : null);
 // Fila de la tabla buses -> unidad registrada en memoria
 const unitFromRow = (b) => ({
   busId: b.id, companyId: b.company_id, name: b.name, plate: b.plate, type: b.type, routeId: b.route_id,
-  apiKeyHash: b.api_key_hash, odometerKm: b.odometer_km, engineHours: b.engine_hours,
+  apiKeyHash: b.api_key_hash, driverKeyHash: b.driver_key_hash, odometerKm: b.odometer_km, engineHours: b.engine_hours,
   oilIntervalKm: b.oil_interval_km, createdAt: ms(b.created_at),
 });
 

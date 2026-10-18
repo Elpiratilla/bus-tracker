@@ -26,6 +26,21 @@ $("tema").addEventListener("click", () => {
 darkQuery.addEventListener("change", () => { if (!root.dataset.theme) applyTheme(); });
 applyTheme();
 
+// Menú del teléfono: abre y cierra la lista de enlaces de arriba
+const menuBtn = document.querySelector(".top__menu");
+if (menuBtn) {
+  const nav = menuBtn.closest(".top");
+  const setMenu = (open) => {
+    nav.classList.toggle("is-open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+  };
+  menuBtn.addEventListener("click", () => setMenu(!nav.classList.contains("is-open")));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("is-open")) { setMenu(false); menuBtn.focus(); }
+  });
+  nav.querySelectorAll(".top__links a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+}
+
 // Animaciones al bajar: se activan cuando la sección aparece en pantalla (una sola vez)
 const reveal = document.querySelectorAll("[data-reveal]");
 if ("IntersectionObserver" in window) {

@@ -345,12 +345,17 @@ async function loadUnidades() {
     const wrap = el("div", "actions");
     wrap.append(
       button("Editar", "btn--ghost btn--sm", () => openUnidad(u)),
-      button("Nueva clave", "btn--ghost btn--sm", () => confirmar(
-        `Nueva clave para ${u.nombre}`,
-        "La clave actual dejará de funcionar y tendrás que poner la nueva en el sensor.",
+      button("Motorista", "btn--ghost btn--sm", () => confirmar(
+        `Enlace del motorista de ${u.nombre}`,
+        "Se crea un enlace nuevo para la app del motorista. Si ya le habías mandado uno, ese deja de funcionar. El sensor no se afecta.",
+        "Crear enlace",
+        async () => showClave(await api(`/unidades/${u.id}/motorista`, { method: "POST" }), u.ruta))),
+      button("Clave del sensor", "btn--ghost btn--sm", () => confirmar(
+        `Nueva clave del sensor de ${u.nombre}`,
+        "La clave actual del sensor dejará de funcionar y tendrás que poner la nueva en su configuración. El enlace del motorista sigue igual.",
         "Generar nueva clave",
         async () => showClave(await api(`/unidades/${u.id}/clave`, { method: "POST" }), u.ruta))),
-      button("Eliminar", "btn--ghost btn--sm", () => confirmar(
+      button("Eliminar", "btn--ghost btn--quitar btn--sm", () => confirmar(
         `Eliminar ${u.nombre}`,
         "Se borran la unidad y sus servicios. Su sensor dejará de aparecer en tu panel. Esto no se puede deshacer.",
         "Eliminar unidad",
@@ -414,12 +419,20 @@ $("#f-unidad").addEventListener("submit", async (e) => {
   }
 });
 
-function showClave({ id, clave }, ruta) {
-  // Sin sensor, el celular del motorista hace de GPS con este enlace
-  const enlace = `${location.origin}/motorista.html#u=${encodeURIComponent(id)}&k=${encodeURIComponent(clave)}`;
-  $("#k-enlace").textContent = enlace;
-  $("#k-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`App del motorista (go503). Ábrela en tu celular y no la compartas:\n${enlace}`)}`;
-  $("#k-copiar-enlace").textContent = "Copiar";
+// Muestra la clave del sensor, el enlace del motorista o los dos (al registrar una unidad)
+function showClave({ id, clave, claveMotorista }, ruta) {
+  $("#k-sensor").hidden = !clave;
+  $("#k-motorista").hidden = !claveMotorista;
+  $("#k-titulo").textContent = clave ? "Clave del sensor" : "Enlace del motorista";
+  $("#k-motorista-titulo").hidden = !clave; // si es lo único del cuadro, el título de arriba ya lo dice
+  if (claveMotorista) {
+    // Sin sensor, el celular del motorista hace de GPS con este enlace
+    const enlace = `${location.origin}/motorista.html#u=${encodeURIComponent(id)}&k=${encodeURIComponent(claveMotorista)}`;
+    $("#k-enlace").textContent = enlace;
+    $("#k-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`App del motorista (go503). Ábrela en tu celular y no la compartas:\n${enlace}`)}`;
+    $("#k-copiar-enlace").textContent = "Copiar";
+  }
+  if (!clave) return $("#dlg-clave").showModal();
   $("#k-clave").textContent = clave;
   $("#k-config").textContent = `// config.h del sensor\n#define BUS_ID   "${id}"\n#define API_KEY  "${clave}"\n#define ROUTE_ID "${ruta}"`;
   $("#k-sim").textContent = `SIM_BUS=${id} SIM_KEY=${clave} SIM_ROUTE=${ruta} npm run simulate`;
@@ -830,7 +843,7 @@ function renderClientes() {
       cod.setAttribute("aria-label", `Crear código de invitación para ${c.empresa || c.nombre}`);
       wrap.append(cod);
     }
-    const del = button("Eliminar", "btn--ghost btn--sm", () => confirmar(
+    const del = button("Eliminar", "btn--ghost btn--quitar btn--sm", () => confirmar(
       `Eliminar a ${c.nombre}`,
       "Se borra la solicitud y su nota. Esto no se puede deshacer.",
       "Eliminar",
@@ -912,7 +925,7 @@ function renderCodigos() {
     copiar.setAttribute("aria-label", `Copiar ${c.codigo}`);
     const editar = button("Editar", "btn--ghost btn--sm", () => openCodigo(c));
     editar.setAttribute("aria-label", `Editar ${c.codigo}`);
-    const eliminar = button("Eliminar", "btn--ghost btn--sm", () => confirmar(
+    const eliminar = button("Eliminar", "btn--ghost btn--quitar btn--sm", () => confirmar(
       `Eliminar ${c.codigo}`,
       c.usado
         ? `${c.empresa ?? "La empresa"} lo usó para registrarse y seguirá funcionando igual. Solo se borra de esta lista.`

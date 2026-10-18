@@ -1,25 +1,36 @@
-/* go503: marca compartida (landing y panel de empresas) */
+/* go503: marca compartida (portada, sensor, preguntas, login, panel y motorista)
+   Dirección 2026-10-18 "rótulo y parada": letras de rótulo de ruta (condensadas, como los letreros
+   de destino), papel cálido de pared encalada, y la franja maíz-torogoz pintada en los buses. */
 
 :root {
   --anil: #1B2559;      /* marca */
-  --noche: #0E1438;     /* fondos oscuros */
+  --noche: #0E1438;     /* fondos oscuros y letreros */
   --maiz: #F2B22E;      /* la unidad y lo próximo */
   --maiz-claro: #FFD36B;
+  --maiz-hondo: #C98A0B; /* el borde de abajo de los botones maíz */
   --torogoz: #0FA39C;   /* en línea, recorrido */
-  --torogoz-texto: #0B7F79; /* el mismo verde, más oscuro para letras sobre blanco (4.8:1) */
+  --torogoz-texto: #0B7F79; /* el mismo verde, más oscuro para letras sobre claro (4.8:1) */
   --alerta: #D9434E;    /* fallas y vencidos */
-  --papel: #F3F5FB;
-  --card: #FFFFFF;
+  --alerta-texto: #B42833;
+  --papel: #F5F2EA;     /* pared encalada: cálido, no gris de oficina */
+  --papel-2: #EDE8DB;   /* bandas y fondos de campos */
+  --card: #FFFDF8;
   --tinta: #141B3D;
-  --muted: #5A6488;
-  --line: #DDE2F0;
+  --muted: #565C78;     /* 6.3:1 sobre papel */
+  --line: #DDD6C6;
+  --line-fuerte: #141B3D;
 
-  --serif: "Young Serif", Georgia, serif;
-  --sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  /* nombre viejo: el resto del CSS usa --serif para títulos y números grandes */
+  --serif: var(--display);
 
-  --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 22px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+
+  --ease-out: cubic-bezier(.2, .7, .3, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -31,68 +42,88 @@ body {
   margin: 0;
   background: var(--papel);
   color: var(--tinta);
-  font: 400 1rem/1.55 var(--sans);
+  font: 400 1.0625rem/1.55 var(--sans);
   -webkit-text-size-adjust: 100%;
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 400; line-height: 1.1; }
+/* Títulos: letra de rótulo. Solo se carga el grosor 800, así que siempre sale gruesa */
+h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; line-height: 1; letter-spacing: .005em; }
+h3 { font-family: var(--sans); font-weight: 700; line-height: 1.25; letter-spacing: 0; }
 p { margin: 0; }
 a { color: inherit; }
 img, svg { display: block; }
+button, input, select, textarea { font-family: inherit; }
 
 :focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 
+.wrap { width: min(1180px, 100% - 2rem); margin-inline: auto; }
+@media (min-width: 700px) { .wrap { width: min(1180px, 100% - 4rem); } }
 
-.wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
-
-.logo img { display: block; width: auto; height: 3.1rem; }
+.logo img { display: block; width: auto; height: 3rem; }
 .logo {
   display: inline-flex;
-  font-family: var(--serif);
+  font-family: var(--display);
   font-size: 1.55rem;
   line-height: 1;
   text-decoration: none;
   color: inherit;
 }
 
-/* Rótulo de ruta, como el pintado en el bus */
+/* Etiqueta pequeña encima de los títulos, como el letrero de la parada */
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--muted);
+  font: 700 .82rem/1 var(--sans);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.kicker::before { content: ""; width: 1.4rem; height: 4px; background: var(--maiz); box-shadow: 0 4px 0 var(--torogoz); transform: translateY(-2px); }
+
+/* La franja de los buses pintados: gruesa en maíz, fina en torogoz */
+.franja { height: 10px; background: linear-gradient(var(--maiz) 0 6px, transparent 6px 7px, var(--torogoz) 7px 10px); }
+
+/* Rótulo de ruta: el letrero de destino del bus. Número en maíz sobre noche, con filete */
 .fascia {
   display: inline-grid;
   place-items: center;
   min-width: 4.2rem;
   height: 3.4rem;
-  padding: 0 .9rem;
-  background: var(--anil);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 3px var(--anil), inset 0 0 0 4.5px var(--maiz);
+  padding: 0 .8rem;
+  background: var(--noche);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 3px var(--noche), inset 0 0 0 4.5px var(--maiz);
   color: var(--maiz);
-  font: 1.8rem/1 var(--serif);
+  font: 800 2.1rem/1 var(--display);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Botones */
+/* Botones: placas con borde de abajo, como el timbre de bajada; al tocar se hunden */
 .btn {
+  --edge: var(--noche);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .5rem;
-  min-height: 2.9rem;
-  padding: .7rem 1.3rem;
+  gap: .55rem;
+  min-height: 3rem;
+  padding: .75rem 1.35rem;
   border: 2px solid transparent;
-  border-radius: 999px;
+  border-radius: var(--r-sm);
+  box-shadow: 0 3px 0 var(--edge);
   font: 700 1rem/1 var(--sans);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color .15s, border-color .15s, color .15s, transform .08s;
+  transition: background-color .15s, border-color .15s, color .15s, transform .08s, box-shadow .08s;
 }
-/* Se hunde al presionar, como el timbre de bajada */
-.btn:active { transform: translateY(2px) scale(.98); }
-.btn--maiz { background: var(--maiz); color: var(--noche); }
+.btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--edge); }
+.btn--maiz { --edge: var(--maiz-hondo); background: var(--maiz); color: var(--noche); }
 .btn--maiz:hover { background: var(--maiz-claro); }
-.btn--anil { background: var(--anil); color: #fff; }
-.btn--anil:hover { background: var(--noche); }
-.btn--line { border-color: currentColor; background: none; color: inherit; }
-.btn--line:hover { background: color-mix(in srgb, currentColor 10%, transparent); }
+.btn--anil { --edge: var(--noche); background: var(--anil); color: #fff; }
+.btn--anil:hover { background: #26327A; }
+.btn--line { --edge: currentColor; border-color: currentColor; background: none; color: inherit; }
+.btn--line:hover { background: color-mix(in srgb, currentColor 8%, transparent); }
 .btn[disabled] { opacity: .55; cursor: progress; }
 
 .ico { width: 1.15rem; height: 1.15rem; flex: none; }

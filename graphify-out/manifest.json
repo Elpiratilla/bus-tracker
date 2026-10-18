@@ -294,9 +294,9 @@
     "semantic_hash": "659ae002f3f00efdb5ca668fd9803dff"
   },
   "DESIGN.md": {
-    "mtime": 1792336725.7358737,
-    "seen": 1792336730.739887,
-    "ast_hash": "ead4d09b16d6a31c51f9f7fc04c39f2c",
+    "mtime": 1792341328.884142,
+    "seen": 1792341333.598563,
+    "ast_hash": "2f20c072fe3540485407b6d42c613c39",
     "semantic_hash": ""
   },
   "anti-slop/registro-001-2026-10-14.md": {
@@ -588,9 +588,9 @@
     "semantic_hash": ""
   },
   "REPORTE-FRONTEND.md": {
-    "mtime": 1792336725.7352524,
-    "seen": 1792336730.7398882,
-    "ast_hash": "558f362c37cf72fe1562110529039bbd",
+    "mtime": 1792341328.8848102,
+    "seen": 1792341333.5985641,
+    "ast_hash": "a543688db83e594b0b8ab404fdbbf8a8",
     "semantic_hash": ""
   },
   "test/recorrido.test.js": {

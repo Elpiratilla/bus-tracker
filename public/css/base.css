@@ -18,7 +18,7 @@
   --tinta: #141B3D;
   --muted: #565C78;     /* 6.3:1 sobre papel */
   --line: #DDD6C6;
-  --line-fuerte: #141B3D;
+  --line-fuerte: #CFC6B2; /* borde de tarjetas: un poco más visible que --line */
 
   --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
   --sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -80,7 +80,7 @@ button, input, select, textarea { font-family: inherit; }
   letter-spacing: .12em;
   text-transform: uppercase;
 }
-.kicker::before { content: ""; width: 1.4rem; height: 4px; background: var(--maiz); box-shadow: 0 4px 0 var(--torogoz); transform: translateY(-2px); }
+.kicker::before { content: ""; width: 6px; height: 6px; background: var(--maiz); border-radius: 50%; }
 
 /* La franja de los buses pintados: gruesa en maíz, fina en torogoz */
 .franja { height: 10px; background: linear-gradient(var(--maiz) 0 6px, transparent 6px 7px, var(--torogoz) 7px 10px); }
@@ -111,13 +111,12 @@ button, input, select, textarea { font-family: inherit; }
   padding: .75rem 1.35rem;
   border: 2px solid transparent;
   border-radius: var(--r-sm);
-  box-shadow: 0 3px 0 var(--edge);
   font: 700 1rem/1 var(--sans);
   text-decoration: none;
   cursor: pointer;
   transition: background-color .15s, border-color .15s, color .15s, transform .08s, box-shadow .08s;
 }
-.btn:active { transform: translateY(3px); box-shadow: 0 0 0 var(--edge); }
+.btn:active { transform: translateY(1px) scale(.98); }
 .btn--maiz { --edge: var(--maiz-hondo); background: var(--maiz); color: var(--noche); }
 .btn--maiz:hover { background: var(--maiz-claro); }
 .btn--anil { --edge: var(--noche); background: var(--anil); color: #fff; }

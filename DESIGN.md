@@ -38,11 +38,11 @@ Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa)
 
 Pedido por Mateo con libertad creativa (reporte en `REPORTE-FRONTEND.md`).
 
-- **Superficies planas con borde**: tarjetas importantes con borde de 2 px (`--line-fuerte`) y sombra dura de color (`8px 8px 0` maíz o torogoz), nunca sombras difusas.
-- **Botones-placa**: esquinas de 6 px y un borde de abajo (`--edge`) que desaparece al tocar: el botón se hunde como el timbre de bajada.
-- **Letreros de noche**: el tablero, el lado del login, el panel lateral y el motorista usan fondo noche con puntos de luz (radial-gradient de 7 px), como letrero de destino.
-- **La franja** (`.franja`): maíz grueso + torogoz fino, como la pintada en los buses. Separa la portada, abre "¿Tienes buses?" y va en la orilla del login y arriba del motorista.
-- **Etiqueta** (`.kicker`): mayúsculas pequeñas con un pedacito de franja, encima de los títulos de sección.
+- **Más minimalista (pedido de Mateo, 2026-10-18):** sin sombras duras de color, sin texturas de puntos y bordes de 1 px (`--line-fuerte` es un beige un poco más oscuro que `--line`). Solo lo que flota (menús, diálogos, la barra del mapa) lleva una sombra suave.
+- **Botones planos:** esquinas de 6 px; al tocar se hunden 1 px (el timbre de bajada, en pequeño).
+- **Una sola franja** maíz + torogoz, delgada (5 px), al final de la portada. No se repite.
+- **Etiqueta** (`.kicker`): mayúsculas pequeñas con un punto maíz, encima de los títulos de sección.
+- **Letreros de noche** solo donde hay datos en vivo (tablero, motorista) y en la barra del panel.
 - **Mínimo 44 px** para todo lo que se toca.
 - **Tablas en el teléfono:** se vuelven tarjetas (`cards()` en `panel.js`): cada celda muestra el nombre de su columna.
 - **Acciones poco usadas** van en un menú "Más" (`moreMenu()` en `panel.js`); borrar va al final, separado y en rojo.

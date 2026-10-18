@@ -151,3 +151,12 @@ Para que lleguen a 9 las tres que faltan (esto lo tiene que dar Mateo):
 - **Motorista:** una prueba de un trayecto completo en un bus real, con el celular en el cargador.
 
 La app Android usa una copia de la página del motorista: correr `npm run web` en `app/` (ya incluye las letras y el logo nuevos).
+
+## Tercera ronda: un poco más minimalista (2026-10-18)
+
+Pedido de Mateo. Se quitaron los adornos y se dejó la identidad (letras de rótulo, colores, rótulo de ruta):
+- Fuera: sombras duras de color (maíz/torogoz) en tablero, formulario, ejemplo del panel, diálogos y menús; texturas de puntos de luz; franjas extra ("¿Tienes buses?", orilla del login, arriba del motorista); la línea de paradas decorativa del login; el giro del ejemplo del panel; el brillo del número en el tablero.
+- Más suave: bordes de 2 px oscuros → 1 px beige; botones sin borde de abajo; el cierre "¿Lo quieres en tus unidades?" es una tarjeta clara en vez de un bloque maíz; "Antes de comprar" vuelve a ser texto; en el panel la sección activa ya no es un bloque maíz sino una raya.
+- Se mantiene: una sola franja delgada al final de la portada, el tablero oscuro (es el dato en vivo) y el pie oscuro.
+
+Las notas no cambian: es una decisión de estilo, no de uso.

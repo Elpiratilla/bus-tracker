@@ -8,10 +8,7 @@
   --borde: rgba(243, 245, 251, .14);
   min-height: 100dvh;
   /* puntos de luz de letrero de destino, y la franja de los buses arriba */
-  background:
-    linear-gradient(var(--maiz) 0 6px, transparent 6px 7px, var(--torogoz) 7px 10px, transparent 10px) top / 100% 10px no-repeat,
-    radial-gradient(circle, rgba(255, 255, 255, .045) 1px, transparent 1.3px) 0 0 / 7px 7px,
-    var(--noche);
+  background: var(--noche);
   color: var(--texto);
   color-scheme: dark;
 }
@@ -67,7 +64,6 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
   background: var(--panel);
   border: 2px solid transparent;
   border-radius: var(--r-md);
-  box-shadow: 0 4px 0 #070A22;
   color: inherit;
   font: inherit;
   text-align: left;
@@ -75,7 +71,7 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
   transition: border-color .15s, transform .08s;
 }
 .rotulo:hover { border-color: var(--maiz); }
-.rotulo:active { transform: translateY(4px); box-shadow: none; }
+.rotulo:active { transform: scale(.985); }
 .rotulo .fascia { grid-row: span 2; }
 .rotulo b { font: 800 2.1rem/1 var(--display); text-transform: uppercase; }
 .rotulo small { color: var(--suave); font-size: .95rem; }
@@ -84,7 +80,7 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
 /* ---------- En trayecto ---------- */
 .proxima { margin-bottom: 1.4rem; }
 .proxima small { color: var(--suave); font-weight: 700; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
-.proxima p { margin-top: .2rem; color: var(--maiz); font: 800 clamp(3rem, 14vw, 4.4rem)/.92 var(--display); text-transform: uppercase; text-shadow: 0 0 22px rgba(242, 178, 46, .3); overflow-wrap: anywhere; }
+.proxima p { margin-top: .2rem; color: var(--maiz); font: 800 clamp(3rem, 14vw, 4.4rem)/.92 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
 
 /* Línea de paradas: verde lo recorrido, maíz la próxima */
 .linea { list-style: none; margin: 0 0 1.6rem; padding: 0; }

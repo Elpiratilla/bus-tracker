@@ -36,7 +36,7 @@ Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa)
 
 ## Rediseño 2026-10-18: "rótulo y parada"
 
-Pedido por Mateo con libertad creativa (reporte en `REPORTE-FRONTEND.md`).
+Pedido por Mateo con libertad creativa.
 
 - **Más minimalista (pedido de Mateo, 2026-10-18):** sin sombras duras de color, sin texturas de puntos y bordes de 1 px (`--line-fuerte` es un beige un poco más oscuro que `--line`). Solo lo que flota (menús, diálogos, la barra del mapa) lleva una sombra suave.
 - **Botones planos:** esquinas de 6 px; al tocar se hunden 1 px (el timbre de bajada, en pequeño).

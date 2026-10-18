@@ -1,7 +1,7 @@
 # Graph Report - bus-tracker  (2026-10-18)
 
 ## Corpus Check
-- 73 files · ~77,400 words
+- 73 files · ~77,381 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 30 file(s) not represented in the graph (top: .xml 10, .css 6, .woff2 4)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9df423c9`
+- Built from commit: `0d74f2ab`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -223,7 +223,7 @@ Nodes (5): auth, router, { routes, buses, units, trips }, { saveBus }, { startTr
 
 ### Community 57 - "go503"
 Cohesion: 0.20
-Nodes (9): Cuando algo cambie, Empezar, Estructura, Falta completar antes de publicar, go503, Legal, Publicar, Qué hace (+1 more)
+Nodes (9): Cuando algo cambie, Empezar, Estructura, go503, Legal, Para cuando go503 se inscriba, Publicar, Qué hace (+1 more)
 
 ## Knowledge Gaps
 - **22 isolated node(s):** `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core`, `@capacitor/cli`, `dotenv` (+17 more)

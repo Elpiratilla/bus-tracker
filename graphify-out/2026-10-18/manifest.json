@@ -576,9 +576,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1792348242.664981,
-    "seen": 1792348267.045393,
-    "ast_hash": "25454b79cb97f6cb0701b92372c0b5f2",
+    "mtime": 1792349119.2277262,
+    "seen": 1792349143.436629,
+    "ast_hash": "78966d465c8dfd9004407bc8459013bd",
     "semantic_hash": ""
   },
   "public/html/index.html": {
@@ -588,9 +588,9 @@
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792348236.2480156,
-    "seen": 1792348267.0455208,
-    "ast_hash": "470ddc1fdec83a01cdb07388f909bb7a",
+    "mtime": 1792349103.8206742,
+    "seen": 1792349143.4367669,
+    "ast_hash": "eebd1a3f613b90987d0415a973172eb7",
     "semantic_hash": ""
   },
   "public/html/login.html": {

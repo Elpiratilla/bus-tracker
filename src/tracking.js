@@ -111,4 +111,19 @@ function handlePosition(busId, route, point, now) {
     distanceM: Math.round(near.distance), entered: Boolean(entered) };
 }
 
-module.exports = { registerPass, handlePosition, toTime, STOP_RADIUS_M, DIRS };
+// El motorista tocó "Iniciar trayecto": la vuelta empieza ya, en la primera parada del sentido que
+// escogió. Así no hay que adivinar el sentido con las primeras paradas.
+function startTrip(busId, route, dir, now) {
+  const first = route.directions[dir][0].id;
+  trips[`${busId}:${route.id}`] = { busId, dir, passes: { [first]: now }, lastStopId: first,
+    leftStop: first, leftAt: now, updatedAt: now };
+  saveTrip(busId, route.id);
+}
+
+// El motorista tocó "Terminar trayecto": se cierra la vuelta (los tiempos de los tramos ya quedaron guardados)
+function endTrip(busId, route) {
+  delete trips[`${busId}:${route.id}`];
+  saveTrip(busId, route.id);
+}
+
+module.exports = { registerPass, handlePosition, startTrip, endTrip, toTime, STOP_RADIUS_M, DIRS };

@@ -3,7 +3,7 @@ const auth = require("../middleware/auth");
 const { routes, buses, units, retired } = require("../store");
 const { handlePosition, toTime } = require("../tracking");
 const { distanceM } = require("../geo");
-const { persist } = require("../db");
+const { persist, saveBus } = require("../db");
 
 const LOG_EVERY_MS = 60 * 1000;      // historial de mantenimiento: un registro por minuto por bus
 const MAX_GAP_MS = 5 * 60 * 1000;    // más de 5 min sin señal: no se suman km ni horas de ese hueco
@@ -53,25 +53,22 @@ router.post("/", auth, (req, res) => {
   if (unit) updateCounters(unit, prev, position ? lat : null, lng, now, data);
 
   const knownRoute = routes.some((r) => r.id === routeId);
-  const bus = buses[busId] = { ...prev, busId, ...(knownRoute && { routeId }), ...data,
+  buses[busId] = { ...prev, busId, ...(knownRoute && { routeId }), ...data,
     ...(position && { lat, lng, atStop: position.atStop }), updatedAt: now };
   res.status(201).json({ ok: true, ...(position && { position }) });
 
   // Guardar en Supabase: estado en vivo siempre, historial una vez por minuto
-  const { busId: _id, routeId: _r, lat: bLat, lng: bLng, atStop, updatedAt, ...live } = bus;
-  const iso = new Date(now).toISOString();
-  persist("bus", (db) => db.from("buses").upsert({ id: busId, route_id: bus.routeId ?? null,
-    lat: bLat ?? null, lng: bLng ?? null, at_stop: atStop ?? null, data: live, updated_at: iso,
-    ...(unit && { odometer_km: unit.odometerKm, engine_hours: unit.engineHours }) }), `bus:${busId}`);
+  saveBus(busId);
   if (!(now - lastLog[busId] < LOG_EVERY_MS)) {
     lastLog[busId] = now;
-    persist("historial", (db) => db.from("telemetry").insert({ bus_id: busId, ts: iso,
+    persist("historial", (db) => db.from("telemetry").insert({ bus_id: busId, ts: new Date(now).toISOString(),
       lat: position ? lat : null, lng: position ? lng : null, data }));
   }
 });
 
 // Posiciones públicas (sin datos del motor ni de la empresa). demo: bus del simulador, no una unidad registrada
-router.get("/", (_req, res) => res.json(Object.values(buses).map((b) => ({
+// El bus cuyo motorista tocó "Terminar trayecto" (enServicio false) no sale hasta que vuelva a salir
+router.get("/", (_req, res) => res.json(Object.values(buses).filter((b) => b.enServicio !== false).map((b) => ({
   busId: b.busId, routeId: b.routeId, lat: b.lat, lng: b.lng, atStop: b.atStop, updatedAt: b.updatedAt,
   demo: !units[b.busId],
 }))));

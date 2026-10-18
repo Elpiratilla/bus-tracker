@@ -90,4 +90,16 @@ async function loadState() {
     + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas`);
 }
 
-module.exports = { db, persist, flush, loadState, select, unitFromRow };
+// Guarda el estado en vivo de un bus (posición, en servicio, datos del motor) y sus contadores
+function saveBus(busId) {
+  const bus = store.buses[busId];
+  const unit = store.units[busId];
+  if (!bus) return;
+  const { busId: _id, routeId, lat, lng, atStop, updatedAt, ...live } = bus;
+  persist("bus", (db) => db.from("buses").upsert({ id: busId, route_id: routeId ?? null,
+    lat: lat ?? null, lng: lng ?? null, at_stop: atStop ?? null, data: live,
+    updated_at: new Date(updatedAt ?? Date.now()).toISOString(),
+    ...(unit && { odometer_km: unit.odometerKm, engine_hours: unit.engineHours }) }), `bus:${busId}`);
+}
+
+module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow };

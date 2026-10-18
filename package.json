@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
     "dev": "node --watch src/server.js",
     "simulate": "node tools/simulator.js",
     "codigo": "node tools/codigo.js",

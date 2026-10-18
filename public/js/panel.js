@@ -114,6 +114,7 @@ function markerIcon(u) {
 function estado(u) {
   if (!u.ultimaSenal) return "El sensor aún no transmite";
   if (!u.enLinea) return `Sin señal, última ${hace(u.ultimaSenal)}`;
+  if (u.enServicio === false) return "Fuera de servicio";
   return u.parada ? `En ${u.parada}` : "En ruta";
 }
 
@@ -413,6 +414,11 @@ $("#f-unidad").addEventListener("submit", async (e) => {
 });
 
 function showClave({ id, clave }, ruta) {
+  // Sin sensor, el celular del motorista hace de GPS con este enlace
+  const enlace = `${location.origin}/motorista.html#u=${encodeURIComponent(id)}&k=${encodeURIComponent(clave)}`;
+  $("#k-enlace").textContent = enlace;
+  $("#k-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`App del motorista (go503). Ábrela en tu celular y no la compartas:\n${enlace}`)}`;
+  $("#k-copiar-enlace").textContent = "Copiar";
   $("#k-clave").textContent = clave;
   $("#k-config").textContent = `// config.h del sensor\n#define BUS_ID   "${id}"\n#define API_KEY  "${clave}"\n#define ROUTE_ID "${ruta}"`;
   $("#k-sim").textContent = `SIM_BUS=${id} SIM_KEY=${clave} SIM_ROUTE=${ruta} npm run simulate`;
@@ -426,6 +432,15 @@ $("#k-copiar").addEventListener("click", async () => {
   } catch {
     getSelection().selectAllChildren($("#k-clave"));
     $("#k-copiar").textContent = "Selecciónala y cópiala";
+  }
+});
+$("#k-copiar-enlace").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText($("#k-enlace").textContent);
+    $("#k-copiar-enlace").textContent = "Copiado";
+  } catch {
+    getSelection().selectAllChildren($("#k-enlace"));
+    $("#k-copiar-enlace").textContent = "Selecciónalo y cópialo";
   }
 });
 

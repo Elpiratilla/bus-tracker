@@ -25,6 +25,7 @@ app.use("/api/rutas", require("./routes/rutas"));
 app.use("/api/alertas", require("./routes/alertas"));
 app.use("/api/empresa", require("./routes/empresa"));
 app.use("/api/clientes", require("./routes/clientes"));
+app.use("/api/motorista", require("./routes/motorista"));
 
 // Datos públicos que necesita el navegador para iniciar sesión con Supabase
 app.get("/api/config", (_req, res) => res.json({

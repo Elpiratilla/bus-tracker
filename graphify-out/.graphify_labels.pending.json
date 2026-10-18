@@ -1,10 +1,11 @@
 {
   "1": "tracking.js",
+  "3": "routes/empresa.js",
   "4": "admin.js",
   "11": "eta.js",
   "24": "Dirección de diseño de go503",
   "25": "Registro antislop 001 (2026-10-14)",
-  "26": "auth.js",
+  "26": "encendido.test.js",
   "27": "app/package.json",
   "28": "js/motorista.js",
   "29": "ExampleInstrumentedTest.java",
@@ -22,6 +23,17 @@
   "41": "capacitor.settings.gradle",
   "42": "settings.gradle",
   "43": "variables.gradle",
+  "44": "trazos.js",
+  "45": "auth.js",
   "46": "telemetry.js",
-  "49": "routes/motorista.js"
+  "47": "motorista.test.js",
+  "48": "db.js",
+  "49": "routes/motorista.js",
+  "50": "server.js",
+  "51": "claves.test.js",
+  "52": "telemetria.test.js",
+  "53": "middleware/empresa.js",
+  "54": "scripts",
+  "55": "clientes.js",
+  "56": "dependencies"
 }

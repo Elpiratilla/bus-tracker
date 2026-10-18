@@ -86,8 +86,18 @@ async function loadState() {
       { subscription: a.subscription, routeId: a.route_id, dir: a.direction, stopId: a.stop_id, createdAt: ms(a.created_at) });
   }
 
+  // Recorridos (tabla nueva): si todavía no se corrió la migración, el mapa sigue con el trazo automático
+  try {
+    for (const s of await select(db.from("route_shapes").select("*"))) {
+      store.shapes[`${s.route_id}:${s.direction}`] = { points: s.points, source: s.source, updatedAt: ms(s.updated_at) };
+    }
+  } catch (err) {
+    console.warn(`Supabase: sin recorridos guardados (${err.message}). Corre la migración 20261018150000_recorridos.sql`);
+  }
+
   console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
-    + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas`);
+    + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas, `
+    + `${Object.keys(store.shapes).length} recorridos`);
 }
 
 // Guarda el estado en vivo de un bus (posición, en servicio, datos del motor) y sus contadores
@@ -108,6 +118,9 @@ const HISTORIAL_DIAS = 7;
 function limpiarHistorial() {
   const antes = new Date(Date.now() - HISTORIAL_DIAS * 86400000).toISOString();
   persist("limpiar historial", (db) => db.from("telemetry").delete().lt("ts", antes));
+  // las vueltas grabadas sirven para escoger el recorrido: con 30 días alcanza
+  const viejas = new Date(Date.now() - 30 * 86400000).toISOString();
+  persist("limpiar grabaciones", (db) => db.from("route_recordings").delete().lt("ended_at", viejas));
 }
 
 module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow, limpiarHistorial };

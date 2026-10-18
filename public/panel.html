@@ -27,6 +27,7 @@
     <symbol id="i-bus" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 11h18" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="14.5" r="1.3" fill="currentColor"/><circle cx="16" cy="14.5" r="1.3" fill="currentColor"/><path d="M6.5 18v3M17.5 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="18" cy="5" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 19H15a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h6.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M11.3 11.7L20 3M16.5 6.5l3 3M14 9l2.5 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18.5 14.5A6.5 6.5 0 0 1 21.5 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -45,6 +46,7 @@
         <a href="#mantenimiento"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Mantenimiento<span class="badge" id="badge-mant" hidden></span></a>
         <a href="#reportes"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Reportes</a>
         <a href="#clientes" id="nav-clientes" hidden><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg>Clientes<span class="badge" id="badge-clientes" hidden></span></a>
+        <a href="#recorridos" id="nav-recorridos" hidden><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg>Recorridos</a>
         <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
       </nav>
       <div class="side__foot">
@@ -190,6 +192,40 @@
           </select>
         </div>
         <div class="panel table-wrap" id="codigos" style="margin-top:.8rem"></div>
+      </section>
+
+      <!-- Recorridos (solo administradores): por dónde pasa cada ruta en el mapa público -->
+      <section class="view" id="v-recorridos" hidden>
+        <div class="head">
+          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa. Dibújalo tocando el mapa, o usa una vuelta que grabó el GPS de un bus.</p></div>
+        </div>
+        <div class="filters rec__pick">
+          <label for="rec-ruta" class="visually-hidden">Ruta</label>
+          <select class="select" id="rec-ruta"></select>
+          <div class="rec__dir" id="rec-dir" role="group" aria-label="Sentido"></div>
+        </div>
+        <div class="rec">
+          <div class="rec__map" id="rec-map" role="region" aria-label="Mapa para dibujar el recorrido"></div>
+          <div class="panel rec__side">
+            <p class="rec__estado" id="rec-estado" aria-live="polite"></p>
+
+            <h2>Dibujar</h2>
+            <p class="muted">Toca el mapa desde la parada 1 hasta la última, en el orden en que pasa el bus. Cada toque sigue las calles desde el anterior.</p>
+            <label class="rec__check"><input type="checkbox" id="rec-pegar" checked> Pegar a las calles</label>
+            <div class="rec__tools">
+              <button class="btn btn--ghost btn--sm" type="button" id="rec-deshacer">Deshacer</button>
+              <button class="btn btn--ghost btn--sm" type="button" id="rec-borrar">Empezar de nuevo</button>
+            </div>
+            <div class="rec__save">
+              <button class="btn btn--anil" type="button" id="rec-guardar">Guardar recorrido</button>
+              <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="rec-auto">Quitar y usar el automático</button>
+            </div>
+
+            <h2>Vueltas grabadas por GPS</h2>
+            <p class="muted">Cuando una unidad va de la primera a la última parada, su recorrido queda aquí.</p>
+            <ul class="rec__vueltas" id="rec-vueltas"></ul>
+          </div>
+        </div>
       </section>
     </main>
   </div>

@@ -35,4 +35,7 @@ for (const r of routes) r.directions = { ida: r.stops, regreso: [...r.stops].rev
 // buses: estado en vivo que manda el sensor (posición, velocidad, motor...)
 // units: unidades registradas por una empresa (dueño, placa, clave del sensor, km y horas de motor)
 // retired: unidades eliminadas; si su sensor sigue transmitiendo se rechaza (no se vuelve a crear)
-module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map() };
+// shapes: trazo aprobado de cada ruta y sentido ("101:ida" -> { points, source, updatedAt }); sin trazo, el mapa lo adivina
+// recordings: últimas vueltas completas grabadas por GPS (sin Supabase; con Supabase se leen de la base)
+module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map(),
+  shapes: {}, recordings: [] };

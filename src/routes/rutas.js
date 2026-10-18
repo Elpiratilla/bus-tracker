@@ -1,6 +1,6 @@
 // Formato que usa el frontend (public/js/mapa.js): GET /api/rutas y GET /api/rutas/:id?sentido=ida|regreso
 const router = require("express").Router();
-const { routes, buses, units } = require("../store");
+const { routes, buses, units, shapes } = require("../store");
 const { routeStatus, pickDirection } = require("../eta");
 const { distanceM } = require("../geo");
 
@@ -79,6 +79,8 @@ router.get("/:id", (req, res) => {
     sentidos: sentidos(route),
     actualizado: iso((trip && buses[trip.busId]?.updatedAt) || Date.now()),
     demo: isDemo(trip),
+    // Por dónde pasa de verdad (dibujado o grabado por GPS). null: el mapa lo adivina por las calles
+    trazo: shapes[`${route.id}:${dir}`]?.points ?? null,
     // Dónde va el bus: posición GPS real (enVivo) o null si no hay señal reciente
     bus: current && {
       lat: current.bus?.lat ?? null,

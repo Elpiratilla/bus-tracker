@@ -3,8 +3,8 @@ const { supa, api, $, el, showMsg } = window.go503;
 
 const REFRESH_MS = 5000;
 const CARTO_KEY = "cb1_483z_1_4a6102fca3ea19c0048a0ded"; // la misma del mapa público
-const VIEWS = ["flota", "unidades", "mantenimiento", "reportes", "clientes", "codigos"];
-const ADMIN_VIEWS = ["clientes", "codigos"];
+const VIEWS = ["flota", "unidades", "mantenimiento", "reportes", "clientes", "codigos", "recorridos"];
+const ADMIN_VIEWS = ["clientes", "codigos", "recorridos"];
 let isAdmin = false;
 const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 const SERVICIOS = { aceite: "Cambio de aceite", frenos: "Frenos", llantas: "Llantas", general: "Revisión general", otro: "Otro" };
@@ -134,6 +134,7 @@ function showRoute() {
   if (view === "reportes") loadReportes();
   if (view === "codigos") loadCodigos();
   if (view === "clientes") loadClientes();
+  if (view === "recorridos") loadRecorridos();
 }
 addEventListener("hashchange", route);
 
@@ -1055,6 +1056,197 @@ $("#f-codigo").addEventListener("submit", async (e) => {
   } catch (err) { fail(err); }
 });
 
+// ---------- Recorridos (administradores) ----------
+// El trazo se arma con "tramos": cada toque en el mapa agrega un tramo desde el punto anterior
+// (pegado a las calles con OSRM, o en línea recta). Deshacer quita el último tramo.
+const OSRM = "https://router.project-osrm.org";
+const rec = { rutas: [], ruta: null, sentido: "ida", tramos: [], fuente: "dibujado", cambios: false, map: null, capa: null, vista: null };
+
+const recPuntos = () => rec.tramos.flat();
+const recSentido = () => rec.rutas.find((r) => r.ruta === rec.ruta)?.sentidos.find((s) => s.id === rec.sentido);
+
+async function loadRecorridos() {
+  try { rec.rutas = await api("/admin/recorridos"); } catch (err) { return fail(err); }
+  const sel = $("#rec-ruta");
+  if (!sel.options.length) {
+    sel.replaceChildren(...rec.rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; }));
+    sel.addEventListener("change", () => cambiarRecorrido(sel.value, "ida"));
+  }
+  if (!rec.map) {
+    rec.map = L.map("rec-map", { zoomControl: false }).setView([13.699, -89.205], 13);
+    L.control.zoom({ position: "bottomright" }).addTo(rec.map);
+    L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/${isDark() ? "dark_all" : "light_all"}/{z}/{x}/{y}.png?key=${CARTO_KEY}`, {
+      maxZoom: 20, detectRetina: true,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    }).addTo(rec.map);
+    rec.capa = L.layerGroup().addTo(rec.map);
+    rec.map.on("click", (e) => agregarPunto([e.latlng.lat, e.latlng.lng]));
+  }
+  setTimeout(() => rec.map.invalidateSize(), 50); // la sección estaba escondida al crear el mapa
+  cambiarRecorrido(rec.ruta || rec.rutas[0]?.ruta, rec.sentido, { encuadrar: !rec.ruta });
+}
+
+function cambiarRecorrido(ruta, sentido, { encuadrar = true } = {}) {
+  const t = window.go503Idioma?.t || ((x) => x);
+  if (rec.cambios && !confirm(t("Tienes cambios sin guardar en este recorrido. ¿Los dejas?"))) {
+    $("#rec-ruta").value = rec.ruta;
+    return;
+  }
+  rec.ruta = ruta;
+  rec.sentido = sentido;
+  $("#rec-ruta").value = ruta;
+  const r = rec.rutas.find((x) => x.ruta === ruta);
+  $("#rec-dir").replaceChildren(...r.sentidos.map((s) => {
+    const b = el("button", null, `Hacia ${s.destino}`);
+    b.type = "button";
+    b.setAttribute("aria-pressed", String(s.id === sentido));
+    b.addEventListener("click", () => { if (s.id !== rec.sentido) cambiarRecorrido(rec.ruta, s.id); });
+    return b;
+  }));
+  const s = recSentido();
+  rec.tramos = s.trazo ? [s.trazo.puntos] : [];
+  rec.fuente = s.trazo?.fuente || "dibujado";
+  rec.cambios = false;
+  rec.vista = null;
+  dibujarRecorrido();
+  if (encuadrar) rec.map.fitBounds(L.latLngBounds(s.paradas.map((p) => [p.lat, p.lng])), { padding: [40, 40] });
+  loadVueltas();
+}
+
+function estadoRecorrido() {
+  const s = recSentido();
+  const n = recPuntos().length;
+  $("#rec-estado").textContent = rec.cambios
+    ? (n ? "Cambios sin guardar." : "Toca el mapa en la parada 1 para empezar.")
+    : s.trazo
+      ? `Guardado: ${s.trazo.fuente === "gps" ? "sacado de una vuelta GPS" : "dibujado a mano"}, ${fecha(s.trazo.actualizado)}.`
+      : "Sin recorrido guardado: el mapa público lo adivina por las calles (puede no ser exacto).";
+  $("#rec-estado").dataset.estado = rec.cambios ? "cambios" : s.trazo ? "ok" : "auto";
+  $("#rec-guardar").disabled = n < 2 || !rec.cambios;
+  $("#rec-deshacer").disabled = !rec.tramos.length;
+  $("#rec-borrar").disabled = !rec.tramos.length;
+  $("#rec-auto").hidden = !s.trazo;
+}
+
+function dibujarRecorrido() {
+  const s = recSentido();
+  rec.capa.clearLayers();
+  // la vuelta GPS que se está viendo, punteada debajo
+  if (rec.vista) rec.capa.addLayer(L.polyline(rec.vista, { className: "rec-vista", weight: 5, dashArray: "2 9", interactive: false }));
+  const pts = recPuntos();
+  if (pts.length > 1) {
+    rec.capa.addLayer(L.polyline(pts, { className: "rec-borde", weight: 10, interactive: false }));
+    rec.capa.addLayer(L.polyline(pts, { className: "rec-linea", weight: 5, interactive: false }));
+  }
+  if (pts.length) rec.capa.addLayer(L.circleMarker(pts.at(-1), { radius: 6, className: "rec-fin", interactive: false }));
+  // paradas numeradas en el orden del sentido
+  s.paradas.forEach((p, i) => rec.capa.addLayer(L.marker([p.lat, p.lng], {
+    icon: L.divIcon({ className: "", html: `<span class="rec-parada">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
+    title: p.nombre, keyboard: false,
+  }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] })));
+  estadoRecorrido();
+}
+
+async function agregarPunto(p) {
+  const pts = recPuntos();
+  let tramo = [p];
+  if (pts.length && $("#rec-pegar").checked) {
+    const a = pts.at(-1);
+    try {
+      const r = await fetch(`${OSRM}/route/v1/driving/${a[1]},${a[0]};${p[1]},${p[0]}?overview=full&geometries=geojson`);
+      const j = await r.json();
+      const c = j.routes?.[0]?.geometry.coordinates;
+      if (c?.length) tramo = c.slice(1).map(([x, y]) => [y, x]);
+    } catch {
+      showMsg(msg, "No se pudo pegar a las calles: ese tramo quedó en línea recta.");
+    }
+  }
+  rec.tramos.push(tramo);
+  rec.fuente = "dibujado";
+  rec.cambios = true;
+  dibujarRecorrido();
+}
+
+$("#rec-deshacer").addEventListener("click", () => { rec.tramos.pop(); rec.cambios = true; dibujarRecorrido(); });
+$("#rec-borrar").addEventListener("click", () => { rec.tramos = []; rec.cambios = true; dibujarRecorrido(); });
+
+// Antes de guardar se quitan los puntos que no cambian la forma (pesa menos y dibuja más rápido)
+function simplificar(points, tol = 4) {
+  if (points.length < 3) return points;
+  const k = Math.cos((points[0][0] * Math.PI) / 180) * 111320;
+  const xy = points.map(([la, ln]) => [ln * k, la * 110540]);
+  const keep = new Uint8Array(points.length);
+  keep[0] = keep[points.length - 1] = 1;
+  const stack = [[0, points.length - 1]];
+  while (stack.length) {
+    const [a, b] = stack.pop();
+    const len = Math.hypot(xy[b][0] - xy[a][0], xy[b][1] - xy[a][1]) || 1;
+    let far = -1, dmax = 0;
+    for (let i = a + 1; i < b; i++) {
+      const d = Math.abs((xy[b][0] - xy[a][0]) * (xy[a][1] - xy[i][1]) - (xy[a][0] - xy[i][0]) * (xy[b][1] - xy[a][1])) / len;
+      if (d > dmax) { dmax = d; far = i; }
+    }
+    if (dmax > tol) { keep[far] = 1; stack.push([a, far], [far, b]); }
+  }
+  return points.filter((_, i) => keep[i]);
+}
+
+$("#rec-guardar").addEventListener("click", async () => {
+  const puntos = simplificar(recPuntos()).map(([a, b]) => [Math.round(a * 1e6) / 1e6, Math.round(b * 1e6) / 1e6]);
+  try {
+    await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}`, { method: "PUT", body: { puntos, fuente: rec.fuente } });
+    recSentido().trazo = { puntos, fuente: rec.fuente, actualizado: new Date().toISOString() };
+    rec.tramos = [puntos];
+    rec.cambios = false;
+    dibujarRecorrido();
+    showMsg(msg, `Recorrido de la ${rec.ruta} guardado. Ya se ve así en el mapa público.`, "ok");
+  } catch (err) { fail(err); }
+});
+
+$("#rec-auto").addEventListener("click", () => confirmar(
+  `Quitar el recorrido de la ${rec.ruta}`,
+  "El mapa público volverá a adivinar el camino por las calles, parada por parada. Puedes dibujarlo otra vez cuando quieras.",
+  "Quitar recorrido",
+  async () => {
+    await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}`, { method: "DELETE" });
+    recSentido().trazo = null;
+    rec.tramos = [];
+    rec.cambios = false;
+    dibujarRecorrido();
+  }));
+
+async function loadVueltas() {
+  const root = $("#rec-vueltas");
+  root.replaceChildren(el("li", "muted", "Buscando vueltas…"));
+  let vueltas;
+  try { vueltas = await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}/grabaciones`); } catch (err) {
+    return root.replaceChildren(el("li", "muted", err.message));
+  }
+  if (!vueltas.length) return root.replaceChildren(el("li", "muted", "Todavía no hay vueltas completas en este sentido."));
+  root.replaceChildren(...vueltas.map((v) => {
+    const li = el("li", "rec__vuelta");
+    const txt = el("div");
+    txt.append(el("b", null, v.unidad), el("small", null, `${fecha(v.inicio)}, ${hora(v.inicio)} a ${hora(v.fin)} (${v.minutos} min)`));
+    const ver = button("Ver", "btn--ghost btn--sm", () => {
+      rec.vista = rec.vista === v.puntos ? null : v.puntos;
+      ver.setAttribute("aria-pressed", String(Boolean(rec.vista)));
+      dibujarRecorrido();
+      if (rec.vista) rec.map.fitBounds(L.latLngBounds(v.puntos), { padding: [40, 40] });
+    });
+    ver.setAttribute("aria-pressed", "false");
+    const usar = button("Usar esta", "btn--ghost btn--sm", () => {
+      rec.tramos = [v.puntos];
+      rec.fuente = "gps";
+      rec.cambios = true;
+      rec.vista = null;
+      dibujarRecorrido();
+    });
+    usar.setAttribute("aria-label", `Usar la vuelta de ${v.unidad} como recorrido`);
+    li.append(txt, ver, usar);
+    return li;
+  }));
+}
+
 // ---------- Inicio ----------
 $("#logout").addEventListener("click", async () => {
   const sb = await supa();
@@ -1098,6 +1290,7 @@ $("#f-activar").addEventListener("submit", async (e) => {
     $("#company").textContent = yo.empresa.name;
     isAdmin = Boolean(yo.empresa.is_admin);
     $("#nav-codigos").hidden = !isAdmin;
+    $("#nav-recorridos").hidden = !isAdmin;
     $("#nav-clientes").hidden = !isAdmin;
     if (isAdmin) loadClientes({ soloContar: true });
     $("#alertas").hidden = false;

@@ -1,6 +1,7 @@
 const { segments, geofence, trips } = require("./store");
 const { nearestStop } = require("./geo");
 const { persist } = require("./db");
+const { track } = require("./trazos");
 
 // Qué tan cerca (en metros) debe estar el bus para contar que pasó por la parada
 const STOP_RADIUS_M = Number(process.env.STOP_RADIUS_M) || 50;
@@ -107,6 +108,8 @@ function handlePosition(busId, route, point, now) {
   if (was && was !== inside) registerExit(busId, route, was, now);
   if (entered) registerPass(busId, route, inside, now); // ya guarda la vuelta
   else if (was !== inside) saveTrip(busId, route.id);  // salió de la parada
+
+  track(busId, route, point, now); // graba la vuelta completa para los recorridos (src/trazos.js)
 
   return { atStop: inside, nearestStop: near.stop.id, direction: trips[key]?.dir ?? null,
     distanceM: Math.round(near.distance), entered: Boolean(entered) };

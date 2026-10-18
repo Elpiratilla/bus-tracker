@@ -2,7 +2,8 @@
 // Todas las rutas (menos /codigo) requieren sesión; cada empresa solo ve sus unidades.
 const crypto = require("crypto");
 const router = require("express").Router();
-const { routes, buses, units, retired } = require("../store");
+const { routes, buses, units, retired, shapes, recordings } = require("../store");
+const { validPoints, setShape, deleteShape } = require("../trazos");
 const { db, select, flush, unitFromRow } = require("../db");
 const { hashKey } = require("../middleware/auth");
 const { requireUser, requireCompany, requireAdmin, forgetToken, rateLimit } = require("../middleware/empresa");
@@ -152,6 +153,65 @@ router.delete("/admin/clientes/:id", requireAdmin, async (req, res, next) => {
     const rows = await select(db.from("leads").delete().eq("id", Number(req.params.id)).select("id"));
     if (!rows.length) return res.status(404).json({ error: "Ese cliente no existe" });
     res.status(204).end();
+  } catch (err) { next(err); }
+});
+
+// ---------- Recorridos (administradores): por dónde pasa cada ruta en el mapa ----------
+const SENTIDOS = ["ida", "regreso"];
+const routeOr404 = (req, res) => {
+  const route = routes.find((r) => r.id === req.params.ruta);
+  if (!route) res.status(404).json({ error: "Ruta no existe" });
+  else if (!SENTIDOS.includes(req.params.sentido ?? "ida")) res.status(400).json({ error: "El sentido es ida o regreso" });
+  else return route;
+  return null;
+};
+
+// Todas las rutas con sus paradas por sentido y el trazo guardado (si hay)
+router.get("/admin/recorridos", requireAdmin, (_req, res) => {
+  res.json(routes.map((r) => ({
+    ruta: r.id, nombre: r.name, tipo: r.type,
+    sentidos: SENTIDOS.map((d) => {
+      const sh = shapes[`${r.id}:${d}`];
+      return { id: d, destino: r.directions[d].at(-1)?.name ?? null,
+        paradas: r.directions[d].map((st) => ({ id: st.id, nombre: st.name, lat: st.lat, lng: st.lng })),
+        trazo: sh ? { puntos: sh.points, fuente: sh.source, actualizado: iso(sh.updatedAt) } : null };
+    }),
+  })));
+});
+
+router.put("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
+  const route = routeOr404(req, res);
+  if (!route) return;
+  const puntos = validPoints(req.body?.puntos);
+  if (!puntos) return res.status(400).json({ error: "El recorrido necesita al menos 2 puntos dentro de El Salvador" });
+  const fuente = req.body?.fuente === "gps" ? "gps" : "dibujado";
+  setShape(route.id, req.params.sentido, puntos, fuente);
+  res.json({ ok: true, puntos: puntos.length, fuente });
+});
+
+// Borrar el trazo: el mapa vuelve a adivinarlo por las calles
+router.delete("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
+  const route = routeOr404(req, res);
+  if (!route) return;
+  deleteShape(route.id, req.params.sentido);
+  res.status(204).end();
+});
+
+// Vueltas completas grabadas por GPS (las 10 más recientes)
+router.get("/admin/recorridos/:ruta/:sentido/grabaciones", requireAdmin, async (req, res, next) => {
+  const route = routeOr404(req, res);
+  if (!route) return;
+  const dir = req.params.sentido;
+  const out = (r) => ({ id: r.id ?? null, unidad: units[r.busId]?.name ?? r.busId, inicio: iso(r.startedAt), fin: iso(r.endedAt),
+    minutos: Math.round((r.endedAt - r.startedAt) / 60000), puntos: r.points });
+  try {
+    if (!db) {
+      return res.json(recordings.filter((r) => r.routeId === route.id && r.dir === dir).reverse().map(out));
+    }
+    const rows = await select(db.from("route_recordings").select("*").eq("route_id", route.id).eq("direction", dir)
+      .order("ended_at", { ascending: false }).limit(10));
+    res.json(rows.map((r) => out({ id: r.id, busId: r.bus_id, startedAt: new Date(r.started_at).getTime(),
+      endedAt: new Date(r.ended_at).getTime(), points: r.points })));
   } catch (err) { next(err); }
 });
 

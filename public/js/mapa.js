@@ -187,6 +187,36 @@ function legPath(a, b) {
 
 const dist = (a, b) => Math.hypot(b[0] - a[0], (b[1] - a[1]) * Math.cos((a[0] * Math.PI) / 180));
 
+// Recorrido guardado (dibujado en el panel o grabado por GPS): se parte en tramos, uno por cada par de
+// paradas. Cada parada se proyecta sobre la línea, siempre hacia adelante (el bus no se regresa).
+function legsFromShape(shape, paradas) {
+  const proj = (p, a, b) => {
+    const kx = Math.cos((p[0] * Math.PI) / 180);
+    const ax = a[1] * kx, ay = a[0], bx = b[1] * kx, by = b[0], px = p[1] * kx, py = p[0];
+    const L = (bx - ax) ** 2 + (by - ay) ** 2;
+    const t = L ? Math.max(0, Math.min(1, ((px - ax) * (bx - ax) + (py - ay) * (by - ay)) / L)) : 0;
+    const q = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    return { q, t, d: dist(p, q) };
+  };
+  const cuts = []; // { seg, t, q } por parada
+  let from = 0;
+  for (const st of paradas) {
+    const p = [st.lat, st.lng];
+    let best = null;
+    for (let i = from; i < shape.length - 1; i++) {
+      const r = proj(p, shape[i], shape[i + 1]);
+      if (!best || r.d < best.d) best = { seg: i, ...r };
+    }
+    if (!best) best = { seg: shape.length - 2, t: 1, q: shape.at(-1) };
+    cuts.push(best);
+    from = best.seg;
+  }
+  return cuts.slice(1).map((c, k) => {
+    const a = cuts[k];
+    return [a.q, ...shape.slice(a.seg + 1, c.seg + 1), c.q];
+  });
+}
+
 // Divide una línea en la fracción p (0 a 1) de su longitud
 function splitAt(pts, p) {
   const segs = [];
@@ -354,7 +384,10 @@ let fittedRoute = null;
 async function drawMap(data, lastIdx, nextIdx) {
   const { ruta, paradas } = data;
   const token = ++mapToken;
-  const legs = await Promise.all(paradas.slice(1).map((p, i) => legPath(paradas[i], p)));
+  // el recorrido guardado manda; sin él, se adivina por las calles tramo por tramo
+  const legs = data.trazo?.length > 1
+    ? legsFromShape(data.trazo, paradas)
+    : await Promise.all(paradas.slice(1).map((p, i) => legPath(paradas[i], p)));
   if (token !== mapToken) return; // llegó otra actualización más nueva
 
   overlay.clearLayers();

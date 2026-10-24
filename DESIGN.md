@@ -13,7 +13,7 @@
 - **Personalidad:** de aquí, directa y con humor de parada de bus. Habla como la gente ("¿Ya viene la 101?", "motorista", "unidad"), no como una empresa de tecnología.
 - **Lo que no es:** un clon de apps de tecnología de afuera, ni un tablero oscuro "tech".
 
-## Paleta (en `public/css/base.css`)
+## Paleta (en `public/css/base.css` para las pantallas de app y en `estilos/sitio.css` para las páginas públicas)
 
 | Color | Valor | Para qué |
 |---|---|---|
@@ -22,7 +22,7 @@
 | Maíz | `#F2B22E` | El acento: la unidad, lo próximo, el botón de pedir. Solo en el momento clave. |
 | Torogoz | `#0FA39C` | En línea y tramo recorrido. |
 | Alerta | `#D9434E` | Fallas y vencidos. Nada más. |
-| Papel | `#F5F2EA` | Fondo claro: pared encalada, cálido. `--papel-2` (`#EDE8DB`) para bandas y pestañas. |
+| Papel | `#F2F0EA` | Fondo claro: pared encalada, cálido sin llegar a crema (se ajustó el 2026-10-24). `--papel-2` (`#E4E1D8`) para bandas y pestañas. |
 
 Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa); el torogoz es el ave nacional.
 
@@ -34,14 +34,26 @@ Por qué: añil y maíz son colores de El Salvador (el tinte de añil, la milpa)
 - En CSS: `--display`, `--sans`, `--mono` (`--serif` quedó como nombre viejo de `--display`).
 - Las letras están en `public/fonts/` y se declaran en `public/css/fonts.css` (licencia SIL OFL). No se piden a Google.
 
-## Rediseño 2026-10-18: "rótulo y parada"
+## Rediseño 2026-10-24: "cartel de parada" (páginas públicas)
 
-Pedido por Mateo con libertad creativa.
+Pedido por Mateo ("todo, agrégale animaciones, Tailwind"). Se hizo con la skill design-taste-frontend
+(dirección "Loud and flat", semilla 1202628298). Aplica a portada, sensor, preguntas y legal.
+
+- **La idea:** el rótulo pintado de los buses de aquí (el número en maíz sobre noche, el letrero de destino, el boleto) se vuelve el cartel de la página: letras de rótulo enormes y campos planos de color que se tocan sin línea entre ellos.
+- **Tailwind v4** solo en las páginas públicas: el código está en `estilos/sitio.css` (colores, letras y las piezas como el tablero y el boleto) y en las clases del HTML. Se compila con `npm run css` a `public/css/sitio.css`, que se sube ya compilado (Render y la app no compilan nada). El CI revisa que esté al día.
+- **Cinco tamaños de letra:** cartel (el titular), título de sección, frase, texto (18 px) y pequeño (15 px). Nada más.
+- **Esquinas rectas, sin sombras, sin degradados, sin líneas finas, sin etiquetas pequeñas encima de los títulos** (la vieja `.kicker` y la franja se quitaron). Lo que separa es el espacio o un cambio de fondo.
+- **Un solo par de márgenes** (16 a 32 px) y una rejilla de 12 columnas (`.rejilla`) en todas las secciones.
+- **Fotos reales** de buses y calles de El Salvador, de Wikimedia Commons y Flickr, en `public/img/fotos/` con su licencia en `credits.json` y el crédito en el pie de cada página. Ninguna se presenta como un bus o un cliente de go503.
+- **Lo que se puede tocar:** el tablero en vivo (escoger ruta y parada), el bus del sensor (cada pieza), la flota como tablero de terminal (ejemplo) y el formulario como boleto.
+- **Movimiento:** el titular sube línea por línea al abrir; cada sección llega por partes al bajar (una sola vez); las fotos se abren como cortina y se mueven poquito con la página; las filas de la flota voltean como letrero de paletas; las cifras del sensor ruedan; el nombre del pie sube. Todo respeta "reducir movimiento" y sin JavaScript la página queda completa.
+
+## Rediseño 2026-10-18: "rótulo y parada" (sigue en las pantallas de app)
+
+Pedido por Mateo con libertad creativa. Hoy aplica al panel, el login, el mapa y el motorista.
 
 - **Más minimalista (pedido de Mateo, 2026-10-18):** sin sombras duras de color, sin texturas de puntos y bordes de 1 px (`--line-fuerte` es un beige un poco más oscuro que `--line`). Solo lo que flota (menús, diálogos, la barra del mapa) lleva una sombra suave.
 - **Botones planos:** esquinas de 6 px; al tocar se hunden 1 px (el timbre de bajada, en pequeño).
-- **Una sola franja** maíz + torogoz, delgada (5 px), al final de la portada. No se repite.
-- **Etiqueta** (`.kicker`): mayúsculas pequeñas con un punto maíz, encima de los títulos de sección.
 - **Letreros de noche** solo donde hay datos en vivo (tablero, motorista) y en la barra del panel.
 - **Mínimo 44 px** para todo lo que se toca.
 - **Tablas en el teléfono:** se vuelven tarjetas (`cards()` en `panel.js`): cada celda muestra el nombre de su columna.
@@ -51,7 +63,7 @@ Pedido por Mateo con libertad creativa.
 ## Motivo de identidad
 
 - El **rótulo de ruta** (`.fascia`): número en maíz sobre noche con filete amarillo, como el que va pintado en el bus.
-- La **línea de paradas**: un recorrido con puntos, el bus avanzando. Se repite en el tablero, en "Así sabemos dónde va tu bus" y en el pie de página.
+- La **línea de paradas**: un recorrido con puntos, el bus avanzando. Se repite en el tablero de la portada, en el mapa y en el motorista.
 
 ## Diales
 

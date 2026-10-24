@@ -1,6 +1,6 @@
 /* go503: marca compartida (portada, sensor, preguntas, login, panel y motorista)
    Dirección 2026-10-18 "rótulo y parada": letras de rótulo de ruta (condensadas, como los letreros
-   de destino), papel cálido de pared encalada, y la franja maíz-torogoz pintada en los buses. */
+   de destino), papel cálido de pared encalada. Las páginas públicas usan estilos/sitio.css (Tailwind). */
 
 :root {
   --anil: #1B2559;      /* marca */
@@ -12,8 +12,8 @@
   --torogoz-texto: #0B7F79; /* el mismo verde, más oscuro para letras sobre claro (4.8:1) */
   --alerta: #D9434E;    /* fallas y vencidos */
   --alerta-texto: #B42833;
-  --papel: #F5F2EA;     /* pared encalada: cálido, no gris de oficina */
-  --papel-2: #EDE8DB;   /* bandas y fondos de campos */
+  --papel: #F2F0EA;     /* pared encalada: cálido, sin llegar a crema (igual que las páginas públicas) */
+  --papel-2: #E4E1D8;   /* bandas y fondos de campos */
   --card: #FFFDF8;
   --tinta: #141B3D;
   --muted: #565C78;     /* 6.3:1 sobre papel */
@@ -30,7 +30,11 @@
   --r-md: 10px;
   --r-lg: 14px;
 
-  --ease-out: cubic-bezier(.2, .7, .3, 1);
+  /* movimiento: el mismo que en las páginas públicas (estilos/sitio.css) */
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.76, 0, .24, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -70,21 +74,6 @@ button, input, select, textarea { font-family: inherit; }
   color: inherit;
 }
 
-/* Etiqueta pequeña encima de los títulos, como el letrero de la parada */
-.kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  color: var(--muted);
-  font: 700 .82rem/1 var(--sans);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-.kicker::before { content: ""; width: 6px; height: 6px; background: var(--maiz); border-radius: 50%; }
-
-/* La franja de los buses pintados: gruesa en maíz, fina en torogoz */
-.franja { height: 10px; background: linear-gradient(var(--maiz) 0 6px, transparent 6px 7px, var(--torogoz) 7px 10px); }
-
 /* Rótulo de ruta: el letrero de destino del bus. Número en maíz sobre noche, con filete */
 .fascia {
   display: inline-grid;
@@ -114,9 +103,9 @@ button, input, select, textarea { font-family: inherit; }
   font: 700 1rem/1 var(--sans);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color .15s, border-color .15s, color .15s, transform .08s, box-shadow .08s;
+  transition: background-color var(--t-hover) ease, border-color var(--t-hover) ease, color var(--t-hover) ease, transform var(--t-press) var(--ease-out);
 }
-.btn:active { transform: translateY(1px) scale(.98); }
+.btn:active { transform: translateY(1px) scale(.97); }
 .btn--maiz { --edge: var(--maiz-hondo); background: var(--maiz); color: var(--noche); }
 .btn--maiz:hover { background: var(--maiz-claro); }
 .btn--anil { --edge: var(--noche); background: var(--anil); color: #fff; }

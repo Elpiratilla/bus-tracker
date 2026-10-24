@@ -18,10 +18,8 @@
     var(--noche);
   color: #fff;
 }
-/* la franja pintada de los buses, de arriba a abajo en la orilla */
 .auth__side .logo { color: #fff; }
 .auth__pitch h1 { max-width: 11ch; font-size: clamp(3.2rem, 7vw, 6.4rem); line-height: .88; text-transform: uppercase; }
-.auth__pitch h1::first-line { color: var(--maiz); }
 .auth__pitch p { max-width: 34rem; margin-top: 1.2rem; color: #C9D0EE; font-size: 1.08rem; line-height: 1.6; }
 
 /* una ruta con paradas, como decoración con sentido */
@@ -600,13 +598,13 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 /* ---------- Modo oscuro (login y panel) ---------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --papel: #0E1438; --papel-2: #1B2559; --card: #151D4A; --tinta: #F3EFE4; --muted: #AEB5D6;
+    --papel: #0E1438; --papel-2: #1B2559; --card: #151D4A; --tinta: #F2F0EA; --muted: #AEB5D6;
     --line: #2C3772; --line-fuerte: #34407A; --anil: #C9D0EE; --alerta-texto: #FF8A94; --torogoz-texto: #2CC4BC;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --papel: #0E1438; --papel-2: #1B2559; --card: #151D4A; --tinta: #F3EFE4; --muted: #AEB5D6;
+  --papel: #0E1438; --papel-2: #1B2559; --card: #151D4A; --tinta: #F2F0EA; --muted: #AEB5D6;
   --line: #2C3772; --line-fuerte: #34407A; --anil: #C9D0EE; --alerta-texto: #FF8A94; --torogoz-texto: #2CC4BC;
   color-scheme: dark;
 }

@@ -13,3 +13,6 @@ firmware/go503_sensor/config.h
 
 # App de Android: www/ se genera con npm run web (copia de public/)
 app/www/
+
+# Capturas y medidas de la skill de diseño (se regeneran)
+.taste-skill/

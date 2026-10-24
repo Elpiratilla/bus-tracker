@@ -11,7 +11,7 @@ function applyTheme() {
   const btn = $("tema");
   btn.setAttribute("aria-checked", String(dark));
   btn.title = dark ? "Pasar a modo claro" : "Pasar a modo oscuro";
-  document.querySelector('meta[name="theme-color"]').content = dark ? "#0E1438" : "#F3F5FB";
+  document.querySelector('meta[name="theme-color"]').content = dark ? "#0E1438" : "#F2F0EA";
 }
 $("tema").addEventListener("click", () => {
   const change = () => {
@@ -63,17 +63,43 @@ document.querySelectorAll(".faq__link").forEach((a) => a.addEventListener("click
   } catch {}
 }));
 
-// Animaciones al bajar: se activan cuando la sección aparece en pantalla (una sola vez)
-const reveal = document.querySelectorAll("[data-reveal]");
+// Cifras que ruedan (sensor.html): cada dígito sube hasta su número una vez, al aparecer.
+// El número real queda escrito para lectores de pantalla.
+document.querySelectorAll("[data-roll]").forEach((n) => {
+  const valor = n.textContent.trim();
+  const dicho = Object.assign(document.createElement("span"), { className: "sr-only", textContent: valor });
+  const visto = Object.assign(document.createElement("span"), { className: "roll__digits" });
+  visto.setAttribute("aria-hidden", "true");
+  let i = 0;
+  for (const ch of valor) {
+    if (!/\d/.test(ch)) { visto.append(ch); continue; }
+    const col = Object.assign(document.createElement("span"), { className: "roll__col" });
+    const tira = Object.assign(document.createElement("span"), { className: "roll__strip" });
+    tira.style.setProperty("--d", ch);
+    tira.style.setProperty("--i", i++);
+    col.append(Object.assign(document.createElement("i"), { textContent: ch }), tira);
+    visto.append(col);
+  }
+  n.classList.add("roll");
+  n.replaceChildren(dicho, visto);
+});
+
+// Animaciones al bajar: cada parte llega cuando su sección aparece en pantalla (una sola vez).
+// En [data-entra] y en las listas, cada hijo lleva su turno (--n) para llegar uno tras otro.
+document.querySelectorAll("[data-entra], .salidas, .campos").forEach((n) => {
+  [...n.children].forEach((c, i) => c.style.setProperty("--n", Math.min(i, 8)));
+});
+const reveal = document.querySelectorAll("[data-reveal], [data-entra], [data-cortina], .salidas, .campos, [data-pie], [data-roll]");
+const mostrar = (n) => n.classList.add("is-in", "is-visible");
 if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver((entries) => entries.forEach((e) => {
     if (!e.isIntersecting) return;
-    e.target.classList.add("is-visible");
+    mostrar(e.target);
     io.unobserve(e.target);
-  }), { threshold: 0.35 });
+  }), { rootMargin: "0px 0px -12% 0px", threshold: 0.05 });
   reveal.forEach((n) => io.observe(n));
 } else {
-  reveal.forEach((n) => n.classList.add("is-visible"));
+  reveal.forEach(mostrar);
 }
 
 })();

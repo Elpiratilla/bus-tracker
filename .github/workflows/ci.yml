@@ -40,6 +40,13 @@ jobs:
             node --check "$f" || exit 1
           done
 
+      # El CSS de las páginas públicas se compila con Tailwind (estilos/sitio.css -> public/css/sitio.css)
+      # y se sube ya compilado. Si alguien cambió clases en el HTML y no corrió `npm run css`, esto lo avisa.
+      - name: CSS compilado al día
+        run: |
+          npm run css
+          git diff --exit-code public/css/sitio.css || (echo "Corre npm run css y sube public/css/sitio.css" && exit 1)
+
       # Las pruebas de test/ (sin Supabase: todo en memoria)
       - name: Pruebas
         run: npm test

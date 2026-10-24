@@ -50,6 +50,7 @@ Abre <http://localhost:3000>. Sin `SUPABASE_URL`, el servidor trabaja solo en me
 | --- | --- |
 | `npm run dev` | Servidor que se reinicia solo al guardar cambios |
 | `npm start` | Servidor normal, el mismo que usa Render |
+| `npm run css` | Compila el CSS de las páginas públicas (Tailwind: `estilos/sitio.css` → `public/css/sitio.css`). Córrelo después de cambiar clases en portada, sensor, preguntas o legal; `npm run css:watch` lo hace solo mientras editas |
 | `npm test` | Pruebas de `test/` |
 | `npm run simulate` | Buses de prueba que recorren las rutas, para ver el mapa sin sensores (con el servidor encendido) |
 | `npm run admin` | Crea la cuenta de administrador, o vuelve administradora una cuenta existente |
@@ -64,7 +65,8 @@ bus-tracker/
 ├── public/
 │   ├── html/          las páginas (se abren en la raíz: /mapa.html, /legal.html…)
 │   ├── css/  js/      estilos y código de las páginas
-│   └── img/  fonts/   logos, íconos y letras
+│   └── img/  fonts/   logos, íconos y letras (img/fotos/: fotos de buses de aquí, con su licencia en credits.json)
+├── estilos/           el CSS de Tailwind de las páginas públicas (se compila con npm run css)
 ├── app/               app Android del motorista (Capacitor)
 ├── firmware/          programa del sensor ESP32
 ├── supabase/          migraciones de la base de datos

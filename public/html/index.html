@@ -5,29 +5,22 @@
   <!-- Idioma (español / inglés): antes que todo lo demás -->
   <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Go503</title>
+  <title>go503: ¿ya viene el bus?</title>
   <meta name="description" content="Mira dónde va tu bus y en cuántos minutos llega a tu parada. Y si tienes una flota, síguela desde un solo panel.">
-  <meta name="theme-color" content="#F3F5FB">
+  <meta name="theme-color" content="#F2F0EA">
   <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
   <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
   <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/fonts.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/sitio.css">
 </head>
-<body>
+<body class="overflow-x-clip">
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="i-bell" viewBox="0 0 24 24">
-      <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </symbol>
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
     <symbol id="i-moon" viewBox="0 0 24 24">
       <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
     </symbol>
@@ -35,220 +28,286 @@
       <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
       <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24">
-      <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
+    <symbol id="i-bus" viewBox="0 0 50 28">
+      <rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/>
+      <path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/>
+      <rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/>
+      <rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/>
     </symbol>
   </svg>
 
-
-  <!-- Portada: la pregunta de la parada, con el tablero en vivo como respuesta -->
+  <!-- Portada: la pregunta de la parada, en letras de cartel, y la respuesta en vivo encima del bus -->
   <header class="hero">
-    <nav class="top wrap" aria-label="Principal">
-      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
-      <button class="top__menu" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
-      <div class="top__links" id="top-links">
+    <nav class="top rejilla" aria-label="Principal">
+      <a class="col-span-6 lg:col-span-4 justify-self-start" href="/" aria-label="go503, inicio"><img class="logo--claro h-12 w-auto" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro h-12 w-auto" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <button class="top__menu col-span-6 justify-self-end inline-flex items-center gap-2 min-h-11 px-2 font-bold lg:hidden" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
+      <div class="top__links lg:col-span-8 lg:flex lg:items-center lg:gap-7" id="top-links">
         <a href="/mapa.html">Mapa en vivo</a>
-        <a href="/#empresas">Para empresas</a>
+        <a href="#empresas">Para empresas</a>
         <a href="/sensor.html">El sensor</a>
         <a href="/preguntas.html">Preguntas</a>
-        <button class="lang" type="button" data-idioma>English</button>
-        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
-          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
-          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
-          <span class="theme__knob" aria-hidden="true"></span>
-        </button>
-        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+        <span class="flex items-center gap-1 lg:ml-auto">
+          <button class="chip" type="button" data-idioma>English</button>
+          <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+            <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          </button>
+        </span>
+        <a class="btn btn--tinta mt-3 lg:mt-0" href="/login.html">Entrar al panel</a>
       </div>
     </nav>
 
-    <div class="hero__body wrap">
-      <div class="hero__copy">
-        <p class="kicker">San Salvador, en vivo</p>
-        <h1>¿Ya viene la <span class="nowrap"><button class="fascia fascia--title" id="h-ruta" type="button" title="Toca para cambiar de ruta" aria-label="Ruta 101. Toca para cambiar de ruta">101</button>?</span></h1>
-        <p class="hero__lead">Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.</p>
-        <div class="hero__actions">
-          <a class="btn btn--anil" id="cta-mapa" href="/mapa.html">Ver dónde va mi bus</a>
-          <a class="btn btn--line" id="cta-aviso" href="/mapa.html">
-            <svg class="ico ico--bell" aria-hidden="true"><use href="#i-bell"/></svg>
-            Avísame cuando venga
-          </a>
-        </div>
+    <div class="rejilla lg:min-h-[calc(58svh-5.5rem)]">
+      <h1 class="col-span-12 lg:col-start-5 lg:col-span-8 lg:row-start-1 pt-6 lg:pt-[3vh] text-[clamp(3.4rem,14.5vw,7rem)] lg:text-cartel leading-[.84]">
+        <span class="linea"><span style="--i:0">¿Ya viene</span></span>
+        <span class="linea"><span style="--i:1">la <button class="rotulo" id="h-ruta" type="button" title="Toca para cambiar de ruta" aria-label="Ruta 101. Toca para cambiar de ruta" translate="no">101</button>?</span></span>
+      </h1>
+      <div class="col-span-12 lg:col-span-4 lg:row-start-1 pt-6 lg:pt-[calc(28svh-5.5rem)]">
+        <p class="text-frase max-w-[24ch]" data-carga style="--d:420ms">Mira por dónde va el bus en San Salvador y cuántos minutos le faltan para llegar a tu parada.</p>
+        <a class="btn btn--tinta mt-7 w-full sm:w-auto" id="cta-mapa" href="/mapa.html" data-carga style="--d:480ms">Ver dónde va mi bus</a>
       </div>
+    </div>
 
-      <div class="hero__live">
-        <section class="board" aria-labelledby="board-stop" aria-live="polite">
-          <div class="board__head">
-            <span class="fascia" id="b-ruta">101</span>
-            <div class="board__next">
-              <p class="board__label">Siguiente parada</p>
-              <h2 class="board__stop" id="board-stop">Cargando…</h2>
-            </div>
-          </div>
-
-          <div class="board__dir" id="b-dir" role="group" aria-label="Sentido" hidden></div>
-
-          <p class="board__eta" id="b-eta"><span class="board__num">–</span></p>
-
-          <div class="strip" id="b-strip" role="group" aria-label="Escoge tu parada">
-            <div class="strip__line" aria-hidden="true"><div class="strip__done" id="b-done"></div></div>
-            <div class="strip__stops" id="b-stops"></div>
-            <div class="strip__bus" id="b-bus" aria-hidden="true">
-              <svg viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
-            </div>
-          </div>
-
-          <p class="board__hint" id="b-hint">Toca tu parada para ver cuánto le falta.</p>
-
-          <div class="board__foot">
-            <p class="board__upd"><span class="live" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
-            <div class="board__routes" id="b-routes" role="group" aria-label="Cambiar de ruta"></div>
-          </div>
-        </section>
-
+    <div class="rejilla mt-14 lg:mt-0">
+      <!-- La respuesta en vivo: los minutos que faltan, en el campo maíz sobre la foto -->
+      <div class="col-span-12 lg:col-start-5 lg:col-span-8 relative">
+        <p class="relative z-10 -mb-16 w-[min(100%,20rem)] sm:w-[60%] lg:w-[17rem] bg-maiz text-noche p-5" aria-live="polite" data-carga style="--d:700ms">
+          <span class="block font-display font-extrabold text-titulo uppercase" id="h-min">– min</span>
+          <span class="block mt-2 text-chico" id="h-linea">Buscando el bus más cercano…</span>
+        </p>
+        <figure class="foto bg-[#8FA27E] aspect-[4/3] lg:aspect-[16/10] -mx-m lg:mx-0" data-abre>
+          <img class="size-full object-cover object-[50%_18%]" src="/img/fotos/el-salvador-bus-201.jpg" width="1211" height="1133" alt="Bus de la ruta 201 con su rótulo pintado de colores: Santa Ana, San Salvador, Directo." fetchpriority="high">
+        </figure>
+      </div>
+      <div class="col-span-12 lg:col-span-4 lg:row-start-1 self-end pt-8 lg:pt-0">
+        <div class="rutas" id="b-routes" role="group" aria-label="Escoge tu ruta"></div>
+        <p class="text-soft mt-4 max-w-[28ch]">Por ahora andamos en la 101, la 42 y la 29. Toca un número para cambiar de ruta.</p>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- Cómo funciona: es una secuencia real, por eso va como paradas de una ruta -->
-    <section class="how wrap" aria-labelledby="how-title">
-      <h2 id="how-title">Así sabemos dónde va tu bus</h2>
-      <div class="how__track" data-reveal>
-        <span class="how__bus" aria-hidden="true"><svg viewBox="0 0 50 28" width="34" height="19"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/></svg></span>
-      <ol class="how__route">
-        <li>
-          <span class="how__stop" aria-hidden="true">1</span>
-          <h3>El bus lleva un sensor</h3>
-          <p>Una cajita con GPS que avisa por dónde va la unidad cada 5 segundos mientras anda.</p>
-        </li>
-        <li>
-          <span class="how__stop" aria-hidden="true">2</span>
-          <h3>Contamos lo que de verdad tarda</h3>
-          <p>Si el tramo a Metrocentro se lleva 12 minutos con el tráfico de la mañana, con eso calculamos. Nada de horarios de papel.</p>
-        </li>
-        <li>
-          <span class="how__stop how__stop--you" aria-hidden="true">3</span>
-          <h3>Tú sales a tiempo</h3>
-          <p>Y si quieres, te avisamos al teléfono cuando tu bus esté a 5 minutos.</p>
-        </li>
-      </ol>
-      </div>
-    </section>
-
-    <!-- Para empresas -->
-    <section class="biz" id="empresas" aria-labelledby="biz-title">
-      <div class="biz__inner wrap">
-        <div class="biz__copy">
-          <p class="kicker">Para dueños de buses</p>
-          <h2 id="biz-title">¿Tienes buses? Sabe dónde anda cada uno</h2>
-          <p class="biz__lead">Sin tener que llamar al motorista. Le pones el sensor  Go503 a tus unidades y las ves todas desde el teléfono o la computadora: dónde van, cuántos kilómetros llevan y cuándo les toca el cambio de aceite.</p>
-          <dl class="biz__list">
-            <div><dt>Todas en un mapa</dt><dd>Cada unidad con su velocidad y la hora de su última señal.</dd></div>
-            <div><dt>El aceite, a tiempo</dt><dd>El panel cuenta los kilómetros y las horas de motor, y te avisa antes de que se pase el cambio.</dd></div>
-            <div><dt>Cuántas vueltas dan</dt><dd>Cuánto tardan en cada tramo según la hora y cuántas vueltas completan al día.</dd></div>
-            <div><dt>Alertas al momento</dt><dd>Motor caliente, exceso de velocidad, poco combustible o una unidad sin señal: te aparece en la campanita del panel.</dd></div>
-            <div><dt>Tus pasajeros te ven</dt><dd>Si tu ruta está en el mapa público, la gente sabe cuánto le falta a tu bus. Placas, motor y datos de tu empresa solo los ves tú.</dd></div>
-            <div><dt>Si se pierde un sensor</dt><dd>Cada uno tiene su propia clave. Lo desactivas desde el panel y deja de contar.</dd></div>
-          </dl>
-          <div class="biz__actions">
-            <a class="btn btn--maiz" href="#pedir">Pedir el sensor</a>
-            <a class="btn btn--line" href="/sensor.html">Ver qué lleva el bus</a>
-          </div>
+    <!-- Tablero en vivo: el letrero de noche, con la línea de paradas de lado a lado -->
+    <section class="bg-noche text-papel mt-[clamp(5rem,12vw,10rem)] py-[clamp(4.5rem,9vw,8rem)] overflow-x-clip" id="tablero" aria-labelledby="tablero-titulo">
+      <div class="rejilla gap-y-8">
+        <div class="col-span-12 lg:col-span-7" data-entra>
+          <h2 class="text-titulo" id="tablero-titulo">Toca tu parada</h2>
+          <p class="board__label text-frase mt-8" id="b-label">Su próxima parada:</p>
+          <p class="flex items-center gap-4 mt-3">
+            <span class="rotulo text-titulo" id="b-ruta" translate="no">101</span>
+            <span class="font-display font-extrabold uppercase text-titulo" id="board-stop">Cargando…</span>
+          </p>
+          <div class="board__dir mt-6" id="b-dir" role="group" aria-label="Sentido" hidden></div>
+          <p class="board__eta mt-8" id="b-eta"><span class="board__num">–</span></p>
         </div>
-
-        <!-- Vista del panel: datos de ejemplo, y así lo dice la barra de arriba -->
-        <figure class="preview" data-reveal aria-label="Vista del panel de empresas">
-          <div class="preview__bar"><span class="logo"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="23" height="26"></span><span>Ejemplo: así se ve tu panel</span></div>
-          <table class="preview__table">
-            <thead><tr><th>Unidad</th><th>Estado</th><th>Velocidad</th><th>Aceite</th></tr></thead>
-            <tbody>
-              <tr><td><b>Unidad 7</b><small>Ruta 101</small></td><td><span class="dot dot--on"></span>En ruta</td><td>34 km/h</td><td><span class="meter"><span style="width:42%"></span></span></td></tr>
-              <tr><td><b>Unidad 12</b><small>Ruta 101</small></td><td><span class="dot dot--on"></span>En Metrocentro</td><td>0 km/h</td><td><span class="meter meter--soon"><span style="width:93%"></span></span></td></tr>
-              <tr><td><b>Unidad 3</b><small>Ruta 42</small></td><td><span class="dot"></span>Sin señal</td><td>–</td><td><span class="meter"><span style="width:18%"></span></span></td></tr>
-            </tbody>
-          </table>
+        <figure class="col-span-12 sm:col-span-8 sm:col-start-3 lg:col-start-9 lg:col-span-4 lg:recorte self-start lg:mt-6" style="--giro:3deg;--cortina:var(--noche)" data-cortina>
+          <span class="block overflow-clip"><img class="w-full aspect-[4/5] object-cover object-[38%_50%] deriva" src="/img/fotos/el-salvador-bus.jpg" width="1600" height="1200" alt="Gente subiendo a un bus de la 201 en una parada a la orilla de la calle." loading="lazy"></span>
+          <figcaption class="text-chico text-[#C9D0EE] mt-3">Una parada en El Salvador: así esperamos todos.</figcaption>
         </figure>
+
+        <div class="col-span-12 mt-6" id="b-strip" role="group" aria-label="Escoge tu parada" data-ui>
+          <div class="strip">
+            <div class="strip__line" aria-hidden="true"><div class="strip__done" id="b-done"></div></div>
+            <div class="strip__stops" id="b-stops"></div>
+            <div class="strip__bus" id="b-bus" aria-hidden="true" hidden><svg viewBox="0 0 50 28"><use href="#i-bus"/></svg></div>
+          </div>
+        </div>
+        <div class="col-span-12 flex flex-wrap items-center justify-between gap-4 text-chico text-[#C9D0EE]">
+          <p class="flex items-center gap-3"><span class="live live--off" aria-hidden="true"></span><span id="b-upd">Conectando…</span></p>
+          <p id="b-hint">Toca el nombre de tu parada y te decimos cuánto le falta.</p>
+        </div>
       </div>
     </section>
 
-    <!-- Pedir el sensor: formulario de ventas (se guarda en Supabase, tabla leads) -->
-    <section class="order wrap" id="pedir" aria-labelledby="order-title">
-      <div class="order__copy">
-        <h2 id="order-title">Pide el sensor para tus unidades</h2>
-        <p class="order__lead">Déjanos tus datos y te contactamos para cotizar. Sin compromiso.</p>
-        <p class="order__more">¿Tienes dudas antes? Lee <a href="/preguntas.html">lo que nos preguntan los dueños</a>.</p>
-        <ol class="order__steps">
-          <li><b>Te escribimos</b><span>Por WhatsApp o llamada, para saber cuántas unidades y qué rutas tienes.</span></li>
-          <li><b>Instalamos el sensor</b><span>En cada unidad, conectado a la batería con su propio fusible. No se corta ningún cable.</span></li>
-          <li><b>Ves tu flota</b><span>Te damos acceso al panel y desde ese día sigues tus buses en vivo.</span></li>
-        </ol>
+    <!-- Cómo funciona: la misma ficha de llegada, cada vez más completa, en cuatro campos de color -->
+    <section class="pt-[clamp(5rem,12vw,10rem)]" aria-labelledby="como-titulo">
+      <h2 class="rejilla text-titulo" id="como-titulo"><span class="col-span-12">Así sabemos dónde va tu bus</span></h2>
+      <div class="campos grid sm:grid-cols-2 xl:grid-cols-4 mt-12">
+        <div class="campo bg-anil text-papel flex flex-col justify-between gap-10 min-h-[27rem] xl:min-h-[84svh] p-m pt-[clamp(2.5rem,12svh,7rem)]" style="--n:0">
+          <div class="ficha" data-ui style="--n:0">
+            <p class="text-chico text-[#4A5070]">Ejemplo · Ruta 101</p>
+            <p class="font-display font-extrabold uppercase text-[2rem] leading-none mt-1 mb-2">Unidad 7</p>
+            <p class="ficha__fila"><span>Última señal</span><b>hace 4 s</b></p>
+          </div>
+          <p class="text-frase font-bold max-w-[22ch]">Primero, el sensor del bus avisa dónde va, cada 5 segundos.</p>
+        </div>
+        <div class="campo bg-torogoz text-noche flex flex-col justify-between gap-10 min-h-[27rem] xl:min-h-[84svh] p-m pt-[clamp(2.5rem,12svh,7rem)]">
+          <div class="ficha" data-ui style="--n:1">
+            <p class="text-chico text-[#4A5070]">Ejemplo · Ruta 101</p>
+            <p class="font-display font-extrabold uppercase text-[2rem] leading-none mt-1 mb-2">Unidad 7</p>
+            <p class="ficha__fila"><span>Última señal</span><b>hace 4 s</b></p>
+            <p class="ficha__fila"><span>Parque Infantil a Metrocentro</span><b>12 min</b></p>
+          </div>
+          <p class="text-frase font-bold max-w-[22ch]">Luego medimos lo que de verdad tarda cada tramo a esa hora.</p>
+        </div>
+        <div class="campo bg-maiz text-noche flex flex-col justify-between gap-10 min-h-[27rem] xl:min-h-[84svh] p-m pt-[clamp(2.5rem,12svh,7rem)]">
+          <div class="ficha" data-ui style="--n:2">
+            <p class="text-chico text-[#4A5070]">Ejemplo · Ruta 101</p>
+            <p class="font-display font-extrabold uppercase text-[2rem] leading-none mt-1 mb-2">Unidad 7</p>
+            <p class="ficha__fila"><span>Última señal</span><b>hace 4 s</b></p>
+            <p class="ficha__fila"><span>Parque Infantil a Metrocentro</span><b>12 min</b></p>
+            <p class="ficha__fila"><span>Llega a Metrocentro</span><b>en 6 min</b></p>
+          </div>
+          <p class="text-frase font-bold max-w-[22ch]">Con eso calculamos cuántos minutos le faltan a tu parada.</p>
+        </div>
+        <div class="campo bg-step text-ink flex flex-col justify-between gap-10 min-h-[27rem] xl:min-h-[84svh] p-m pt-[clamp(2.5rem,12svh,7rem)]">
+          <div class="ficha bg-noche! text-papel!" data-ui style="--n:3">
+            <p class="text-chico text-[#B9C0DE]">Ejemplo · Aviso en tu teléfono</p>
+            <p class="font-display font-extrabold uppercase text-[2rem] leading-none mt-1 mb-2 text-maiz">Tu 101 viene</p>
+            <p class="text-[.9375rem]">Está a 5 minutos de Metrocentro. Ya puedes salir.</p>
+          </div>
+          <p class="text-frase font-bold max-w-[22ch]">Y si quieres, te avisamos al teléfono cuando esté a 5 minutos.</p>
+        </div>
       </div>
+    </section>
 
-      <form class="order__form" id="f-pedir" novalidate>
-        <div class="order__fields" id="pedir-campos">
-          <div class="field">
-            <label for="p-nombre">Tu nombre</label>
-            <input id="p-nombre" name="nombre" autocomplete="name" maxlength="80" required>
+    <!-- Para empresas: la foto del motorista sale por dos bordes; el título va en un campo añil encima -->
+    <section class="relative pt-[clamp(5rem,12vw,10rem)]" id="empresas" aria-labelledby="biz-title">
+      <div class="rejilla">
+        <figure class="col-span-12 lg:col-start-1 lg:col-span-8 lg:row-start-1 -ml-m foto" data-cortina>
+          <span class="block overflow-clip"><img class="w-full aspect-[4/3] lg:aspect-[16/11] object-cover deriva" src="/img/fotos/bus-driver-7185450748.jpg" width="1024" height="768" alt="Un motorista maneja su bus con el timón decorado y los letreros pintados en el parabrisas." loading="lazy"></span>
+        </figure>
+        <div class="col-span-12 lg:col-start-7 lg:col-span-6 lg:row-start-1 self-start relative z-10 -mt-20 lg:mt-[clamp(10rem,22vw,20rem)] bg-anil text-papel p-[clamp(1.5rem,3vw,3rem)] -mr-m lg:mr-0" data-entra>
+          <h2 class="text-titulo" id="biz-title">¿Tienes buses? Sabe dónde anda cada uno</h2>
+          <p class="text-frase mt-6 max-w-[34ch]">Sin llamar al motorista. Le pones el sensor go503 a tus unidades y las ves todas desde el teléfono o la computadora.</p>
+          <div class="flex flex-wrap items-center gap-x-8 gap-y-4 mt-8">
+            <a class="btn btn--maiz" href="#pedir">Pedir el sensor</a>
+            <a class="enlace font-bold min-h-11 inline-flex items-center" href="/sensor.html">Ver qué lleva el bus</a>
           </div>
-          <div class="field field--half">
-            <label for="p-telefono">Teléfono o WhatsApp</label>
-            <input id="p-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="7123-4567" required>
-          </div>
-          <div class="field field--half">
-            <label for="p-unidades">¿Cuántas unidades?</label>
-            <input id="p-unidades" name="unidades" type="number" min="1" max="5000" inputmode="numeric" placeholder="10">
-          </div>
-          <!-- Lo opcional queda guardado: con nombre y teléfono ya podemos escribirte -->
-          <details class="order__extra" id="pedir-extra">
-            <summary>Agregar más datos <small>(opcional)</small></summary>
-            <div class="order__extra-fields">
-              <div class="field">
-                <label for="p-empresa">Empresa o cooperativa</label>
-                <input id="p-empresa" name="empresa" autocomplete="organization" maxlength="80">
-              </div>
-              <div class="field field--half">
-                <label for="p-ciudad">Ciudad</label>
-                <input id="p-ciudad" name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="San Salvador">
-              </div>
-              <div class="field field--half">
-                <label for="p-correo">Correo</label>
-                <input id="p-correo" name="correo" type="email" autocomplete="email" maxlength="120">
-              </div>
-              <div class="field">
-                <label for="p-mensaje">¿Algo más que debamos saber?</label>
-                <textarea id="p-mensaje" name="mensaje" rows="3" maxlength="600" placeholder="Rutas, horarios, lo que necesites"></textarea>
-              </div>
+        </div>
+        <p class="col-span-12 lg:col-span-5 lg:row-start-2 text-chico text-soft mt-4">Un motorista en su ruta, El Salvador.</p>
+      </div>
+    </section>
+
+    <!-- La flota como tablero de terminal: datos de ejemplo, y así lo dice el texto de arriba -->
+    <section class="bg-noche text-papel mt-[clamp(5rem,12vw,10rem)] py-[clamp(4.5rem,9vw,8rem)]" aria-labelledby="flota-titulo">
+      <div class="rejilla items-end gap-y-4" data-entra>
+        <h2 class="col-span-12 lg:col-span-7 text-titulo" id="flota-titulo">Así ves tu flota</h2>
+        <p class="col-span-12 lg:col-span-5 text-[#C9D0EE] max-w-[40ch] lg:justify-self-end">Ejemplo con unidades inventadas. Toca una unidad para ver su detalle, como en tu panel.</p>
+      </div>
+      <div class="salidas mt-12 px-3" id="salidas" data-ui>
+        <p class="salida pointer-events-none bg-transparent! min-h-0! py-0! text-chico! font-sans! normal-case! font-bold! text-[#B9C0DE]!" aria-hidden="true"><span>Unidad</span><span class="salida__dato">Velocidad</span><span class="salida__dato">Última señal</span><span class="salida__dato">Aceite</span><span class="justify-self-end">Estado</span></p>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 7</span><small>Ruta 101, hacia Zona Rosa</small></span><span class="salida__dato">34 km/h</span><span class="salida__dato">4 s</span><span class="salida__dato">2,900 km</span><span class="salida__estado salida__estado--ruta">En ruta</span><span class="salida__detalle">Pasó por Parque Infantil hace 3 minutos y va a 34 km/h. Le faltan 2,900 km para el cambio de aceite.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 3</span><small>Ruta 101, en Terminal de Oriente</small></span><span class="salida__dato">0 km/h</span><span class="salida__dato">6 s</span><span class="salida__dato">4,100 km</span><span class="salida__estado salida__estado--parada">Detenida</span><span class="salida__detalle">Lleva 8 minutos detenida en la Terminal de Oriente, con el motor apagado. Sale en la próxima vuelta.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 9</span><small>Ruta 42</small></span><span class="salida__dato">28 km/h</span><span class="salida__dato">3 s</span><span class="salida__dato">1,750 km</span><span class="salida__estado salida__estado--ruta">En ruta</span><span class="salida__detalle">Va en su tercera vuelta del día. El último tramo lo hizo en 14 minutos.</span></button>
+        <button class="salida" type="button" aria-expanded="true"><span><span class="salida__nombre">Unidad 12</span><small>Ruta 101, en Metrocentro</small></span><span class="salida__dato">0 km/h</span><span class="salida__dato">5 s</span><span class="salida__dato">820 km</span><span class="salida__estado salida__estado--aceite">Aceite pronto</span><span class="salida__detalle">Detenida en Metrocentro, hacia Zona Rosa. Motor a 88 °C y combustible al 64 %. Le faltan 820 km para el cambio de aceite: el panel te avisó esta mañana.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 15</span><small>Ruta 29</small></span><span class="salida__dato">41 km/h</span><span class="salida__dato">2 s</span><span class="salida__dato">3,300 km</span><span class="salida__estado salida__estado--ruta">En ruta</span><span class="salida__detalle">Va a 41 km/h. Hoy lleva 5 vueltas completas.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 4</span><small>Ruta 42</small></span><span class="salida__dato">–</span><span class="salida__dato">2 h</span><span class="salida__dato">2,050 km</span><span class="salida__estado salida__estado--sin">Sin señal</span><span class="salida__detalle">Su última señal fue a las 6:12 a. m. en la Terminal de Oriente. Si el sensor se perdió, lo desactivas desde el panel.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 21</span><small>Ruta 29</small></span><span class="salida__dato">22 km/h</span><span class="salida__dato">4 s</span><span class="salida__dato">5,600 km</span><span class="salida__estado salida__estado--ruta">En ruta</span><span class="salida__detalle">Va despacio por el tráfico de la tarde: el tramo que suele tardar 9 minutos va en 13.</span></button>
+        <button class="salida" type="button" aria-expanded="false"><span><span class="salida__nombre">Unidad 8</span><small>Ruta 101</small></span><span class="salida__dato">0 km/h</span><span class="salida__dato">9 s</span><span class="salida__dato">260 km</span><span class="salida__estado salida__estado--aceite">Aceite pronto</span><span class="salida__detalle">Le faltan 260 km para el cambio de aceite. Con lo que anda al día, le toca en dos días.</span></button>
+      </div>
+    </section>
+
+    <!-- Lo que hace el panel: una lista grande, con una foto de buses de la ciudad pegada al lado -->
+    <section class="pt-[clamp(5rem,12vw,10rem)]" aria-labelledby="panel-titulo">
+      <div class="rejilla gap-y-12">
+        <div class="col-span-12 lg:col-span-4">
+          <h2 class="text-titulo" id="panel-titulo">Lo que cuenta el panel</h2>
+          <figure class="recorte mt-12 hidden lg:block lg:sticky lg:top-12" style="--giro:-3deg" data-cortina>
+            <span class="block overflow-clip"><img class="w-full aspect-[4/5] object-cover object-[30%_50%] deriva" src="/img/fotos/sitramss-san-salvador.jpg" width="1600" height="1067" alt="Buses en una calle de San Salvador, con el volcán al fondo." loading="lazy"></span>
+            <figcaption class="text-chico text-soft mt-3">Buses en San Salvador.</figcaption>
+          </figure>
+        </div>
+        <dl class="col-span-12 lg:col-start-6 lg:col-span-7 grid gap-y-[clamp(2rem,4vw,3.5rem)] lg:pt-4" data-entra>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">Todas en un mapa</dt><dd>Cada unidad con su velocidad y la hora de su última señal.</dd></div>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">El aceite, a tiempo</dt><dd>El panel cuenta los kilómetros y las horas de motor, y te avisa antes de que se pase el cambio.</dd></div>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">Cuántas vueltas dan</dt><dd>Cuánto tardan en cada tramo según la hora y cuántas vueltas completan al día.</dd></div>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">Alertas al momento</dt><dd>Motor caliente, exceso de velocidad, poco combustible o una unidad sin señal: te aparece en la campanita del panel.</dd></div>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">Tus pasajeros te ven</dt><dd>Si tu ruta está en el mapa público, la gente sabe cuánto le falta a tu bus. Placas, motor y datos de tu empresa solo los ves tú.</dd></div>
+          <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 gap-y-2"><dt class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]">Si se pierde un sensor</dt><dd>Cada uno tiene su propia clave. Lo desactivas desde el panel y deja de contar.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Pedir el sensor: el formulario es un boleto de bus, con su picado (se guarda en Supabase, tabla leads) -->
+    <section class="rejilla py-[clamp(5rem,12vw,10rem)] scroll-mt-4" id="pedir" aria-labelledby="order-title">
+      <div class="boleto col-span-12 lg:col-start-2 lg:col-span-10 grid lg:grid-cols-[46fr_54fr]" style="--corte-y:31rem">
+        <span class="boleto__picado" aria-hidden="true"></span>
+        <div class="p-[clamp(1.5rem,3.4vw,3rem)] pb-14 lg:pb-[clamp(1.5rem,3.4vw,3rem)] flex flex-col gap-8 lg:min-h-[38rem]" data-entra>
+          <h2 class="text-titulo" id="order-title">Pide el sensor para tus buses</h2>
+          <p class="text-frase max-w-[30ch]">Déjanos tu nombre y un teléfono. Te escribimos en menos de un día hábil para cotizar, sin compromiso.</p>
+          <ol class="grid gap-3 lg:mt-auto">
+            <li><b>Te escribimos</b> por WhatsApp o llamada, para saber cuántas unidades y qué rutas tienes.</li>
+            <li><b>Instalamos el sensor</b> en cada unidad, conectado a la batería con su propio fusible.</li>
+            <li><b>Ves tu flota</b> en el panel desde ese mismo día.</li>
+          </ol>
+          <p class="text-chico">¿Dudas antes? Lee <a class="enlace font-bold" href="/preguntas.html">lo que nos preguntan los dueños</a>.</p>
+        </div>
+
+        <form data-ui class="p-[clamp(1.5rem,3.4vw,3rem)] pt-14 lg:pt-[clamp(1.5rem,3.4vw,3rem)] lg:pl-[clamp(2.5rem,4vw,4rem)]" id="f-pedir" novalidate>
+          <div class="grid sm:grid-cols-2 gap-4" id="pedir-campos">
+            <div class="field sm:col-span-2">
+              <label for="p-nombre">Tu nombre</label>
+              <input id="p-nombre" name="nombre" autocomplete="name" maxlength="80" required>
             </div>
-          </details>
-          <p class="order__note">Solo te pedimos tu nombre y un teléfono. Te escribimos en menos de un día hábil.</p>
-          <!-- trampa para bots: escondido para las personas -->
-          <div class="order__trap" aria-hidden="true"><label for="p-sitio">Sitio web</label><input id="p-sitio" name="sitio" tabindex="-1" autocomplete="off"></div>
-          <p class="order__error" id="pedir-error" role="alert" hidden></p>
-          <button class="btn btn--maiz order__send" type="submit" id="pedir-enviar">Enviar solicitud</button>
-          <p class="order__legal">Usamos estos datos solo para responderte y mandarte la cotización. <a href="/legal.html#privacidad">Cómo los cuidamos</a>.</p>
-        </div>
+            <div class="field">
+              <label for="p-telefono">Teléfono o WhatsApp</label>
+              <input id="p-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="7123-4567" required>
+            </div>
+            <div class="field">
+              <label for="p-unidades">¿Cuántas unidades?</label>
+              <input id="p-unidades" name="unidades" type="number" min="1" max="5000" inputmode="numeric" placeholder="10">
+            </div>
+            <!-- Lo opcional queda guardado: con nombre y teléfono ya podemos escribirte -->
+            <details class="extra sm:col-span-2" id="pedir-extra">
+              <summary>Agregar más datos (opcional)</summary>
+              <div class="grid sm:grid-cols-2 gap-4 pt-3">
+                <div class="field sm:col-span-2">
+                  <label for="p-empresa">Empresa o cooperativa</label>
+                  <input id="p-empresa" name="empresa" autocomplete="organization" maxlength="80">
+                </div>
+                <div class="field">
+                  <label for="p-ciudad">Ciudad</label>
+                  <input id="p-ciudad" name="ciudad" autocomplete="address-level2" maxlength="80" placeholder="San Salvador">
+                </div>
+                <div class="field">
+                  <label for="p-correo">Correo</label>
+                  <input id="p-correo" name="correo" type="email" autocomplete="email" maxlength="120">
+                </div>
+                <div class="field sm:col-span-2">
+                  <label class="sr-only" for="p-mensaje">¿Algo más que debamos saber?</label>
+                  <textarea id="p-mensaje" name="mensaje" rows="3" maxlength="600" placeholder="¿Algo más? Rutas, horarios, lo que necesites"></textarea>
+                </div>
+              </div>
+            </details>
+            <!-- trampa para bots: escondido para las personas -->
+            <div class="absolute -left-[9999px]" aria-hidden="true"><label for="p-sitio">Sitio web</label><input id="p-sitio" name="sitio" tabindex="-1" autocomplete="off"></div>
+            <p class="sm:col-span-2 bg-noche text-papel p-3 font-bold" id="pedir-error" role="alert" hidden></p>
+            <button class="btn btn--noche sm:col-span-2 min-h-14 w-full" type="submit" id="pedir-enviar">Enviar solicitud</button>
+            <p class="sm:col-span-2 text-chico">Usamos estos datos solo para responderte y mandarte la cotización. <a class="enlace font-bold" href="/legal.html#privacidad">Cómo los cuidamos</a>.</p>
+          </div>
 
-        <div class="order__done" id="pedir-listo" tabindex="-1" hidden>
-          <svg class="order__check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="3" pathLength="1"/><path d="M15 27l7 7 15-16" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg>
-          <h3 id="pedir-gracias">Recibimos tu solicitud</h3>
-          <p id="pedir-detalle">Te escribimos pronto.</p>
-          <button class="btn btn--line" type="button" id="pedir-otra">Enviar otra</button>
-        </div>
-      </form>
+          <div class="grid content-center justify-items-start gap-4 h-full" id="pedir-listo" tabindex="-1" hidden>
+            <svg class="check size-16" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="3" pathLength="1"/><path d="M15 27l7 7 15-16" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg>
+            <h3 class="font-display font-extrabold uppercase text-[2.6rem] leading-none" id="pedir-gracias">Recibimos tu solicitud</h3>
+            <p id="pedir-detalle">Te escribimos pronto.</p>
+            <button class="btn btn--noche" type="button" id="pedir-otra">Enviar otra</button>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 
-  <footer class="foot" data-reveal>
-    <div class="foot__inner wrap">
-    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
-    <span class="foot__road" aria-hidden="true">
-      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
-    </span>
-    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
-    <p>Hecho en El Salvador por gente que también espera el bus.</p>
-    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a><a href="/legal.html">Legal y privacidad</a></nav>
+  <!-- El pie: la invitación, los enlaces y el nombre enorme cortado por el borde de abajo -->
+  <footer class="bg-noche text-papel overflow-clip pt-[clamp(4.5rem,9vw,8rem)]" data-pie>
+    <div class="rejilla gap-y-10">
+      <div class="col-span-12 lg:col-span-7">
+        <h2 class="text-titulo">¿Ya viene la tuya?</h2>
+        <a class="btn btn--maiz mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
+      </div>
+      <nav class="col-span-12 lg:col-start-10 lg:col-span-3 grid gap-1 content-start" aria-label="Pie de página">
+        <a class="enlace min-h-11 inline-flex items-center" href="/mapa.html">Mapa en vivo</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/sensor.html">El sensor</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/preguntas.html">Preguntas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/login.html">Panel de empresas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/legal.html">Legal y privacidad</a>
+      </nav>
+      <div class="col-span-12 flex flex-wrap justify-between gap-x-10 gap-y-3 text-chico text-[#C9D0EE] mt-[clamp(2rem,6vw,5rem)]">
+        <p>Hecho en El Salvador por gente que también espera el bus.</p>
+        <p class="max-w-[56ch]">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
+      </div>
     </div>
+    <p class="px-m text-maiz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
   </footer>
 
   <script src="/js/sitio.js" defer></script>

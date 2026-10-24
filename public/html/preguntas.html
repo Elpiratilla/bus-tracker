@@ -5,29 +5,22 @@
   <!-- Idioma (español / inglés): antes que todo lo demás -->
   <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Preguntas sobre Go503</title>
-  <meta name="description" content="Lo que preguntan los dueños de buses antes de poner el sensor go503.">
-  <meta name="theme-color" content="#F3F5FB">
+  <title>Preguntas de los dueños · go503</title>
+  <meta name="description" content="Lo que nos preguntan los dueños de buses antes de comprar el sensor go503: instalación, datos, batería y quién ve tu flota.">
+  <meta name="theme-color" content="#F2F0EA">
   <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
   <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/img/go503-favicon.svg" type="image/svg+xml">
   <link rel="icon" href="/img/icono-192.png" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <!-- Letras del proyecto: la de los títulos se pide primero porque es la que más se nota -->
   <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/fonts.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/sitio.css">
 </head>
-<body>
+<body class="overflow-x-clip">
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <symbol id="i-bell" viewBox="0 0 24 24">
-      <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M10 21h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </symbol>
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
     <symbol id="i-moon" viewBox="0 0 24 24">
       <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
     </symbol>
@@ -35,107 +28,159 @@
       <circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/>
       <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
     </symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24">
-      <path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-      <circle cx="12" cy="9.5" r="2.5" fill="currentColor"/>
-    </symbol>
   </svg>
 
-  <header class="page-top">
-    <nav class="top wrap" aria-label="Principal">
-      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
-      <button class="top__menu" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
-      <div class="top__links" id="top-links">
+  <!-- Preguntas: el titular a lo ancho, y la parada de la 201 debajo -->
+  <header class="hero">
+    <nav class="top rejilla" aria-label="Principal">
+      <a class="col-span-6 lg:col-span-4 justify-self-start" href="/" aria-label="go503, inicio"><img class="logo--claro h-12 w-auto" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro h-12 w-auto" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <button class="top__menu col-span-6 justify-self-end inline-flex items-center gap-2 min-h-11 px-2 font-bold lg:hidden" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
+      <div class="top__links lg:col-span-8 lg:flex lg:items-center lg:gap-7" id="top-links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="/#empresas">Para empresas</a>
         <a href="/sensor.html">El sensor</a>
         <a href="/preguntas.html" aria-current="page">Preguntas</a>
-        <button class="lang" type="button" data-idioma>English</button>
-        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
-          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
-          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
-          <span class="theme__knob" aria-hidden="true"></span>
-        </button>
-        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+        <span class="flex items-center gap-1 lg:ml-auto">
+          <button class="chip" type="button" data-idioma>English</button>
+          <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+            <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          </button>
+        </span>
+        <a class="btn btn--tinta mt-3 lg:mt-0" href="/login.html">Entrar al panel</a>
       </div>
     </nav>
-    <div class="page-top__body wrap">
-      <h1>Lo que nos preguntan los dueños</h1>
-      <p>Sobre la instalación, los datos, la batería y quién ve tu flota. Si tu duda no está, escríbenos.</p>
+
+    <div class="rejilla gap-y-8 pt-6 lg:pt-[4vh]">
+      <h1 class="col-span-12 text-[clamp(3.2rem,13vw,7rem)] lg:text-cartel leading-[.84]">
+        <span class="linea"><span style="--i:0">Lo que preguntan</span></span>
+        <span class="linea"><span style="--i:1">los dueños</span></span>
+      </h1>
+      <p class="col-span-12 lg:col-span-4 lg:row-start-2 text-frase" data-carga style="--d:420ms">Sobre la instalación, los datos, la batería y quién ve tu flota. Si tu duda no está, escríbenos.</p>
+      <div class="col-span-12 lg:col-start-9 lg:col-span-4 lg:row-start-2 self-end lg:justify-self-end" data-carga style="--d:480ms">
+        <a class="btn btn--tinta w-full sm:w-auto" href="/#pedir">Preguntar por WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="rejilla mt-12 lg:mt-16">
+      <figure class="col-start-1 col-span-12 row-start-1 foto -mx-m bg-[#7C8C8F] aspect-[4/3] md:aspect-[21/8]" data-abre>
+        <img class="size-full object-cover object-[50%_42%]" src="/img/fotos/el-salvador-bus.jpg" width="1600" height="1200" alt="Gente esperando y subiendo a un bus de la 201 en una parada a la orilla de la calle." fetchpriority="high">
+      </figure>
+      <figure class="col-start-8 col-span-5 sm:col-start-9 sm:col-span-4 lg:col-start-10 lg:col-span-3 row-start-1 self-end lg:recorte relative z-10 -mb-[12%] bg-papel p-2 sm:p-3" style="--giro:4deg" data-carga>
+        <img class="w-full aspect-square object-cover object-[50%_20%]" src="/img/fotos/el-salvador-bus-201.jpg" width="1211" height="1133" alt="El rótulo pintado de la 201: Santa Ana, San Salvador.">
+      </figure>
     </div>
   </header>
 
   <main>
-    <!-- Preguntas de los dueños antes de comprar -->
-    <section class="faq" id="preguntas" aria-labelledby="faq-title">
-      <div class="faq__inner wrap">
-        <div class="faq__side">
-          <h2 id="faq-title">Antes de comprar</h2>
-          <p>¿Tienes otra duda? <a href="/#pedir">Déjanos tu número</a> y te respondemos por WhatsApp.</p>
+    <!-- Preguntas de los dueños antes de comprar: cada una con su enlace -->
+    <section class="rejilla gap-y-10 pt-[clamp(5rem,12vw,10rem)]" id="preguntas" aria-labelledby="faq-title">
+      <div class="col-span-12 lg:col-span-4">
+        <div class="lg:sticky lg:top-10" data-entra>
+          <h2 class="text-titulo" id="faq-title">Antes de comprar</h2>
+          <p class="mt-6 max-w-[30ch]">Ocho dudas que nos hacen siempre. Toca una para abrirla; cada una tiene su enlace para mandarla por WhatsApp.</p>
+          <figure class="recorte mt-12 hidden lg:block" style="--giro:-3deg" data-cortina>
+            <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/san-salvador-metrocentro.jpg" width="1024" height="768" alt="El pasillo de Metrocentro, en San Salvador, con gente caminando frente a las tiendas." loading="lazy"></span>
+            <figcaption class="text-chico text-soft mt-3">Metrocentro, una de las paradas de la 101.</figcaption>
+          </figure>
         </div>
-        <div class="faq__list">
-          <details name="faq" id="funciona">
-            <summary>¿Funciona con mi bus?</summary>
+      </div>
+      <div class="col-span-12 lg:col-start-6 lg:col-span-7 grid gap-1" data-entra>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="funciona">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Funciona con mi bus?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>Sí. La ubicación funciona en cualquier bus. Si tu bus tiene conector OBD-II, el sensor lee la temperatura, el combustible y las fallas de su computadora. Si es de los que no tienen, le ponemos sensores propios para la temperatura, el combustible y el encendido.</p>
-            <a class="faq__link" href="#funciona">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="cables">
-            <summary>¿Hay que cortar cables o tocar el motor?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#funciona">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="cables">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Hay que cortar cables o tocar el motor?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>No se corta ningún cable. Se conecta a la batería con su propio fusible y, en buses con computadora, al conector de diagnóstico. En buses sin computadora, el sensor de temperatura va sujeto con una abrazadera a la manguera del radiador, y el de combustible lee el cable del flotador sin desconectarlo: el medidor del tablero sigue funcionando igual.</p>
-            <a class="faq__link" href="#cables">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="sin-senal">
-            <summary>¿Qué pasa si el bus entra a una zona sin señal?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#cables">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="sin-senal">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Y si el bus entra a una zona sin señal?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>El sensor guarda en su memoria lo que va midiendo, hasta unas 3 horas de recorrido, y lo manda en orden cuando vuelve la señal. No se pierde aunque se apague el bus.</p>
-            <a class="faq__link" href="#sin-senal">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="datos">
-            <summary>¿Cuántos datos gasta?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#sin-senal">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="datos">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Cuántos datos gasta?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>Según nuestro cálculo, unos 200 MB al mes por unidad, con un chip de Claro, Tigo o Digicel. Para flotas conviene un plan de datos para equipos (IoT), que suele ser más barato.</p>
-            <a class="faq__link" href="#datos">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="bateria">
-            <summary>¿Le baja la batería al bus?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#datos">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="bateria">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Le baja la batería al bus?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>Consume como 0.1 A, poco para una batería de bus. Va conectado para seguir reportando con el bus apagado, así sabes dónde quedó.</p>
-            <a class="faq__link" href="#bateria">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="privacidad">
-            <summary>¿Quién ve los datos de mi flota?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#bateria">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="privacidad">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Quién ve los datos de mi flota?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>Solo las cuentas de tu empresa, y solo se entra con un código de invitación. En el mapa público la gente ve dónde va el bus de su ruta, nada más: ni placas, ni motor, ni el nombre de tu empresa.</p>
-            <a class="faq__link" href="#privacidad">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="robo">
-            <summary>¿Y si se roban o se daña un sensor?</summary>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#privacidad">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="robo">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Y si se roban o se daña un sensor?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
             <p>Cada sensor tiene su propia clave. Lo desactivas desde el panel y deja de contar al momento. Con el bus apagado sigue reportando, así que también sirve para saber si alguien mueve la unidad.</p>
-            <a class="faq__link" href="#robo">Enlace a esta pregunta</a>
-          </details>
-          <details name="faq" id="precio">
-            <summary>¿Cuánto cuesta?</summary>
-            <p>Depende de cuántas unidades tengas y de qué tipo son. Déjanos tus datos en el <a href="/#pedir">formulario de pedido</a> y te mandamos la cotización por WhatsApp.</p>
-            <a class="faq__link" href="#precio">Enlace a esta pregunta</a>
-          </details>
-        </div>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#robo">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
+        <details class="pregunta bg-step px-[clamp(1.25rem,2.4vw,2rem)]" name="faq" id="precio">
+          <summary><span class="font-display font-extrabold uppercase text-frase sm:text-[2.4rem] leading-[1] sm:leading-[.95]">¿Cuánto cuesta?</span><span class="pregunta__mas" aria-hidden="true">+</span></summary>
+          <div class="pb-7 max-w-[60ch]">
+            <p>Depende de cuántas unidades tengas y de qué tipo son. Déjanos tus datos en el <a class="enlace font-bold" href="/#pedir">formulario de pedido</a> y te mandamos la cotización por WhatsApp.</p>
+            <a class="faq__link enlace font-bold inline-flex min-h-11 items-center mt-2" href="#precio">Copiar el enlace de esta pregunta para mandarla por WhatsApp</a>
+          </div>
+        </details>
       </div>
     </section>
 
-
-    <section class="next wrap" aria-labelledby="next-title">
-      <h2 id="next-title">¿Lo quieres en tus unidades?</h2>
-      <p>Déjanos tu número y te mandamos la cotización por WhatsApp.</p>
-      <a class="btn btn--maiz" href="/#pedir">Pedir el sensor</a>
+    <!-- ¿No está tu duda? Un campo añil a lo ancho, con la foto de la Sitramss -->
+    <section class="mt-[clamp(5rem,12vw,10rem)] bg-anil text-papel" aria-labelledby="next-title">
+      <div class="rejilla items-center gap-y-10 py-[clamp(4rem,8vw,7rem)]">
+        <div class="col-span-12 lg:col-span-6" data-entra>
+          <h2 class="text-titulo" id="next-title">¿No está tu duda?</h2>
+          <p class="text-frase mt-6 max-w-[32ch]">Déjanos tu número y te respondemos por WhatsApp, con la cotización si la quieres.</p>
+          <a class="btn btn--maiz mt-8" href="/#pedir">Pedir el sensor</a>
+        </div>
+        <figure class="col-span-12 lg:col-start-8 lg:col-span-5 lg:recorte" style="--giro:3deg;--cortina:var(--anil)" data-cortina>
+          <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/sitramss-san-salvador.jpg" width="1600" height="1067" alt="Buses en una calle de San Salvador, con el volcán al fondo." loading="lazy"></span>
+          <figcaption class="text-chico text-[#C9D0EE] mt-3">Buses en San Salvador.</figcaption>
+        </figure>
+      </div>
     </section>
   </main>
 
-  <footer class="foot" data-reveal>
-    <div class="foot__inner wrap">
-    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
-    <span class="foot__road" aria-hidden="true">
-      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
-    </span>
-    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
-    <p>Hecho en El Salvador por gente que también espera el bus.</p>
-    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a><a href="/legal.html">Legal y privacidad</a></nav>
+  <!-- El pie: la invitación, los enlaces y el nombre enorme cortado por el borde de abajo -->
+  <footer class="bg-noche text-papel overflow-clip pt-[clamp(4.5rem,9vw,8rem)]" data-pie>
+    <div class="rejilla gap-y-10">
+      <div class="col-span-12 lg:col-span-7">
+        <h2 class="text-titulo">¿Ya viene la tuya?</h2>
+        <a class="btn btn--maiz mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
+      </div>
+      <nav class="col-span-12 lg:col-start-10 lg:col-span-3 grid gap-1 content-start" aria-label="Pie de página">
+        <a class="enlace min-h-11 inline-flex items-center" href="/mapa.html">Mapa en vivo</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/sensor.html">El sensor</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/preguntas.html" aria-current="page">Preguntas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/login.html">Panel de empresas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/legal.html">Legal y privacidad</a>
+      </nav>
+      <div class="col-span-12 flex flex-wrap justify-between gap-x-10 gap-y-3 text-chico text-[#C9D0EE] mt-[clamp(2rem,6vw,5rem)]">
+        <p>Hecho en El Salvador por gente que también espera el bus.</p>
+        <p class="max-w-[56ch]">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
+      </div>
     </div>
+    <p class="px-m text-maiz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
   </footer>
 
   <script src="/js/sitio.js" defer></script>

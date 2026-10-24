@@ -8,7 +8,9 @@
     "dev": "node --watch src/server.js",
     "simulate": "node tools/simulator.js",
     "codigo": "node tools/codigo.js",
-    "admin": "node tools/admin.js"
+    "admin": "node tools/admin.js",
+    "css": "tailwindcss -i estilos/sitio.css -o public/css/sitio.css --minify",
+    "css:watch": "tailwindcss -i estilos/sitio.css -o public/css/sitio.css --watch"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",
@@ -19,5 +21,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
   }
 }

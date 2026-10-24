@@ -8,7 +8,7 @@
   --torogoz-texto: #0B7F79; /* letras en verde sobre fondo claro (4.6:1 o más) */
 
   --noche: #0E1438;
-  --paper: #F5F2EA;       /* pared encalada, igual que la portada */
+  --paper: #F2F0EA;       /* pared encalada, igual que la portada */
   --card: #FFFDF8;
   --ink: #141B3D;
   --muted: #565C78;
@@ -370,9 +370,12 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 .leaflet-control-attribution {
   background: color-mix(in srgb, var(--card) 80%, transparent) !important;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
+  margin: 0 16px 6px 0 !important; /* dentro del margen de la pantalla, no pegada a la orilla */
 }
 .leaflet-control-attribution a { color: var(--ink); }
+/* los botones + y − de Leaflet traen Lucida Console: con la letra del sitio */
+.leaflet-control-zoom a { font-family: var(--sans) !important; font-weight: 700 !important; }
 .leaflet-bar { border: 1px solid var(--line) !important; border-radius: 10px !important; overflow: hidden; }
 .leaflet-bar a, .leaflet-touch .leaflet-bar a { width: var(--tap); height: var(--tap); line-height: var(--tap); background: var(--card); color: var(--ink); border-color: var(--line); font-size: 1.3rem; }
 

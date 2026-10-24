@@ -7,7 +7,6 @@
   --suave: #A9B2D0;
   --borde: rgba(243, 245, 251, .14);
   min-height: 100dvh;
-  /* puntos de luz de letrero de destino, y la franja de los buses arriba */
   background: var(--noche);
   color: var(--texto);
   color-scheme: dark;

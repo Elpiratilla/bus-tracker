@@ -5,9 +5,9 @@
   <!-- Idioma (español / inglés): antes que todo lo demás -->
   <script src="/js/idioma.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Legal y privacidad · Go503</title>
-  <meta name="description" content="Quién está detrás de go503, las reglas de uso, qué datos guardamos, por cuánto tiempo y cómo pedir que los borremos.">
-  <meta name="theme-color" content="#F3F5FB">
+  <title>Legal y privacidad · go503</title>
+  <meta name="description" content="Quién está detrás de go503, los términos de uso y cómo cuidamos tus datos.">
+  <meta name="theme-color" content="#F2F0EA">
   <!-- Tema elegido (claro/oscuro), el mismo que usa el mapa; antes de pintar para que no parpadee -->
   <script>try { const t = localStorage.getItem("go503-tema"); if (t) document.documentElement.dataset.theme = t; } catch {} document.documentElement.classList.add("js");</script>
   <link rel="manifest" href="/manifest.webmanifest">
@@ -16,13 +16,11 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preload" href="/fonts/big-shoulders-display-800.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/atkinson-next.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/css/fonts.css">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/sitio.css">
 </head>
-<body>
+<body class="overflow-x-clip">
 
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
     <symbol id="i-moon" viewBox="0 0 24 24">
       <path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
     </symbol>
@@ -32,34 +30,40 @@
     </symbol>
   </svg>
 
-  <header class="page-top">
-    <nav class="top wrap" aria-label="Principal">
-      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
-      <button class="top__menu" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
-      <div class="top__links" id="top-links">
+  <!-- Legal: el texto completo, con su índice pegado al lado -->
+  <header class="hero">
+    <nav class="top rejilla" aria-label="Principal">
+      <a class="col-span-6 lg:col-span-4 justify-self-start" href="/" aria-label="go503, inicio"><img class="logo--claro h-12 w-auto" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro h-12 w-auto" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <button class="top__menu col-span-6 justify-self-end inline-flex items-center gap-2 min-h-11 px-2 font-bold lg:hidden" type="button" aria-expanded="false" aria-controls="top-links"><span class="top__burger" aria-hidden="true"><i></i><i></i><i></i></span>Menú</button>
+      <div class="top__links lg:col-span-8 lg:flex lg:items-center lg:gap-7" id="top-links">
         <a href="/mapa.html">Mapa en vivo</a>
         <a href="/#empresas">Para empresas</a>
         <a href="/sensor.html">El sensor</a>
         <a href="/preguntas.html">Preguntas</a>
-        <button class="lang" type="button" data-idioma>English</button>
-        <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
-          <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
-          <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
-          <span class="theme__knob" aria-hidden="true"></span>
-        </button>
-        <a class="btn btn--line top__cta" href="/login.html">Entrar al panel</a>
+        <span class="flex items-center gap-1 lg:ml-auto">
+          <button class="chip" type="button" data-idioma>English</button>
+          <button class="theme" id="tema" type="button" role="switch" aria-checked="false" aria-label="Modo oscuro">
+            <svg class="theme__ico theme__ico--sun" aria-hidden="true"><use href="#i-sun"/></svg>
+            <svg class="theme__ico theme__ico--moon" aria-hidden="true"><use href="#i-moon"/></svg>
+          </button>
+        </span>
+        <a class="btn btn--tinta mt-3 lg:mt-0" href="/login.html">Entrar al panel</a>
       </div>
     </nav>
-    <div class="page-top__body wrap">
-      <h1>Legal y privacidad</h1>
-      <p>Quién está detrás de go503, las reglas para usarlo y qué hacemos con tus datos. Lo escribimos para que se entienda; si algo no queda claro, pregúntanos.</p>
+
+    <div class="rejilla gap-y-8 pt-6 lg:pt-[4vh] pb-[clamp(3rem,6vw,5rem)]">
+      <h1 class="col-span-12 lg:col-span-8 text-[clamp(3.2rem,13vw,7rem)] lg:text-cartel leading-[.84]">
+        <span class="linea"><span style="--i:0">Legal y</span></span>
+        <span class="linea"><span style="--i:1">privacidad</span></span>
+      </h1>
+      <p class="col-span-12 lg:col-span-4 self-end text-frase" data-carga style="--d:420ms">Quién está detrás de go503, las reglas para usarlo y qué hacemos con tus datos. Lo escribimos para que se entienda; si algo no queda claro, pregúntanos.</p>
     </div>
   </header>
 
-  <main>
+  <main class="bg-step pb-[clamp(5rem,12vw,10rem)]">
     <!-- Versión de estos textos: si cambia, cambiar también TERMINOS_VERSION en public/js/acceso.js -->
-    <section class="legal" aria-label="Documentos legales">
-      <div class="legal__inner wrap" data-lang="es" translate="no">
+    <section class="legal pt-[clamp(4rem,9vw,7rem)]" aria-label="Documentos legales">
+      <div class="legal__inner rejilla" data-lang="es" translate="no">
         <nav class="legal__side" aria-label="En esta página">
           <p class="legal__ver">Versión 2026-10-18<br>Vigente desde el 18 de octubre de 2026</p>
           <ol>
@@ -77,7 +81,7 @@
 
         <div class="legal__body">
 
-          <section id="resumen" aria-labelledby="h-resumen">
+          <section data-reveal id="resumen" aria-labelledby="h-resumen">
             <h2 id="h-resumen">En corto</h2>
             <ul>
               <li>El mapa público se usa sin cuenta. No te pedimos nombre ni correo para ver dónde va el bus.</li>
@@ -89,7 +93,7 @@
             <p>Este resumen no reemplaza los textos de abajo, que son los que valen.</p>
           </section>
 
-          <section id="aviso" aria-labelledby="h-aviso">
+          <section data-reveal id="aviso" aria-labelledby="h-aviso">
             <h2 id="h-aviso">1. Quiénes somos</h2>
             <p>go503 es un servicio para ver en tiempo real dónde van los buses de San Salvador y cuánto les falta para llegar a cada parada. También ofrece a los dueños de flotas un sensor y un panel para seguir sus unidades, su mantenimiento y sus tiempos de recorrido.</p>
             <dl class="legal__datos">
@@ -102,7 +106,7 @@
             <p>El sitio se administra desde El Salvador y se rige por sus leyes. Cuando go503 se inscriba como negocio, aquí publicaremos su NIT y su dirección para notificaciones.</p>
           </section>
 
-          <section id="terminos" aria-labelledby="h-terminos">
+          <section data-reveal id="terminos" aria-labelledby="h-terminos">
             <h2 id="h-terminos">2. Términos de uso</h2>
             <p>Al usar go503 aceptas estos términos. Si no estás de acuerdo, no uses el servicio. Las empresas los aceptan de forma expresa al crear su cuenta.</p>
 
@@ -157,7 +161,7 @@
             <p>Estos términos se rigen por las leyes de El Salvador. Antes de cualquier proceso, te pedimos escribirnos para buscar una solución (sección 8). Si no se resuelve, el caso va a los tribunales competentes de El Salvador. Si eres consumidor, también puedes acudir a la Defensoría del Consumidor.</p>
           </section>
 
-          <section id="privacidad" aria-labelledby="h-privacidad">
+          <section data-reveal id="privacidad" aria-labelledby="h-privacidad">
             <h2 id="h-privacidad">3. Privacidad</h2>
             <p>El responsable de tus datos es quien aparece en la sección 1. Tratamos los datos personales según la Ley para la Protección de Datos Personales de El Salvador (Decreto Legislativo n.º 144, de 2024) y la Ley de Protección al Consumidor.</p>
 
@@ -274,7 +278,7 @@
             <p>El mapa lo puede usar cualquier persona. Las cuentas de empresa solo las pueden crear personas mayores de 18 años.</p>
           </section>
 
-          <section id="navegador" aria-labelledby="h-navegador">
+          <section data-reveal id="navegador" aria-labelledby="h-navegador">
             <h2 id="h-navegador">4. Cookies y lo que se guarda en tu navegador</h2>
             <p>go503 no instala cookies propias, ni de publicidad, ni de analítica. Por eso no te mostramos un aviso de cookies. Si algún día agregamos herramientas de estadísticas, te pediremos permiso antes.</p>
             <p>Sí guardamos algunas cosas en el almacenamiento de tu navegador, solo para que la página funcione. No salen de tu celular o computadora, salvo la sesión del panel, que se usa para entrar.</p>
@@ -297,7 +301,7 @@
             <p>Para borrarlos, entra a la configuración de tu navegador y borra los datos del sitio go503. Las imágenes del mapa y las librerías vienen de los proveedores de la sección 3.5. Según lo que revisamos, no instalan cookies; cada uno tiene su propia política.</p>
           </section>
 
-          <section id="propiedad" aria-labelledby="h-propiedad">
+          <section data-reveal id="propiedad" aria-labelledby="h-propiedad">
             <h2 id="h-propiedad">5. Propiedad intelectual</h2>
             <p>El nombre go503, el logo, el diseño de la página, los textos, el código del sitio y del sensor son de Mateo. No puedes copiarlos, venderlos ni usarlos para otro servicio sin permiso escrito. Puedes compartir enlaces y capturas del mapa para uso personal o para informar.</p>
             <p>También usamos obras de otras personas, con sus licencias:</p>
@@ -310,7 +314,7 @@
             <p>Si crees que algo en go503 usa una obra tuya sin permiso, escríbenos con el enlace, la obra y por qué es tuya. Lo revisamos y, si corresponde, lo quitamos.</p>
           </section>
 
-          <section id="venta" aria-labelledby="h-venta">
+          <section data-reveal id="venta" aria-labelledby="h-venta">
             <h2 id="h-venta">6. Venta del sensor</h2>
             <p>En este sitio no se cobra ni se paga nada. El formulario «Pedir el sensor» solo es para que te contactemos. La venta se cierra con una cotización por escrito que dice, como mínimo:</p>
             <ul>
@@ -323,12 +327,12 @@
             <p>Al pagar te damos el comprobante que corresponda. Si un sensor llega con fallas de fábrica o no funciona como se ofreció, lo reparamos, lo cambiamos o te devolvemos el dinero, según la Ley de Protección al Consumidor. Ninguna cotización puede quitarte los derechos que esa ley te da.</p>
           </section>
 
-          <section id="reclamos" aria-labelledby="h-reclamos">
+          <section data-reveal id="reclamos" aria-labelledby="h-reclamos">
             <h2 id="h-reclamos">7. Reportar un problema</h2>
             <p>Escríbenos si ves un error en el mapa, una falla de seguridad, contenido que viola derechos o cualquier uso indebido. Cuéntanos qué pasó, dónde y cuándo, y si puedes, manda una captura. Revisamos cada reporte de buena fe. Si encontraste una falla de seguridad, no la publiques mientras la arreglamos.</p>
           </section>
 
-          <section id="contacto" aria-labelledby="h-contacto">
+          <section data-reveal id="contacto" aria-labelledby="h-contacto">
             <h2 id="h-contacto">8. Reclamos y contacto</h2>
             <p>Para cualquier queja, reclamo o pregunta sobre estos textos:</p>
             <ul>
@@ -342,7 +346,7 @@
       </div>
 
       <!-- English version: same sections and ids as the Spanish one above. The Spanish text governs. -->
-      <div class="legal__inner wrap" data-lang="en" lang="en" translate="no">
+      <div class="legal__inner rejilla" data-lang="en" lang="en" translate="no">
         <nav class="legal__side" aria-label="On this page">
           <p class="legal__ver">Version 2026-10-18<br>In effect since October 18, 2026</p>
           <ol>
@@ -361,7 +365,7 @@
         <div class="legal__body">
           <p class="legal__nota">This is a translation for your convenience. If it differs from the Spanish version, the Spanish version governs.</p>
 
-          <section id="resumen" aria-labelledby="h-resumen-en">
+          <section data-reveal id="resumen" aria-labelledby="h-resumen-en">
             <h2 id="h-resumen-en">In short</h2>
             <ul>
               <li>You can use the public map without an account. We don't ask for your name or email to show you where the bus is.</li>
@@ -373,7 +377,7 @@
             <p>This summary doesn't replace the full text below, which is what applies.</p>
           </section>
 
-          <section id="aviso" aria-labelledby="h-aviso-en">
+          <section data-reveal id="aviso" aria-labelledby="h-aviso-en">
             <h2 id="h-aviso-en">1. Who we are</h2>
             <p>go503 is a service that shows in real time where San Salvador's buses are and how long they'll take to reach each stop. It also offers fleet owners a sensor and a dashboard to follow their buses, their maintenance and their trip times.</p>
             <dl class="legal__datos">
@@ -386,7 +390,7 @@
             <p>The site is run from El Salvador and governed by its laws. Once go503 is registered as a business, we'll publish its tax ID (NIT) and its address for legal notices here.</p>
           </section>
 
-          <section id="terminos" aria-labelledby="h-terminos-en">
+          <section data-reveal id="terminos" aria-labelledby="h-terminos-en">
             <h2 id="h-terminos-en">2. Terms of use</h2>
             <p>By using go503 you accept these terms. If you don't agree, please don't use the service. Companies accept them explicitly when they create their account.</p>
 
@@ -441,7 +445,7 @@
             <p>These terms are governed by the laws of El Salvador. Before starting any legal process, please write to us so we can look for a solution (section 8). If that doesn't work, the case goes to the competent courts of El Salvador. If you're a consumer, you can also go to the Defensoría del Consumidor (El Salvador's consumer protection agency).</p>
           </section>
 
-          <section id="privacidad" aria-labelledby="h-privacidad-en">
+          <section data-reveal id="privacidad" aria-labelledby="h-privacidad-en">
             <h2 id="h-privacidad-en">3. Privacy</h2>
             <p>The party responsible for your data is the one listed in section 1. We handle personal data under El Salvador's Personal Data Protection Law (Ley para la Protección de Datos Personales, Legislative Decree No. 144 of 2024) and its Consumer Protection Law.</p>
 
@@ -558,7 +562,7 @@
             <p>Anyone can use the map. Company accounts can only be created by people aged 18 or older.</p>
           </section>
 
-          <section id="navegador" aria-labelledby="h-navegador-en">
+          <section data-reveal id="navegador" aria-labelledby="h-navegador-en">
             <h2 id="h-navegador-en">4. Cookies and what's stored in your browser</h2>
             <p>go503 doesn't set its own cookies, nor advertising or analytics cookies. That's why we don't show you a cookie banner. If we ever add statistics tools, we'll ask for your permission first.</p>
             <p>We do keep a few things in your browser's storage, only so the site works. They don't leave your phone or computer, except the dashboard session, which is used to sign you in.</p>
@@ -581,7 +585,7 @@
             <p>To remove them, open your browser settings and clear the site data for go503. Map images and libraries come from the providers in section 3.5. As far as we've checked, they don't set cookies; each has its own policy.</p>
           </section>
 
-          <section id="propiedad" aria-labelledby="h-propiedad-en">
+          <section data-reveal id="propiedad" aria-labelledby="h-propiedad-en">
             <h2 id="h-propiedad-en">5. Intellectual property</h2>
             <p>The go503 name, the logo, the site design, the texts, and the code for the site and the sensor belong to Mateo. You may not copy, sell or use them for another service without written permission. You're welcome to share links and screenshots of the map for personal use or to inform others.</p>
             <p>We also use other people's work, under their licenses:</p>
@@ -594,7 +598,7 @@
             <p>If you think something on go503 uses your work without permission, write to us with the link, the work and why it's yours. We'll review it and, if appropriate, remove it.</p>
           </section>
 
-          <section id="venta" aria-labelledby="h-venta-en">
+          <section data-reveal id="venta" aria-labelledby="h-venta-en">
             <h2 id="h-venta-en">6. Buying the sensor</h2>
             <p>Nothing is charged or paid on this site. The “Get the sensor” form is only for us to contact you. A sale is closed with a written quote that states, at a minimum:</p>
             <ul>
@@ -607,12 +611,12 @@
             <p>When you pay, we give you the corresponding receipt. If a sensor arrives with factory defects or doesn't work as offered, we'll repair it, replace it or refund you, as required by the Consumer Protection Law. No quote can take away the rights that law gives you.</p>
           </section>
 
-          <section id="reclamos" aria-labelledby="h-reclamos-en">
+          <section data-reveal id="reclamos" aria-labelledby="h-reclamos-en">
             <h2 id="h-reclamos-en">7. Report a problem</h2>
             <p>Write to us if you see a mistake on the map, a security flaw, content that infringes someone's rights or any misuse. Tell us what happened, where and when, and send a screenshot if you can. We review every report in good faith. If you found a security flaw, please don't publish it while we fix it.</p>
           </section>
 
-          <section id="contacto" aria-labelledby="h-contacto-en">
+          <section data-reveal id="contacto" aria-labelledby="h-contacto-en">
             <h2 id="h-contacto-en">8. Complaints and contact</h2>
             <p>For any complaint, claim or question about these texts:</p>
             <ul>
@@ -629,16 +633,26 @@
     <script>document.querySelectorAll(".legal [data-lang]").forEach((b) => { if (b.dataset.lang !== document.documentElement.lang) b.remove(); });</script>
   </main>
 
-  <footer class="foot" data-reveal>
-    <div class="foot__inner wrap">
-    <!-- La calle del pie: un bus pasa una vez cuando llegas hasta aquí -->
-    <span class="foot__road" aria-hidden="true">
-      <svg class="foot__bus" viewBox="0 0 50 28" width="40" height="22"><rect x="1" y="2" width="46" height="24" rx="5" fill="var(--maiz)" stroke="var(--noche)" stroke-width="2"/><path d="M39 5h4a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-4z" fill="var(--noche)"/><rect x="10" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/><rect x="23" y="7" width="8" height="14" rx="2" fill="none" stroke="var(--noche)" stroke-opacity=".45"/></svg>
-    </span>
-    <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="35" height="40"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="35" height="40"></a>
-    <p>Hecho en El Salvador por gente que también espera el bus.</p>
-    <nav aria-label="Pie de página"><a href="/mapa.html">Mapa en vivo</a><a href="/sensor.html">El sensor</a><a href="/preguntas.html">Preguntas</a><a href="/login.html">Panel de empresas</a><a href="/legal.html" aria-current="page">Legal y privacidad</a></nav>
+  <!-- El pie: la invitación, los enlaces y el nombre enorme cortado por el borde de abajo -->
+  <footer class="bg-noche text-papel overflow-clip pt-[clamp(4.5rem,9vw,8rem)]" data-pie>
+    <div class="rejilla gap-y-10">
+      <div class="col-span-12 lg:col-span-7">
+        <h2 class="text-titulo">¿Ya viene la tuya?</h2>
+        <a class="btn btn--maiz mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
+      </div>
+      <nav class="col-span-12 lg:col-start-10 lg:col-span-3 grid gap-1 content-start" aria-label="Pie de página">
+        <a class="enlace min-h-11 inline-flex items-center" href="/mapa.html">Mapa en vivo</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/sensor.html">El sensor</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/preguntas.html">Preguntas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/login.html">Panel de empresas</a>
+        <a class="enlace min-h-11 inline-flex items-center" href="/legal.html" aria-current="page">Legal y privacidad</a>
+      </nav>
+      <div class="col-span-12 flex flex-wrap justify-between gap-x-10 gap-y-3 text-chico text-[#C9D0EE] mt-[clamp(2rem,6vw,5rem)]">
+        <p>Hecho en El Salvador por gente que también espera el bus.</p>
+        <p class="max-w-[56ch]">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
+      </div>
     </div>
+    <p class="px-m text-maiz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
   </footer>
 
   <script src="/js/sitio.js" defer></script>

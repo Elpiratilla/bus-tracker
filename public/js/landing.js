@@ -110,6 +110,18 @@ function render(data) {
   // los minutos voltean solo cuando cambian
   if (eta.textContent !== before) eta.firstChild.classList.add("flap");
 
+  // La respuesta grande del titular: los minutos en el campo maíz encima de la foto del bus
+  const hMin = $("h-min");
+  const hLinea = $("h-linea");
+  if (hasBus && target.etaA && !(targetIdx <= lastIdx && target.pasoA)) {
+    const m = minsTo(target.etaA);
+    flip(hMin, m <= 0 ? "¡Ya!" : `${m} min`);
+    hLinea.textContent = m <= 0 ? `La ${ruta} está llegando a ${target.nombre}.` : `para que la ${ruta} llegue a ${target.nombre}.`;
+  } else {
+    flip(hMin, "– min");
+    hLinea.textContent = data.sinSenal ? `El bus de la ${ruta} dejó de mandar señal.` : `Ahorita no anda ningún bus de la ${ruta}.`;
+  }
+
   // Línea de paradas: cada nombre es un botón para escoger tu parada.
   // Solo se vuelven a crear si cambia la ruta o el sentido (así no se pierde el foco del teclado).
   const n = paradas.length - 1;
@@ -160,7 +172,6 @@ function render(data) {
   // Los botones de la portada abren el mapa en esta misma ruta y sentido
   const q = `?ruta=${encodeURIComponent(ruta)}&sentido=${data.sentido}`;
   $("cta-mapa").href = `/mapa.html${q}`;
-  $("cta-aviso").href = `/mapa.html${q}`;
 
   // Estado de la conexión
   const secs = Math.max(0, Math.round((Date.now() - new Date(actualizado)) / 1000));
@@ -231,6 +242,14 @@ async function init() {
     document.querySelector(".live").classList.add("live--off");
   }
 }
+
+// ---------- La flota como tablero de terminal (ejemplo): tocar una unidad abre su detalle ----------
+const salidas = $("salidas");
+salidas?.addEventListener("click", (e) => {
+  const fila = e.target.closest("button.salida");
+  if (!fila) return;
+  salidas.querySelectorAll("button.salida").forEach((b) => b.setAttribute("aria-expanded", String(b === fila)));
+});
 
 // ---------- Pedir el sensor ----------
 const pedir = $("f-pedir");

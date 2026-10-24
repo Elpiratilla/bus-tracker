@@ -1,0 +1,487 @@
+/* go503: páginas públicas (portada, sensor, preguntas y legal), con Tailwind v4.
+   Se compila a public/css/sitio.css con `npm run css` (o `npm run css:watch` mientras editas).
+   El panel, el mapa, el motorista y el login siguen con su propio CSS (base.css + el suyo).
+
+   Dirección 2026-10-24 "cartel de parada": letras de rótulo enormes, campos planos de color
+   (añil, maíz, torogoz, noche) que se tocan sin línea entre ellos, fotos reales de buses de aquí.
+   Sin sombras en reposo, sin degradados, sin líneas finas, esquinas rectas. Ver DESIGN.md. */
+
+@import "tailwindcss" source(none);
+@source "../public/html/index.html";
+@source "../public/html/sensor.html";
+@source "../public/html/preguntas.html";
+@source "../public/html/legal.html";
+@source "../public/js/landing.js";
+@source "../public/js/sensor.js";
+@source "../public/js/sitio.js";
+@source "../public/js/idioma.js";
+
+@import "../public/css/fonts.css";
+
+/* ---------- Colores: los de la marca, y los papeles que cambian con el modo oscuro ---------- */
+:root {
+  --anil: #1B2559;
+  --noche: #0E1438;
+  --maiz: #F2B22E;
+  --maiz-claro: #FFD36B;
+  --torogoz: #0FA39C;
+  --alerta: #D9434E;
+  --papel: #F2F0EA;
+  --papel-2: #E4E1D8;
+
+  /* roles: fondo, tinta y el campo "un paso" más oscuro que el fondo */
+  --bg: var(--papel);
+  --ink: #141B3D;
+  --soft: #4A5070;
+  --step: var(--papel-2);
+  --margin: clamp(1rem, 2.2vw, 2rem);
+}
+:root[data-theme="dark"] {
+  --bg: var(--noche);
+  --ink: #F2F0EA;
+  --soft: #B9C0DE;
+  --step: #18204A;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: var(--noche);
+    --ink: #F2F0EA;
+    --soft: #B9C0DE;
+    --step: #18204A;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-soft: var(--soft);
+  --color-step: var(--step);
+  --color-anil: var(--anil);
+  --color-noche: var(--noche);
+  --color-maiz: var(--maiz);
+  --color-maiz-claro: var(--maiz-claro);
+  --color-torogoz: var(--torogoz);
+  --color-alerta: var(--alerta);
+  --color-papel: var(--papel);
+  --color-papel-2: var(--papel-2);
+  --spacing-m: var(--margin);
+}
+
+@theme {
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Cinco tamaños, nada más: el cartel, el título de sección, la frase, el texto y lo pequeño */
+  --text-cartel: clamp(4.6rem, 9.8vw, 9.4rem);
+  --text-cartel--line-height: .84;
+  --text-cartel--letter-spacing: -.01em;
+  --text-titulo: clamp(2.6rem, 5.4vw, 5.4rem);
+  --text-titulo--line-height: .9;
+  --text-frase: clamp(1.25rem, 1.6vw, 1.5rem);
+  --text-frase--line-height: 1.35;
+  --text-cuerpo: 1.125rem;
+  --text-cuerpo--line-height: 1.55;
+  --text-chico: .9375rem;
+  --text-chico--line-height: 1.45;
+
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-expo: cubic-bezier(.16, 1, .3, 1);
+  --ease-in-out: cubic-bezier(.76, 0, .24, 1);
+  --ease-soft: cubic-bezier(.33, 1, .68, 1);
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 var(--text-cuerpo)/var(--text-cuerpo--line-height) var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2 { font-family: var(--font-display); font-weight: 800; text-transform: uppercase; text-wrap: balance; }
+  h3 { font-weight: 700; }
+  p { text-wrap: pretty; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
+  ::selection { background: var(--maiz); color: var(--noche); }
+  /* cada logo para su fondo */
+  .logo--oscuro { display: none; }
+  :root[data-theme="dark"] .logo--claro { display: none; }
+  :root[data-theme="dark"] .logo--oscuro { display: block; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .logo--claro { display: none; }
+    :root:not([data-theme="light"]) .logo--oscuro { display: block; }
+  }
+}
+
+@layer components {
+  /* Una sola rejilla y un solo par de márgenes en todas las páginas */
+  .rejilla { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(.75rem, 1.4vw, 1.5rem); padding-inline: var(--margin); }
+
+  /* ---------- Botones: placas planas, esquinas rectas; se hunden al tocarlos ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+    min-height: 3.25rem; padding: .85rem 1.5rem;
+    font: 700 1.125rem/1.1 var(--font-sans); text-decoration: none; cursor: pointer;
+    transition: transform 140ms var(--ease-out), background-color 180ms ease, color 180ms ease;
+  }
+  .btn:active { transform: translateY(2px) scale(.98); }
+  .btn--maiz { background: var(--maiz); color: var(--noche); }
+  .btn--tinta { background: var(--ink); color: var(--bg); }
+  .btn--noche { background: var(--noche); color: var(--papel); }
+  .btn--papel { background: var(--papel); color: var(--noche); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn--maiz:hover { background: var(--maiz-claro); }
+    .btn--tinta:hover, .btn--noche:hover { background: var(--anil); color: var(--papel); }
+    .btn--papel:hover { background: var(--maiz); }
+  }
+  .btn[disabled] { opacity: .55; cursor: progress; }
+
+  /* Enlaces de texto: el subrayado aparece al pasar el puntero */
+  .enlace { text-decoration: underline; text-decoration-thickness: .08em; text-underline-offset: .22em; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); transition: text-decoration-color 180ms ease; }
+  @media (hover: hover) { .enlace:hover { text-decoration-color: currentColor; } }
+
+  /* ---------- Barra de arriba: logo, cuatro enlaces y una acción ---------- */
+  .top { position: relative; z-index: 20; align-items: center; min-height: 5.5rem; }
+  .top__links a:not(.btn) { position: relative; padding-block: .6rem; text-decoration: none; font-weight: 700; }
+  .top__links a:not(.btn)::after { content: ""; position: absolute; left: 0; right: 0; bottom: .25rem; height: 3px; background: var(--maiz); transform: scaleX(0); transform-origin: left; transition: transform 300ms var(--ease-out); }
+  .top__links a[aria-current="page"]::after { transform: none; }
+  @media (hover: hover) { .top__links a:not(.btn):hover::after { transform: none; } }
+  .chip { min-height: 2.75rem; padding: .4rem .7rem; font-weight: 700; cursor: pointer; transition: background-color 180ms ease; }
+  @media (hover: hover) { .chip:hover { background: var(--step); } }
+  .theme { display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem; cursor: pointer; transition: background-color 180ms ease; }
+  .theme svg { width: 1.3rem; height: 1.3rem; }
+  .theme .theme__ico--moon, .theme[aria-checked="true"] .theme__ico--sun { display: none; }
+  .theme[aria-checked="true"] .theme__ico--moon { display: block; }
+  @media (hover: hover) { .theme:hover { background: var(--step); } }
+  .top__burger { display: grid; gap: 4px; width: 1.1rem; }
+  .top__burger i { display: block; height: 2px; background: currentColor; transition: transform 240ms var(--ease-out), opacity 180ms; }
+  .top.is-open .top__burger i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .top.is-open .top__burger i:nth-child(2) { opacity: 0; }
+  .top.is-open .top__burger i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  @media (max-width: 63.99rem) {
+    .top__links {
+      position: fixed; inset: 5.5rem 0 auto 0; z-index: 30;
+      display: grid; gap: .25rem; padding: 1rem var(--margin) 1.5rem;
+      background: var(--bg); visibility: hidden; opacity: 0; transform: translateY(-8px);
+      transition: opacity 240ms var(--ease-out), transform 240ms var(--ease-out), visibility 0s 240ms;
+      box-shadow: 0 24px 40px -20px rgb(14 20 56 / .35); /* taste-skill-ignore: el menú del teléfono flota sobre la página */
+    }
+    .top.is-open .top__links { visibility: visible; opacity: 1; transform: none; transition-delay: 0s; }
+    .top__links a:not(.btn) { font: 800 2.2rem/1 var(--font-display); text-transform: uppercase; padding-block: .55rem; }
+    .top__links a:not(.btn)::after { display: none; }
+  }
+
+  /* ---------- Rótulo de ruta: el número pintado en el bus, maíz sobre noche ---------- */
+  .rotulo {
+    display: inline-grid; place-items: center; min-width: 1.6em; padding: .02em .18em .04em;
+    background: var(--noche); color: var(--maiz);
+    font-family: var(--font-display); font-weight: 800; font-variant-numeric: tabular-nums; line-height: .95;
+    cursor: pointer; transition: background-color 180ms ease;
+  }
+  @media (hover: hover) { button.rotulo:hover { background: var(--anil); } }
+  .rotulo.is-new { animation: llega 700ms var(--ease-expo); }
+  @keyframes llega { from { transform: translateX(.6em); opacity: 0; } }
+
+  /* Rutas para escoger: números de rótulo que se pueden tocar */
+  .rutas { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .rutas button {
+    min-width: 4.4rem; min-height: 3.6rem; padding: .2rem .7rem;
+    background: var(--step); color: var(--ink);
+    font: 800 2.4rem/1 var(--font-display); cursor: pointer;
+    transition: background-color 180ms ease, color 180ms ease, transform 140ms var(--ease-out);
+  }
+  .rutas button:active { transform: translateY(2px); }
+  @media (hover: hover) { .rutas button:hover { background: var(--ink); color: var(--bg); } }
+  .rutas button[aria-pressed="true"] { background: var(--noche); color: var(--maiz); }
+
+  /* ---------- Tablero en vivo: letrero de noche con la línea de paradas ---------- */
+  .board__label { color: #C9D0EE; }
+  .board__eta { display: flex; align-items: baseline; gap: .6rem; min-height: 1em; color: var(--maiz); font-family: var(--font-display); font-weight: 800; }
+  .board__num { font-size: var(--text-cartel); line-height: .8; font-variant-numeric: tabular-nums; }
+  .board__unit { font-size: var(--text-titulo); text-transform: uppercase; line-height: .9; }
+  .board__note { max-width: 34ch; color: #E4E7F5; font: 400 var(--text-frase)/1.35 var(--font-sans); }
+  .board__dir { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .board__dir button {
+    min-height: 2.9rem; padding: .5rem 1rem; background: #1F2A66; color: #E4E7F5;
+    font-weight: 700; cursor: pointer; transition: background-color 180ms ease, color 180ms ease;
+  }
+  @media (hover: hover) { .board__dir button:hover { background: #2C3A85; } }
+  .board__dir button[aria-pressed="true"] { background: var(--papel); color: var(--noche); }
+
+  .strip { position: relative; height: 8.5rem; margin-inline: 1rem; }
+  .strip__line { position: absolute; left: 0; right: 0; top: 1.6rem; height: 10px; background: #2A3470; }
+  .strip__done { width: 0; height: 100%; background: var(--torogoz); transition: width 5s linear; }
+  .strip__stops { position: absolute; inset: 0; container-type: inline-size; }
+  .strip__stop {
+    position: absolute; top: calc(1.6rem - 7px); width: 24px; height: 24px; margin-left: -12px;
+    background: var(--noche); border: 4px solid #7D88BC; border-radius: 50%; cursor: pointer;
+    transition: transform 240ms var(--ease-out), background-color 180ms ease;
+  }
+  .strip__stop::before { content: ""; position: absolute; inset: -14px; }
+  .strip__stop--done { background: var(--torogoz); border-color: var(--torogoz); }
+  .strip__stop--next { background: var(--maiz); border-color: var(--papel); transform: scale(1.2); }
+  .strip__stop--mine { outline: 4px solid var(--maiz); outline-offset: 4px; }
+  .strip__name {
+    position: absolute; top: 3.2rem; width: calc(var(--seg) - .6rem); margin-left: calc(var(--seg) / -2 + .3rem);
+    min-height: 2.9rem; padding: .25rem 0; color: #C9D0EE; background: none;
+    font: 700 1.0625rem/1.2 var(--font-sans); text-align: center; align-content: start; cursor: pointer;
+  }
+  @media (hover: hover) { .strip__name:hover { color: #fff; text-decoration: underline; text-decoration-color: var(--maiz); text-underline-offset: 4px; } }
+  .strip__name--next { color: #fff; }
+  .strip__name--mine { color: var(--maiz); }
+  .strip__name:first-of-type { width: calc(var(--seg) / 2 + .2rem); margin-left: -1rem; text-align: left; }
+  .strip__name:last-of-type { width: calc(var(--seg) / 2 + .2rem); margin-left: calc(var(--seg) / -2 + .8rem); text-align: right; }
+  .strip__bus { position: absolute; top: calc(1.6rem - 12px); left: 0; transform: translateX(-50%); transition: left 5s linear; }
+  .strip__bus svg { width: 56px; height: 32px; }
+  .strip__bus[hidden] { display: none; }
+  @media (max-width: 47.99rem) {
+    .strip__name:not(.strip__name--next):not(.strip__name--mine):not(:first-of-type):not(:last-of-type) { display: none; }
+  }
+  .live { flex: none; width: 10px; height: 10px; background: var(--torogoz); border-radius: 50%; }
+  .live--ping { animation: ping 1.2s ease-out; }
+  .live--off { background: #7D88BC; }
+  @keyframes ping { from { box-shadow: 0 0 0 0 rgb(15 163 156 / .7); } to { box-shadow: 0 0 0 12px rgb(15 163 156 / 0); } } /* taste-skill-ignore: un aro que late una vez cuando llega la señal, no una sombra */
+
+  /* Letrero de paletas: al cambiar la parada o los minutos, voltea */
+  .flap { transform-origin: 50% 0; animation: flap 450ms var(--ease-out); }
+  @keyframes flap { from { transform: perspective(500px) rotateX(-80deg); opacity: 0; } }
+  .strip__bus.is-moving svg { animation: bob 550ms ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-2px) rotate(-.6deg); } }
+
+  /* ---------- La ficha de llegada (Así sabemos…): un pedazo de la app a tamaño real ---------- */
+  .ficha { width: min(100%, 17rem); padding: 1rem 1.1rem 1.1rem; background: var(--papel); color: #141B3D; transition: transform 150ms var(--ease-out); }
+  .ficha__fila { display: flex; justify-content: space-between; gap: .75rem; padding-block: .35rem; font-size: .9375rem; font-variant-numeric: tabular-nums; }
+  .ficha__fila + .ficha__fila { border-top: 1px solid #DDD8CC; } /* taste-skill-ignore: renglones de una tabla dentro de la ficha (data-ui) */
+  @media (hover: hover) { .campo:hover .ficha { transform: translateY(-6px); } }
+
+  /* ---------- Tablero de terminal: la flota como lista de salidas ---------- */
+  .salidas { display: grid; gap: 4px; }
+  .salida {
+    display: grid; grid-template-columns: minmax(0, 5fr) repeat(3, minmax(0, 2fr)) minmax(0, 2.4fr); align-items: center; gap: 1rem;
+    width: 100%; min-height: 4.5rem; padding: .6rem clamp(.8rem, 1.6vw, 1.5rem);
+    background: #18204A; color: var(--papel); text-align: left; cursor: pointer;
+    font: 800 clamp(1.4rem, 2vw, 1.85rem)/1 var(--font-display); font-variant-numeric: tabular-nums; text-transform: uppercase;
+    transition: background-color 180ms ease;
+  }
+  @media (hover: hover) { .salida:hover { background: #222C5E; } }
+  .salida small { display: block; margin-top: .3rem; color: #B9C0DE; font: 400 .9375rem/1.2 var(--font-sans); text-transform: none; }
+  .salida__estado { justify-self: end; padding: .45rem .7rem; font: 700 .9375rem/1 var(--font-sans); text-transform: none; white-space: nowrap; }
+  .salida__estado--ruta { background: var(--torogoz); color: var(--noche); }
+  .salida__estado--parada { background: #3A4677; color: var(--papel); }
+  .salida__estado--aceite { background: var(--maiz); color: var(--noche); }
+  .salida__estado--sin { background: #B42833; color: #fff; }
+  .salida__detalle { display: none; }
+  .salida[aria-expanded="true"] { min-height: 13.5rem; align-items: start; padding-block: 1.3rem; background: var(--maiz); color: var(--noche); }
+  .salida[aria-expanded="true"] small { color: #3A3420; }
+  .salida[aria-expanded="true"] .salida__nombre { font-size: clamp(2.4rem, 4vw, 3.6rem); }
+  .salida[aria-expanded="true"] .salida__detalle { display: block; grid-column: 1 / -1; align-self: end; max-width: 60ch; font: 400 1.0625rem/1.45 var(--font-sans); text-transform: none; }
+  .salida[aria-expanded="true"] .salida__estado { background: var(--noche); color: var(--maiz); }
+  @media (max-width: 47.99rem) {
+    .salida { grid-template-columns: minmax(0, 1fr) auto; min-height: 4rem; }
+    .salida__dato { display: none; }
+    .salida[aria-expanded="true"] { min-height: 12.5rem; }
+  }
+
+  /* ---------- El boleto: el formulario se corta como boleto de bus ---------- */
+  .boleto {
+    --muesca: 14px;
+    position: relative; background: var(--maiz); color: var(--noche);
+    -webkit-mask: radial-gradient(circle var(--muesca) at var(--corte, 46%) 0, #0000 98%, #000) top / 100% 51% no-repeat, /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+                  radial-gradient(circle var(--muesca) at var(--corte, 46%) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat; /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+            mask: radial-gradient(circle var(--muesca) at var(--corte, 46%) 0, #0000 98%, #000) top / 100% 51% no-repeat, /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+                  radial-gradient(circle var(--muesca) at var(--corte, 46%) 100%, #0000 98%, #000) bottom / 100% 51% no-repeat; /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+  }
+  .boleto__picado { position: absolute; top: 28px; bottom: 28px; left: var(--corte, 46%); width: 0; border-left: 5px dotted var(--bg); transform: translateX(-50%); }
+  @media (max-width: 63.99rem) {
+    .boleto {
+      -webkit-mask: radial-gradient(circle var(--muesca) at 0 var(--corte-y, 40%), #0000 98%, #000) left / 51% 100% no-repeat, /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+                    radial-gradient(circle var(--muesca) at 100% var(--corte-y, 40%), #0000 98%, #000) right / 51% 100% no-repeat; /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+              mask: radial-gradient(circle var(--muesca) at 0 var(--corte-y, 40%), #0000 98%, #000) left / 51% 100% no-repeat, /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+                    radial-gradient(circle var(--muesca) at 100% var(--corte-y, 40%), #0000 98%, #000) right / 51% 100% no-repeat; /* taste-skill-ignore: máscara de las muescas del boleto, no se ve como degradado */
+    }
+    .boleto__picado { top: var(--corte-y, 40%); bottom: auto; left: 28px; right: 28px; width: auto; height: 0; border-left: 0; border-top: 5px dotted var(--bg); transform: translateY(-50%); }
+  }
+  .field label { display: block; margin-bottom: .35rem; font-weight: 700; }
+  .field input, .field textarea {
+    display: block; width: 100%; min-height: 3.4rem; padding: .8rem 1rem;
+    background: #F7D27A; color: var(--noche); border: 0; border-bottom: 3px solid transparent;
+    font: 400 1.125rem/1.35 var(--font-sans); transition: border-color 180ms ease, background-color 180ms ease;
+  }
+  .field input::placeholder, .field textarea::placeholder { color: #6E5A22; }
+  .field input:focus, .field textarea:focus { outline: none; background: #FBE3A6; border-bottom-color: var(--noche); }
+  .field.is-bad input { border-bottom-color: var(--alerta); background: #F8C9B4; }
+  .extra summary { display: flex; align-items: center; gap: .5rem; min-height: 2.9rem; font-weight: 700; list-style: none; cursor: pointer; }
+  .extra summary::-webkit-details-marker { display: none; }
+  .extra summary::before { content: "+"; display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; background: var(--noche); color: var(--maiz); font-weight: 800; transition: transform 240ms var(--ease-out); }
+  .extra[open] summary::before { transform: rotate(45deg); }
+  .extra:not([open]) > div { display: none; }
+  .check circle, .check path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: trazo 700ms var(--ease-out) forwards; }
+  .check path { animation-delay: 350ms; }
+  @keyframes trazo { to { stroke-dashoffset: 0; } }
+
+  /* ---------- Preguntas: cada una se abre a su altura real ---------- */
+  .pregunta summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.5rem; align-items: center; padding-block: 1.4rem; list-style: none; cursor: pointer; }
+  .pregunta summary::-webkit-details-marker { display: none; }
+  .pregunta__mas { display: grid; place-items: center; width: 2.9rem; height: 2.9rem; background: var(--step); font: 800 1.8rem/1 var(--font-display); transition: transform 300ms var(--ease-out), background-color 180ms ease, color 180ms ease; }
+  .pregunta[open] .pregunta__mas { transform: rotate(45deg); background: var(--maiz); color: var(--noche); }
+  @media (hover: hover) { .pregunta summary:hover .pregunta__mas { background: var(--ink); color: var(--bg); } }
+  @media (prefers-reduced-motion: no-preference) { .pregunta[open] > div { animation: sube 420ms var(--ease-out) both; } }
+
+  /* ---------- Sensor: el bus dibujado con sus piezas ---------- */
+  .kit__bus { display: block; width: 100%; height: 100%; overflow: visible; }
+  .kit__road { stroke: var(--soft); stroke-width: 4; stroke-dasharray: 26 18; opacity: .5; }
+  .kit__body { fill: var(--anil); }
+  .kit__stripe { fill: var(--maiz); }
+  .kit__stripe--thin { fill: var(--torogoz); }
+  .kit__win rect { fill: #C9D0EE; }
+  .kit__glass { fill: #DCE3F7; }
+  .kit__door { fill: #2A3470; }
+  .kit__door-line { stroke: var(--anil); stroke-width: 2; }
+  .kit__sign { fill: var(--noche); }
+  .kit__route { fill: var(--maiz); font: 800 17px var(--font-display); }
+  .kit__antenna { fill: none; stroke: var(--anil); stroke-width: 6; stroke-linejoin: round; }
+  .kit__wheel circle { fill: var(--noche); }
+  .kit__wheel .kit__hub { fill: #9AA3C7; }
+  .kit__arch { fill: var(--bg); }
+  .kit__light { fill: #FFF3C9; stroke: var(--noche); stroke-width: 2; }
+  .kit__tank { fill: #2A3470; transition: fill 300ms; }
+  [data-modo="viejo"] .kit__tank { fill: var(--maiz); }
+  .kit__spot { position: absolute; width: 2.75rem; height: 2.75rem; margin: -1.375rem 0 0 -1.375rem; padding: 0; background: none; border: 0; border-radius: 50%; cursor: pointer; animation: spot-in 350ms var(--ease-out) both; }
+  .kit__spot::before, .kit__spot::after { content: ""; position: absolute; border-radius: 50%; }
+  .kit__spot::before { inset: .65rem; background: var(--maiz); outline: 3px solid var(--noche); transition: transform 200ms var(--ease-out), background-color 180ms; }
+  .kit__spot::after { inset: .25rem; border: 3px solid var(--torogoz); opacity: 0; transform: scale(.6); transition: opacity 200ms, transform 250ms var(--ease-out); }
+  @media (hover: hover) { .kit__spot:hover::before { transform: scale(1.18); } }
+  .kit__spot[aria-pressed="true"]::before { background: #fff; }
+  .kit__spot[aria-pressed="true"]::after { opacity: 1; transform: scale(1.1); }
+  @keyframes spot-in { from { opacity: 0; transform: scale(.3); } }
+  .kit__mode button, .kit__parts button { min-height: 3rem; padding: .6rem 1rem; font-weight: 700; text-align: left; cursor: pointer; transition: background-color 180ms ease, color 180ms ease; }
+  .kit__mode button { background: var(--step); }
+  .kit__mode button[aria-pressed="true"] { background: var(--noche); color: var(--maiz); }
+  .kit__parts button { background: none; color: inherit; }
+  @media (hover: hover) { .kit__parts button:hover { background: rgb(255 255 255 / .1); } }
+  .kit__parts button[aria-pressed="true"] { background: var(--maiz); color: var(--noche); }
+  #kit-panel.is-aviso { color: var(--maiz); }
+  #kit-panel.is-alerta { color: #FF9AA1; }
+  .kit__info.is-new > * { animation: sube 420ms var(--ease-out) both; }
+  .kit__info.is-new > *:nth-child(2) { animation-delay: 70ms; }
+  .kit__info.is-new > *:nth-child(3) { animation-delay: 140ms; }
+  @keyframes sube { from { opacity: 0; transform: translateY(10px); } }
+
+
+  /* ---------- Legal: índice pegado a la izquierda y el texto a una medida cómoda ---------- */
+  html:not([lang="en"]) .legal [data-lang="en"], html[lang="en"] .legal [data-lang="es"] { display: none; }
+  .legal__inner { row-gap: 2.5rem; }
+  .legal__side { grid-column: 1 / -1; align-self: start; }
+  .legal__body { grid-column: 1 / -1; }
+  .legal__body p, .legal__body ul, .legal__body h3 { max-width: 60ch; }
+  @media (min-width: 64rem) {
+    .legal__side { grid-column: 1 / span 3; position: sticky; top: 2rem; }
+    .legal__body { grid-column: 5 / span 8; }
+  }
+  .legal__ver { color: var(--soft); font-size: var(--text-chico); }
+  .legal__side ol { display: grid; gap: .1rem; margin-top: 1rem; }
+  .legal__side a { display: flex; align-items: center; min-height: 2.75rem; font-weight: 700; text-decoration: none; transition: color 180ms ease; }
+  .legal__side a::before { content: ""; width: .5rem; height: .5rem; margin-right: .75rem; background: var(--maiz); opacity: 0; transform: translateX(-6px); transition: opacity 180ms ease, transform 240ms var(--ease-out); }
+  @media (hover: hover) { .legal__side a:hover::before { opacity: 1; transform: none; } }
+  .legal__nota { padding: 1rem 1.2rem; background: var(--bg); }
+  .legal__nota + section { margin-top: 2rem; }
+  .legal__body > section { scroll-margin-top: 1.5rem; }
+  .legal__body > section + section { margin-top: clamp(4rem, 8vw, 6rem); }
+  .legal__body h2 { font-size: 2.4rem; line-height: .95; }
+  .legal__body h3 { margin-top: 2.2rem; font-size: var(--text-cuerpo); }
+  .legal__body p, .legal__body ul { margin-top: 1rem; }
+  .legal__body ul { padding-left: 1.2rem; list-style: disc; }
+  .legal__body li + li { margin-top: .5rem; }
+  .legal__body a { font-weight: 700; text-decoration: underline; text-decoration-color: var(--maiz); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+  .legal__body code { font-size: .9em; overflow-wrap: anywhere; }
+  .legal__datos { display: grid; gap: 4px; margin-top: 1.4rem; }
+  .legal__datos div { display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr); gap: .3rem 1rem; padding: .8rem 1rem; background: var(--bg); }
+  .legal__datos dt { font-weight: 700; }
+  @media (max-width: 40rem) { .legal__datos div { grid-template-columns: minmax(0, 1fr); } }
+  .legal__tabla { margin-top: 1.4rem; overflow-x: auto; background: var(--bg); }
+  .legal__tabla:focus-visible { outline: 3px solid var(--maiz); outline-offset: 2px; }
+  .legal__tabla table { width: 100%; min-width: 40rem; border-collapse: collapse; font-size: var(--text-chico); }
+  .legal__tabla th, .legal__tabla td { padding: .8rem 1rem; border-bottom: 1px solid var(--step); text-align: left; vertical-align: top; }
+  .legal__tabla thead th { background: var(--noche); color: var(--papel); }
+  .legal__tabla tbody tr:last-child > * { border-bottom: 0; }
+
+  /* ---------- Cifras que ruedan como contador, una vez ---------- */
+  .roll__digits { display: inline-flex; line-height: 1; }
+  /* cada columna mide lo que su dígito final (va invisible adentro); la tira de 0 a 9 corre encima */
+  .roll__col { position: relative; display: inline-block; height: 1em; overflow: clip; }
+  .roll__col > i { visibility: hidden; font-style: normal; }
+  /* los diez dígitos van en ::before: se ven, pero no son texto de la página */
+  .roll__strip { position: absolute; left: 50%; top: 0; translate: -50% 0; transform: translateY(calc(var(--d) * -1em)); }
+  .roll__strip::before { content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9"; display: block; white-space: pre; line-height: 1; text-align: center; }
+
+  /* ---------- El pie: el nombre enorme, cortado por el borde de abajo ---------- */
+  .nombre-pie { display: block; font: 800 clamp(9rem, 30vw, 30rem)/.78 var(--font-display); letter-spacing: -.02em; white-space: nowrap; transform: translateY(18%); }
+
+}
+
+/* Fotos cortadas como recorte pegado: un poco giradas (se puede usar con lg:recorte) */
+@utility recorte { rotate: var(--giro, -3deg); }
+
+/* ---------- Movimiento ----------
+   Todo está en la página desde el primer cuadro; esto solo le da llegada.
+   Sin JavaScript o con "reducir movimiento", la página queda quieta y completa. */
+@layer components {
+  .linea { display: block; overflow: clip; padding-bottom: .08em; margin-bottom: -.08em; }
+  .linea > span { display: block; }
+  .foto { overflow: clip; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* El titular sube línea por línea desde detrás de su renglón */
+  .js .linea > span { transform: translateY(105%); animation: linea 900ms var(--ease-expo) forwards; animation-delay: calc(var(--i, 0) * 110ms + 150ms); }
+  .js [data-carga] { opacity: 0; transform: translateY(14px); animation: carga 520ms var(--ease-out) forwards; animation-delay: var(--d, 420ms); }
+  .js [data-abre] { clip-path: inset(0 0 100% 0); animation: abre 1100ms var(--ease-in-out) 200ms forwards; }
+  .js [data-abre] img { transform: scale(1.1); animation: asienta 1300ms var(--ease-expo) 150ms forwards; }
+
+  /* Al bajar: cada sección llega por partes (título, texto, lo demás), una sola vez */
+  .js [data-entra] > * { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 850ms var(--ease-expo); transition-delay: calc(var(--n, 0) * 80ms); }
+  .js [data-entra].is-in > * { opacity: 1; transform: none; }
+  /* Las salidas del tablero de terminal voltean una tras otra, como letrero de paletas */
+  .js .salidas > .salida { opacity: 0; transform: perspective(700px) rotateX(-70deg); transform-origin: 50% 0; transition: opacity 400ms var(--ease-out), transform 650ms var(--ease-expo), background-color 180ms ease; transition-delay: calc(var(--n, 0) * 70ms); }
+  .js .salidas.is-in > .salida { opacity: 1; transform: none; }
+  /* Las fichas llegan a su campo una tras otra */
+  .js .campos .ficha { opacity: 0; transform: translateY(32px); transition: opacity 600ms var(--ease-out), transform 800ms var(--ease-expo); transition-delay: calc(var(--n, 0) * 90ms + 150ms); }
+  .js .campos.is-in .ficha { opacity: 1; transform: none; }
+  @media (hover: hover) { .js .campos.is-in .campo:hover .ficha { transform: translateY(-6px); transition-delay: 0s; transition-duration: 150ms; } }
+  /* Una foto se abre de abajo hacia arriba cuando aparece */
+  /* (una cortina del color del fondo encima, que se recoge; recortar la foto misma impediría que cargue) */
+  .js [data-cortina] { position: relative; }
+  .js [data-cortina]::after { content: ""; position: absolute; inset: 0 0 auto 0; height: var(--alto-foto, 100%); background: var(--cortina, var(--bg)); transform-origin: 50% 0; transition: transform 1100ms var(--ease-in-out); pointer-events: none; }
+  .js [data-cortina].is-in::after { transform: scaleY(0); }
+  .roll:not(.is-in) .roll__strip { transform: none; }
+  .roll.is-in .roll__strip { transition: transform 1100ms var(--ease-expo) calc(var(--i) * 70ms); }
+  /* Legal: solo el título de cada parte sube al llegar; el texto ya está ahí */
+  .js .legal__body > section > h2 { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 850ms var(--ease-expo); }
+  .js .legal__body > section.is-in > h2 { opacity: 1; transform: none; }
+  /* El nombre del pie sube a su sitio */
+  .js .nombre-pie { transform: translateY(60%); transition: transform 1200ms var(--ease-expo); }
+  .js .is-in .nombre-pie { transform: translateY(18%); }
+
+  /* Fotos que se mueven con la página, poquito */
+  @supports (animation-timeline: view()) {
+    .deriva { animation: deriva linear both; animation-timeline: view(); animation-range: entry 0% exit 100%; }
+    .recorte.deriva { animation-name: deriva-giro; }
+  }
+}
+@keyframes linea { to { transform: none; } }
+@keyframes carga { to { opacity: 1; transform: none; } }
+@keyframes abre { to { clip-path: inset(0); } }
+@keyframes asienta { to { transform: none; } }
+@keyframes deriva { from { transform: translateY(-5%) scale(1.08); } to { transform: translateY(5%) scale(1.08); } }
+@keyframes deriva-giro { from { translate: 0 18px; } to { translate: 0 -18px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .strip__bus.is-moving svg, .live--ping, .flap, .kit__spot { animation: none !important; }
+  .strip__done, .strip__bus { transition: none !important; }
+}
+
+/* Cambio de modo claro/oscuro: fundido en lugar de salto */
+::view-transition-old(root) { animation: tema-sale 300ms ease both; }
+::view-transition-new(root) { animation: tema-entra 300ms ease both; }
+@keyframes tema-sale { to { opacity: 0; } }
+@keyframes tema-entra { from { opacity: 0; } }

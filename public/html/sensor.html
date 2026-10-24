@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/css/sitio.css">
 </head>
 <body class="overflow-x-clip">
+  <a class="saltar" href="#main">Saltar al contenido</a>
 
   <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
     <symbol id="i-moon" viewBox="0 0 24 24">
@@ -69,7 +70,7 @@
           <span class="block mt-2 text-chico">entre una ubicación y la siguiente, mientras el bus anda.</span>
         </p>
         <figure class="foto bg-[#5E4A3A] aspect-[4/3] lg:aspect-[16/10] -mx-m lg:mx-0" data-abre>
-          <img class="size-full object-cover object-[60%_50%]" src="/img/fotos/bus-driver-7185450748.jpg" width="1024" height="768" alt="Cabina de un bus en El Salvador: el motorista al timón y el tablero lleno de adornos." fetchpriority="high">
+          <img class="size-full object-cover object-[60%_50%]" src="/img/fotos/bus-driver-7185450748.jpg" srcset="/img/fotos/bus-driver-7185450748-800.jpg 800w, /img/fotos/bus-driver-7185450748.jpg 1024w" sizes="(min-width: 64rem) 60vw, 100vw" width="1024" height="768" alt="Cabina de un bus en El Salvador: el motorista al timón y el tablero lleno de adornos." fetchpriority="high">
         </figure>
       </div>
       <dl class="col-span-12 lg:col-span-4 lg:row-start-1 self-end grid gap-5 pt-8 lg:pt-0 max-w-[30ch]">
@@ -79,7 +80,7 @@
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <!-- El bus dibujado con cada pieza que se instala. Los datos salen de firmware/README.md -->
     <section class="bg-step mt-[clamp(5rem,12vw,10rem)] py-[clamp(4.5rem,9vw,8rem)] scroll-mt-4" id="sensor" aria-labelledby="kit-title">
       <div class="rejilla items-end gap-y-6" data-entra>
@@ -131,8 +132,8 @@
           <div class="kit__info grid content-start gap-5">
             <h3 class="font-display font-extrabold uppercase text-[2.4rem] leading-[.95]" id="kit-nombre"></h3>
             <dl class="grid sm:grid-cols-2 gap-5">
-              <div><dt class="font-bold text-maiz">Qué mide</dt><dd class="mt-1" id="kit-mide"></dd></div>
-              <div><dt class="font-bold text-maiz">Cómo se instala</dt><dd class="mt-1" id="kit-instala"></dd></div>
+              <div><dt class="font-bold text-torogoz">Qué mide</dt><dd class="mt-1" id="kit-mide"></dd></div>
+              <div><dt class="font-bold text-torogoz">Cómo se instala</dt><dd class="mt-1" id="kit-instala"></dd></div>
             </dl>
             <p class="bg-[#1F2A66] p-4"><span class="block text-chico text-[#B9C0DE]">Así lo ves en tu panel</span><span class="block font-bold mt-1" id="kit-panel"></span></p>
           </div>
@@ -143,17 +144,17 @@
     <!-- Cómo se porta en la calle: cuatro cifras grandes, con el centro de San Salvador al lado -->
     <section class="mt-[clamp(5rem,12vw,10rem)]" aria-labelledby="calle-title">
       <div class="rejilla gap-y-10">
-        <div class="col-span-12 lg:col-span-7 bg-maiz text-noche lg:-ml-m px-[clamp(1.25rem,3vw,3rem)] lg:pl-m py-[clamp(3rem,7vw,6rem)]" data-entra>
+        <div class="col-span-12 lg:col-span-7 bg-torogoz text-noche lg:-ml-m px-[clamp(1.25rem,3vw,3rem)] lg:pl-m py-[clamp(3rem,7vw,6rem)]" data-entra>
           <h2 class="text-titulo" id="calle-title">Así se porta en la calle</h2>
           <dl class="grid gap-[clamp(1.75rem,3.5vw,3rem)] mt-[clamp(2.5rem,5vw,4rem)]">
             <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 items-baseline"><dt class="font-display font-extrabold uppercase text-titulo"><span data-roll>5</span> s</dt><dd class="text-frase">Manda la ubicación mientras el bus anda; cada 30 s cuando está detenido.</dd></div>
             <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 items-baseline"><dt class="font-display font-extrabold uppercase text-titulo"><span data-roll>3</span> h</dt><dd class="text-frase">De recorrido guardado sin señal, en un túnel o una zona sin cobertura. Lo manda en orden al volver.</dd></div>
             <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 items-baseline"><dt class="font-display font-extrabold uppercase text-titulo"><span data-roll>10</span> min</dt><dd class="text-frase">Con el bus apagado, sigue diciendo dónde quedó estacionado.</dd></div>
-            <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 items-baseline"><dt class="font-display font-extrabold uppercase text-titulo"><span data-roll>10</span> min</dt><dd class="text-frase">Sin red, y reinicia solo el 4G. Si el equipo se traba, se reinicia entero.</dd></div>
+            <div class="grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-8 items-baseline"><dt class="font-display font-extrabold uppercase text-titulo"><span data-roll>0</span> cables</dt><dd class="text-frase">Cortados. Va a la batería con su propio fusible y, si el bus tiene computadora, al conector de diagnóstico.</dd></div>
           </dl>
         </div>
         <figure class="col-span-12 lg:col-span-5 lg:-mr-m foto lg:h-full" data-cortina>
-          <span class="block overflow-clip lg:h-[calc(100%-2.5rem)]"><img class="w-full h-[60svh] lg:h-full object-cover object-[30%_60%] deriva" src="/img/fotos/centro-historico-san-salvador.jpg" width="1600" height="1200" alt="El centro de San Salvador visto desde lo alto, con la cúpula de la Catedral y los cerros al fondo." loading="lazy"></span>
+          <span class="block overflow-clip lg:h-[calc(100%-2.5rem)]"><img class="w-full h-[60svh] lg:h-full object-cover object-[30%_60%] deriva" src="/img/fotos/centro-historico-san-salvador.jpg" srcset="/img/fotos/centro-historico-san-salvador-800.jpg 800w, /img/fotos/centro-historico-san-salvador.jpg 1400w" sizes="(min-width: 64rem) 60vw, 100vw" width="1600" height="1200" alt="El centro de San Salvador visto desde lo alto, con la cúpula de la Catedral y los cerros al fondo." loading="lazy"></span>
           <figcaption class="text-chico text-soft mt-3">El centro de San Salvador, donde andan la 101, la 42 y la 29.</figcaption>
         </figure>
       </div>
@@ -170,11 +171,11 @@
         </div>
       </div>
       <div class="col-span-12 lg:col-start-8 lg:col-span-5 grid grid-cols-6">
-        <figure class="col-span-4 row-start-1 lg:recorte z-10 self-start" style="--giro:-4deg" data-cortina>
-          <span class="block overflow-clip"><img class="w-full aspect-square object-cover object-[50%_25%] deriva" src="/img/fotos/el-salvador-bus-201.jpg" width="1211" height="1133" alt="El frente de un bus de la 201, con su número pintado de colores." loading="lazy"></span>
+        <figure class="col-span-4 row-start-1 z-10 self-start">
+          <img class="w-full aspect-square object-cover" src="/img/fotos/san-salvador-metrocentro.jpg" srcset="/img/fotos/san-salvador-metrocentro-800.jpg 800w, /img/fotos/san-salvador-metrocentro.jpg 1024w" sizes="(min-width: 64rem) 60vw, 100vw" width="1024" height="768" alt="El pasillo de Metrocentro, en San Salvador, con gente caminando frente a las tiendas." loading="lazy">
         </figure>
-        <figure class="col-start-3 col-span-4 row-start-1 lg:recorte mt-[45%]" style="--giro:3deg" data-cortina>
-          <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/entrada-de-colon-ll-el-salvador-2010.jpg" width="1600" height="1214" alt="Un bus en la carretera a la entrada de Colón, La Libertad." loading="lazy"></span>
+        <figure class="col-start-3 col-span-4 row-start-1 lg:recorte mt-[45%]" style="--giro:3deg">
+          <img class="w-full aspect-[4/3] object-cover" src="/img/fotos/entrada-de-colon-ll-el-salvador-2010.jpg" srcset="/img/fotos/entrada-de-colon-ll-el-salvador-2010-800.jpg 800w, /img/fotos/entrada-de-colon-ll-el-salvador-2010.jpg 1400w" sizes="(min-width: 64rem) 60vw, 100vw" width="1600" height="1214" alt="Un bus en la carretera a la entrada de Colón, La Libertad." loading="lazy">
           <figcaption class="text-chico text-soft mt-3">Entrada de Colón, La Libertad.</figcaption>
         </figure>
       </div>
@@ -186,7 +187,7 @@
     <div class="rejilla gap-y-10">
       <div class="col-span-12 lg:col-span-7">
         <h2 class="text-titulo">¿Ya viene la tuya?</h2>
-        <a class="btn btn--maiz mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
+        <a class="btn btn--papel mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
       </div>
       <nav class="col-span-12 lg:col-start-10 lg:col-span-3 grid gap-1 content-start" aria-label="Pie de página">
         <a class="enlace min-h-11 inline-flex items-center" href="/mapa.html">Mapa en vivo</a>
@@ -197,10 +198,10 @@
       </nav>
       <div class="col-span-12 flex flex-wrap justify-between gap-x-10 gap-y-3 text-chico text-[#C9D0EE] mt-[clamp(2rem,6vw,5rem)]">
         <p>Hecho en El Salvador por gente que también espera el bus.</p>
-        <p class="max-w-[56ch]">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
+        <p class="max-w-[56ch] lg:text-right">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
       </div>
     </div>
-    <p class="px-m text-maiz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
+    <p class="px-m text-torogoz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
   </footer>
 
   <script src="/js/sitio.js" defer></script>

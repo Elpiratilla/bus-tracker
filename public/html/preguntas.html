@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="/css/sitio.css">
 </head>
 <body class="overflow-x-clip">
+  <a class="saltar" href="#main">Saltar al contenido</a>
 
   <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
     <symbol id="i-moon" viewBox="0 0 24 24">
@@ -56,31 +57,31 @@
         <span class="linea"><span style="--i:0">Lo que preguntan</span></span>
         <span class="linea"><span style="--i:1">los dueños</span></span>
       </h1>
-      <p class="col-span-12 lg:col-span-4 lg:row-start-2 text-frase" data-carga style="--d:420ms">Sobre la instalación, los datos, la batería y quién ve tu flota. Si tu duda no está, escríbenos.</p>
+      <p class="col-span-12 lg:col-span-4 lg:row-start-2 text-frase" data-carga style="--d:420ms">Sobre la instalación, los datos, la batería y quién ve tu flota. Si tu duda no está, déjanos tu número y te escribimos.</p>
       <div class="col-span-12 lg:col-start-9 lg:col-span-4 lg:row-start-2 self-end lg:justify-self-end" data-carga style="--d:480ms">
-        <a class="btn btn--tinta w-full sm:w-auto" href="/#pedir">Preguntar por WhatsApp</a>
+        <a class="btn btn--tinta w-full sm:w-auto" href="/#pedir">Pedir cotización</a>
       </div>
     </div>
 
     <div class="rejilla mt-12 lg:mt-16">
       <figure class="col-start-1 col-span-12 row-start-1 foto -mx-m bg-[#7C8C8F] aspect-[4/3] md:aspect-[21/8]" data-abre>
-        <img class="size-full object-cover object-[50%_42%]" src="/img/fotos/el-salvador-bus.jpg" width="1600" height="1200" alt="Gente esperando y subiendo a un bus de la 201 en una parada a la orilla de la calle." fetchpriority="high">
+        <img class="size-full object-cover object-[50%_42%]" src="/img/fotos/el-salvador-bus.jpg" srcset="/img/fotos/el-salvador-bus-800.jpg 800w, /img/fotos/el-salvador-bus.jpg 1400w" sizes="(min-width: 64rem) 60vw, 100vw" width="1600" height="1200" alt="Gente esperando y subiendo a un bus de la 201 en una parada a la orilla de la calle." fetchpriority="high">
       </figure>
-      <figure class="col-start-8 col-span-5 sm:col-start-9 sm:col-span-4 lg:col-start-10 lg:col-span-3 row-start-1 self-end lg:recorte relative z-10 -mb-[12%] bg-papel p-2 sm:p-3" style="--giro:4deg" data-carga>
-        <img class="w-full aspect-square object-cover object-[50%_20%]" src="/img/fotos/el-salvador-bus-201.jpg" width="1211" height="1133" alt="El rótulo pintado de la 201: Santa Ana, San Salvador.">
+      <figure class="col-start-8 col-span-5 sm:col-start-9 sm:col-span-4 lg:col-start-10 lg:col-span-3 row-start-1 self-end relative z-10 -mb-[12%] bg-papel p-2 sm:p-3" data-carga>
+        <img class="w-full aspect-square object-cover object-[28%_62%]" src="/img/fotos/centro-historico-san-salvador.jpg" srcset="/img/fotos/centro-historico-san-salvador-800.jpg 800w, /img/fotos/centro-historico-san-salvador.jpg 1400w" sizes="(min-width: 64rem) 60vw, 100vw" width="1600" height="1200" alt="El centro de San Salvador visto desde lo alto, con la cúpula de la Catedral.">
       </figure>
     </div>
   </header>
 
-  <main>
+  <main id="main">
     <!-- Preguntas de los dueños antes de comprar: cada una con su enlace -->
     <section class="rejilla gap-y-10 pt-[clamp(5rem,12vw,10rem)]" id="preguntas" aria-labelledby="faq-title">
       <div class="col-span-12 lg:col-span-4">
         <div class="lg:sticky lg:top-10" data-entra>
           <h2 class="text-titulo" id="faq-title">Antes de comprar</h2>
           <p class="mt-6 max-w-[30ch]">Ocho dudas que nos hacen siempre. Toca una para abrirla; cada una tiene su enlace para mandarla por WhatsApp.</p>
-          <figure class="recorte mt-12 hidden lg:block" style="--giro:-3deg" data-cortina>
-            <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/san-salvador-metrocentro.jpg" width="1024" height="768" alt="El pasillo de Metrocentro, en San Salvador, con gente caminando frente a las tiendas." loading="lazy"></span>
+          <figure class="mt-12 hidden lg:block">
+            <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover" src="/img/fotos/san-salvador-metrocentro.jpg" srcset="/img/fotos/san-salvador-metrocentro-800.jpg 800w, /img/fotos/san-salvador-metrocentro.jpg 1024w" sizes="(min-width: 64rem) 60vw, 100vw" width="1024" height="768" alt="El pasillo de Metrocentro, en San Salvador, con gente caminando frente a las tiendas." loading="lazy"></span>
             <figcaption class="text-chico text-soft mt-3">Metrocentro, una de las paradas de la 101.</figcaption>
           </figure>
         </div>
@@ -154,7 +155,7 @@
           <a class="btn btn--maiz mt-8" href="/#pedir">Pedir el sensor</a>
         </div>
         <figure class="col-span-12 lg:col-start-8 lg:col-span-5 lg:recorte" style="--giro:3deg;--cortina:var(--anil)" data-cortina>
-          <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/sitramss-san-salvador.jpg" width="1600" height="1067" alt="Buses en una calle de San Salvador, con el volcán al fondo." loading="lazy"></span>
+          <span class="block overflow-clip"><img class="w-full aspect-[4/3] object-cover deriva" src="/img/fotos/sitramss-san-salvador.jpg" srcset="/img/fotos/sitramss-san-salvador-800.jpg 800w, /img/fotos/sitramss-san-salvador.jpg 1400w" sizes="(min-width: 64rem) 60vw, 100vw" width="1600" height="1067" alt="Buses en una calle de San Salvador, con el volcán al fondo." loading="lazy"></span>
           <figcaption class="text-chico text-[#C9D0EE] mt-3">Buses en San Salvador.</figcaption>
         </figure>
       </div>
@@ -166,7 +167,7 @@
     <div class="rejilla gap-y-10">
       <div class="col-span-12 lg:col-span-7">
         <h2 class="text-titulo">¿Ya viene la tuya?</h2>
-        <a class="btn btn--maiz mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
+        <a class="btn btn--papel mt-8" href="/mapa.html">Abrir el mapa en vivo</a>
       </div>
       <nav class="col-span-12 lg:col-start-10 lg:col-span-3 grid gap-1 content-start" aria-label="Pie de página">
         <a class="enlace min-h-11 inline-flex items-center" href="/mapa.html">Mapa en vivo</a>
@@ -177,10 +178,10 @@
       </nav>
       <div class="col-span-12 flex flex-wrap justify-between gap-x-10 gap-y-3 text-chico text-[#C9D0EE] mt-[clamp(2rem,6vw,5rem)]">
         <p>Hecho en El Salvador por gente que también espera el bus.</p>
-        <p class="max-w-[56ch]">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
+        <p class="max-w-[56ch] lg:text-right">Fotos de Wikimedia Commons y Flickr: bus 201, parada y carretera en Colón, dominio público; motorista, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Bus_Driver_(7185450748).jpg">David Stanley, CC BY 2.0</a>; buses en San Salvador, <a class="enlace" href="https://commons.wikimedia.org/wiki/File:Sitramss_San_Salvador.jpg">Salvadoreñodecorazon1, CC BY-SA 4.0</a>; centro de San Salvador, <a class="enlace" href="https://commons.wikimedia.org/w/index.php?curid=28135569">Maranon68, CC BY-SA 3.0</a>; Metrocentro, <a class="enlace" href="https://www.flickr.com/photos/35385832@N05/42333864652">Sasha India, CC BY-SA 2.0</a>.</p>
       </div>
     </div>
-    <p class="px-m text-maiz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
+    <p class="px-m text-torogoz select-none" aria-hidden="true" translate="no"><span class="nombre-pie">go503</span></p>
   </footer>
 
   <script src="/js/sitio.js" defer></script>

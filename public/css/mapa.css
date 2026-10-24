@@ -76,7 +76,7 @@ body {
 
 /* Hilo azul, blanco, azul: la bandera, en silencio */
 
-a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
+a:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 3px; }
 
 /* ---------- Escenario: mapa con barra flotante ---------- */
 .stage { position: relative; isolation: isolate; }
@@ -135,7 +135,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   background: var(--anil);
   color: #fff;
 }
-.seg button:focus-visible, .chip:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.seg button:focus-visible, .chip:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 
 /* Buscador de rutas y paradas */
 .search {
@@ -179,7 +179,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   text-decoration: none;
 }
 .home:hover { color: var(--torogoz-texto); }
-.home:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.home:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 @media (max-width: 640px) {
   .home { width: var(--tap); padding: 0; justify-content: center; }
   .home__text { display: none; }
@@ -202,7 +202,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   cursor: pointer;
 }
 .theme:hover { color: var(--torogoz-texto); }
-.theme:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.theme:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 
 /* Segunda fila: tipo de unidad + rutas, flotando sobre el mapa */
 .row2 {
@@ -397,7 +397,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 }
 .near:hover { background: color-mix(in srgb, var(--anil) 80%, var(--torogoz)); }
 .near:active { transform: scale(.96); }
-.near:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.near:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 .near[aria-busy="true"] .ico { animation: locate 1s ease-in-out infinite; }
 @keyframes locate { 50% { transform: scale(.75); opacity: .6; } }
 @media (max-width: 640px) {
@@ -437,7 +437,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   transition: border-color .15s;
 }
 .nearby__item:hover { border-color: var(--torogoz); }
-.nearby__item:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.nearby__item:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 .nearby__num { display: grid; place-items: center; min-width: 2.8rem; height: 2.4rem; padding: 0 .5rem; background: var(--noche); border-radius: 6px; color: var(--maiz); font: 800 1.5rem/1 var(--serif); }
 .nearby__txt { display: grid; gap: .1rem; min-width: 0; }
 .nearby__txt b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -460,7 +460,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
   transition: color .15s, background-color .15s;
 }
 .fav:hover { background: var(--paper); color: var(--maiz); }
-.fav:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.fav:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 .fav .ico { width: 1.35rem; height: 1.35rem; }
 .fav[aria-pressed="true"] { --star-fill: var(--maiz); color: var(--maiz); }
 .fav.is-pop .ico { animation: star .45s cubic-bezier(.3, 1.6, .5, 1); }
@@ -514,7 +514,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 }
 .dir button:hover { color: var(--ink); }
 .dir button[aria-pressed="true"] { background: var(--anil); color: #fff; }
-.dir button:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.dir button:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 
 /* Próxima parada */
 .next {
@@ -654,7 +654,7 @@ a:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
 }
 .stop__bell:hover { border-color: var(--muted); color: var(--ink); }
 .stop__bell[aria-pressed="true"] { background: var(--maiz); border-color: var(--maiz); color: var(--anil); }
-.stop__bell:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.stop__bell:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 
 .foot { margin: 1.6rem 0 0; color: var(--muted); font-size: .85rem; }
 
@@ -716,7 +716,7 @@ h1.flap { display: block; }
   cursor: pointer;
 }
 .lang:hover { color: var(--torogoz-texto); }
-.lang:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+.lang:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: 2px; }
 
 /* ---------- Asa del panel: solo en el teléfono ---------- */
 .grip {
@@ -734,7 +734,7 @@ h1.flap { display: block; }
 .grip:active { cursor: grabbing; }
 .grip__bar { width: 3rem; height: 5px; background: var(--track); border-radius: 3px; transition: background-color .15s, width .15s; }
 .grip:hover .grip__bar, .grip:focus-visible .grip__bar { width: 3.6rem; background: var(--muted); }
-.grip:focus-visible { outline: 3px solid var(--torogoz); outline-offset: -3px; border-radius: 10px; }
+.grip:focus-visible { outline: 3px solid var(--torogoz-texto); outline-offset: -3px; border-radius: 10px; }
 #map { transition: height .25s cubic-bezier(.2, .8, .3, 1); }
 @media (min-width: 900px) { .grip { display: none; } #map { height: 100vh !important; transition: none; } }
 
@@ -752,3 +752,7 @@ h1.flap { display: block; }
   .search .ico { display: none; }
   .search { padding: 0 .6rem; }
 }
+
+/* "Saltar al contenido": escondido hasta que llega el foco del teclado */
+.saltar { position: absolute; left: 1rem; top: .75rem; z-index: 5000; padding: .8rem 1.2rem; background: #141B3D; color: #fff; font-weight: 700; text-decoration: none; }
+.saltar:not(:focus) { width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

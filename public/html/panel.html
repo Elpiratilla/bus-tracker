@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="/css/empresa.css">
 </head>
 <body>
+  <a class="saltar" href="#main">Saltar al contenido</a>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
     <symbol id="i-map" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></symbol>
     <symbol id="i-bus" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 11h18" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="14.5" r="1.3" fill="currentColor"/><circle cx="16" cy="14.5" r="1.3" fill="currentColor"/><path d="M6.5 18v3M17.5 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
@@ -60,7 +61,7 @@
       </div>
     </aside>
 
-    <main class="main">
+    <main id="main" class="main">
       <!-- Alertas de la flota: sin señal, motor caliente, velocidad, combustible, fallas y aceite -->
       <div class="alerts" id="alertas" hidden>
         <button class="alerts__btn" id="btn-alertas" type="button" aria-expanded="false" aria-controls="alertas-pop">

@@ -46,7 +46,10 @@ Pedido por Mateo ("todo, agrégale animaciones, Tailwind"). Se hizo con la skill
 - **Un solo par de márgenes** (16 a 32 px) y una rejilla de 12 columnas (`.rejilla`) en todas las secciones.
 - **Fotos reales** de buses y calles de El Salvador, de Wikimedia Commons y Flickr, en `public/img/fotos/` con su licencia en `credits.json` y el crédito en el pie de cada página. Ninguna se presenta como un bus o un cliente de go503.
 - **Lo que se puede tocar:** el tablero en vivo (escoger ruta y parada), el bus del sensor (cada pieza), la flota como tablero de terminal (ejemplo) y el formulario como boleto.
-- **Movimiento:** el titular sube línea por línea al abrir; cada sección llega por partes al bajar (una sola vez); las fotos se abren como cortina y se mueven poquito con la página; las filas de la flota voltean como letrero de paletas; las cifras del sensor ruedan; el nombre del pie sube. Todo respeta "reducir movimiento" y sin JavaScript la página queda completa.
+- **Movimiento:** el titular sube línea por línea al abrir; cada sección llega por partes al bajar (una sola vez); las filas de la flota voltean como letrero de paletas; las cifras del sensor ruedan; el nombre del pie sube. Solo una foto por página se abre como cortina y se mueve con la página, y solo una va girada. Todo respeta "reducir movimiento" y sin JavaScript la página queda completa.
+- **Maíz solo en el momento clave:** el número de ruta, los minutos, la acción principal ("Pedir el sensor"), el boleto y la fila abierta de la flota. El pie y las cifras del sensor van en torogoz.
+- **Fotos livianas:** cada foto tiene su versión de 800 px (`-800.jpg`) y la grande queda en 1400 px como máximo; las páginas las piden con `srcset`. Ninguna foto se repite en la misma página.
+- **Teclado:** todas las páginas tienen "Saltar al contenido". El anillo de foco es `--foco`: torogoz oscuro (#0A6F6A) sobre papel, torogoz sobre noche y añil, noche sobre maíz y torogoz.
 
 ## Rediseño 2026-10-18: "rótulo y parada" (sigue en las pantallas de app)
 

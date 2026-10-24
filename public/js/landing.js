@@ -118,8 +118,13 @@ function render(data) {
     flip(hMin, m <= 0 ? "¡Ya!" : `${m} min`);
     hLinea.textContent = m <= 0 ? `La ${ruta} está llegando a ${target.nombre}.` : `para que la ${ruta} llegue a ${target.nombre}.`;
   } else {
-    flip(hMin, "– min");
-    hLinea.textContent = data.sinSenal ? `El bus de la ${ruta} dejó de mandar señal.` : `Ahorita no anda ningún bus de la ${ruta}.`;
+    // sin bus andando: lo que tarda la ruta de punta a punta (suma de los tramos medidos), que siempre existe
+    const total = paradas.reduce((s, p) => s + (p.tramoMin || 0), 0);
+    const fin = paradas[paradas.length - 1].nombre;
+    flip(hMin, total ? `${total} min` : "Sin bus");
+    hLinea.textContent = data.sinSenal ? `El bus de la ${ruta} dejó de mandar señal. De punta a punta tarda unos ${total} min.`
+      : total ? `tarda la ${ruta} de ${paradas[0].nombre} a ${fin}. Ahorita no anda ninguna.`
+      : `Ahorita no anda ningún bus de la ${ruta}.`;
   }
 
   // Línea de paradas: cada nombre es un botón para escoger tu parada.

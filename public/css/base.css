@@ -10,6 +10,7 @@
   --maiz-hondo: #C98A0B; /* el borde de abajo de los botones maíz */
   --torogoz: #0FA39C;   /* en línea, recorrido */
   --torogoz-texto: #0B7F79; /* el mismo verde, más oscuro para letras sobre claro (4.8:1) */
+  --foco: #0A6F6A;      /* anillo de foco: se ve sobre el papel (5.3:1) */
   --alerta: #D9434E;    /* fallas y vencidos */
   --alerta-texto: #B42833;
   --papel: #F2F0EA;     /* pared encalada: cálido, sin llegar a crema (igual que las páginas públicas) */
@@ -59,7 +60,11 @@ a { color: inherit; }
 img, svg { display: block; }
 button, input, select, textarea { font-family: inherit; }
 
-:focus-visible { outline: 3px solid var(--torogoz); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 3px; }
+/* "Saltar al contenido": escondido hasta que llega el foco del teclado */
+.saltar { position: absolute; left: 1rem; top: .75rem; z-index: 5000; padding: .8rem 1.2rem; background: #141B3D; color: #fff; font-weight: 700; text-decoration: none; }
+.saltar:not(:focus) { width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
 
 .wrap { width: min(1180px, 100% - 2rem); margin-inline: auto; }
 @media (min-width: 700px) { .wrap { width: min(1180px, 100% - 4rem); } }

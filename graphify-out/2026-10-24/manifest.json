@@ -48,15 +48,15 @@
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792877777.4899263,
-    "seen": 1792878510.581293,
-    "ast_hash": "71af073d88a8aa495567b2fb1530b16d",
+    "mtime": 1792883538.3691924,
+    "seen": 1792883581.4814332,
+    "ast_hash": "eb1cd50e5c658e7c7fd8f7bedf7c4f6b",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
-    "mtime": 1792876578.855146,
-    "seen": 1792878510.581294,
-    "ast_hash": "663440fb58fdad23e27450adf1131db4",
+    "mtime": 1792882941.998602,
+    "seen": 1792883581.481434,
+    "ast_hash": "4cc6e27abda15beff9eb16bb24fac824",
     "semantic_hash": ""
   },
   "public/js/mapa.js": {
@@ -258,9 +258,9 @@
     "semantic_hash": "659ae002f3f00efdb5ca668fd9803dff"
   },
   "DESIGN.md": {
-    "mtime": 1792878473.8264372,
-    "seen": 1792878510.5825438,
-    "ast_hash": "f125f5b66d8997877b44f46171209984",
+    "mtime": 1792883574.4001281,
+    "seen": 1792883581.4820852,
+    "ast_hash": "86febfe771ac2d53bc409298b311db35",
     "semantic_hash": ""
   },
   "src/env.js": {
@@ -570,147 +570,51 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792878389.2418969,
-    "seen": 1792878510.5825632,
-    "ast_hash": "564e649f64d72c82ea6525128944b856",
+    "mtime": 1792883363.9248836,
+    "seen": 1792883581.48212,
+    "ast_hash": "f1be875ad5ab7bb9feee9c77c28ec065",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792878246.7581713,
-    "seen": 1792878510.582564,
-    "ast_hash": "63daa169132aef9f14ca4eaf4904ed37",
+    "mtime": 1792883363.9445543,
+    "seen": 1792883581.482121,
+    "ast_hash": "6453c51d7d903a09946c37be114901b7",
     "semantic_hash": ""
   },
   "public/html/login.html": {
-    "mtime": 1792346039.1344223,
-    "seen": 1792346163.156798,
-    "ast_hash": "083cfc68fb16b80aa0d8daab394367f9",
+    "mtime": 1792883097.4593492,
+    "seen": 1792883581.482122,
+    "ast_hash": "46191b0b4dd6192171e2aa8da569f398",
     "semantic_hash": ""
   },
   "public/html/mapa.html": {
-    "mtime": 1792343928.3723042,
-    "seen": 1792346163.1568,
-    "ast_hash": "9f8c85a87622f8ec0c54b3313ddf1949",
+    "mtime": 1792883097.460288,
+    "seen": 1792883581.482123,
+    "ast_hash": "61bb8abc66fb5e9dabc5cfdd84dfd9c5",
     "semantic_hash": ""
   },
   "public/html/motorista.html": {
-    "mtime": 1792346091.9747598,
-    "seen": 1792346163.156802,
+    "mtime": 1792883103.2930586,
+    "seen": 1792883581.482123,
     "ast_hash": "7bf6bcf014944538cdabfdedd98c599b",
     "semantic_hash": ""
   },
   "public/html/panel.html": {
-    "mtime": 1792343928.3729558,
-    "seen": 1792346163.1568031,
-    "ast_hash": "9e796dd8e5c8585d8adac56c7a1355aa",
+    "mtime": 1792883097.4597323,
+    "seen": 1792883581.482124,
+    "ast_hash": "6c88c67d9348cc0b44abcf1a5cead0f1",
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {
-    "mtime": 1792878246.7573993,
-    "seen": 1792878510.5826402,
-    "ast_hash": "87b87a31fc5d29766983856d36f67960",
+    "mtime": 1792883363.9384577,
+    "seen": 1792883581.482125,
+    "ast_hash": "d136b4831393ad1d940debf2ac0d2ebf",
     "semantic_hash": ""
   },
   "public/html/sensor.html": {
-    "mtime": 1792878246.7571306,
-    "seen": 1792878510.582641,
-    "ast_hash": "3dadfd57c6a53edd32790479b1832bcd",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/report.json": {
-    "mtime": 1792878422.0119293,
-    "seen": 1792878510.580823,
-    "ast_hash": "56ea71a04f9df650ca7a54c35c7d8ce6",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/report.json": {
-    "mtime": 1792878194.460119,
-    "seen": 1792878510.580825,
-    "ast_hash": "54e5790017acb70f5d3d8a7a246fb4c4",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/report.json": {
-    "mtime": 1792877972.6127064,
-    "seen": 1792878510.580825,
-    "ast_hash": "ddadb7a32ee6c712255d5c6aff908b52",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/report.json": {
-    "mtime": 1792877983.529338,
-    "seen": 1792878510.580826,
-    "ast_hash": "1c0f1f9808c40ac689d74f8950be54d2",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/report.json": {
-    "mtime": 1792877944.9522376,
-    "seen": 1792878510.580827,
-    "ast_hash": "5ed20afb52c72b5a2d0489366dba1211",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/report.json": {
-    "mtime": 1792878322.848407,
-    "seen": 1792878510.580828,
-    "ast_hash": "4a1823102c4338dea13597ffe868fc2b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/report.json": {
-    "mtime": 1792878303.859518,
-    "seen": 1792878510.580828,
-    "ast_hash": "4cf1420e50fc58734e86462ad2cc827c",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/report.json": {
-    "mtime": 1792876002.7192264,
-    "seen": 1792878510.580829,
-    "ast_hash": "e8ac37b62289855dac9eb8985cad7924",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/report.json": {
-    "mtime": 1792875980.0428238,
-    "seen": 1792878510.5808299,
-    "ast_hash": "b2818d7b2e4c99f987f6acaa87666029",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/report.json": {
-    "mtime": 1792877806.4568534,
-    "seen": 1792878510.580831,
-    "ast_hash": "2e07c9b5448e87207f4c872b07dbe0c0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/report.json": {
-    "mtime": 1792877817.2724586,
-    "seen": 1792878510.580831,
-    "ast_hash": "172081c1c4efe7e4aa3180cce99d0a43",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/report.json": {
-    "mtime": 1792877826.000897,
-    "seen": 1792878510.580832,
-    "ast_hash": "31b4f5745180681482123b3268df7757",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/report.json": {
-    "mtime": 1792877836.5779262,
-    "seen": 1792878510.580832,
-    "ast_hash": "7bd8d4d9208bbabdea685759c676fe6c",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/report.json": {
-    "mtime": 1792875945.2503872,
-    "seen": 1792878510.580833,
-    "ast_hash": "669f79f247f75d466f49bdba777d6bf8",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/report.json": {
-    "mtime": 1792875931.989533,
-    "seen": 1792878510.5808342,
-    "ast_hash": "17206c623c8e74e813daeeed5365a9ed",
-    "semantic_hash": ""
-  },
-  ".taste-skill/direction.json": {
-    "mtime": 1792876027.5604303,
-    "seen": 1792878510.5808342,
-    "ast_hash": "d0151554818c2c77745335e761007a4d",
+    "mtime": 1792883363.932605,
+    "seen": 1792883581.482126,
+    "ast_hash": "516b153a39a96c920ac3ceb2254d561a",
     "semantic_hash": ""
   },
   "public/img/fotos/credits.json": {
@@ -719,736 +623,88 @@
     "ast_hash": "fdb4e9fa54ce723915c9d2f480b7f0f4",
     "semantic_hash": ""
   },
-  ".taste-skill/after/index.txt": {
-    "mtime": 1792878280.8535333,
-    "seen": 1792878510.582536,
-    "ast_hash": "16f7e3723a470d8c82132bb7d8f3f695",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal.txt": {
-    "mtime": 1792878130.5576773,
-    "seen": 1792878510.582536,
-    "ast_hash": "c1a24b8a858fba40093789879e9771ee",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login.txt": {
-    "mtime": 1792877972.613262,
-    "seen": 1792878510.582537,
-    "ast_hash": "9f11b30ee8cf524f8aafb6a6ed0d35f3",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa.txt": {
-    "mtime": 1792877983.5298643,
-    "seen": 1792878510.582538,
-    "ast_hash": "cb4e9425f9f525a022430cd698778be0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista.txt": {
-    "mtime": 1792877944.952817,
-    "seen": 1792878510.582539,
-    "ast_hash": "071f258f06d5259717c8cc23442233d8",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas.txt": {
-    "mtime": 1792878322.8489387,
-    "seen": 1792878510.582539,
-    "ast_hash": "da01c78f95f54f154c66d98a48098f86",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor.txt": {
-    "mtime": 1792878303.8600523,
-    "seen": 1792878510.58254,
-    "ast_hash": "091635061fdc36ee6b6e6d0cca8494ed",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login.txt": {
-    "mtime": 1792877806.457468,
-    "seen": 1792878510.582541,
-    "ast_hash": "e0400ed7d1ee06d4c5fb900aa7281459",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa.txt": {
-    "mtime": 1792877817.2729921,
-    "seen": 1792878510.582541,
-    "ast_hash": "1ed3615b74ac9cb1767ece0888dda7cb",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista.txt": {
-    "mtime": 1792877826.001441,
-    "seen": 1792878510.5825422,
-    "ast_hash": "2c03244ad5f21f9981dd4b25eac23e1d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel.txt": {
-    "mtime": 1792877836.5784647,
-    "seen": 1792878510.5825431,
-    "ast_hash": "7a9ac2be8ae973d67f75b5431d81c417",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/desktop-fold.jpg": {
-    "mtime": 1792878392.332219,
-    "seen": 1792878510.582658,
-    "ast_hash": "ebf280847892749d8a0da8c9751397ef",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/desktop-page-01.jpg": {
-    "mtime": 1792878399.8522918,
-    "seen": 1792878510.582659,
-    "ast_hash": "02875115392952fc8961dda841aa4b10",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/desktop-page-02.jpg": {
-    "mtime": 1792878399.917756,
-    "seen": 1792878510.5826602,
-    "ast_hash": "b78d56272e6dc7e713f84788dfcdb0d8",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/desktop-page-03.jpg": {
-    "mtime": 1792878399.9607975,
-    "seen": 1792878510.5826602,
-    "ast_hash": "aa28554e2430ae2fe8b8dc33013695a7",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/mobile-fold.jpg": {
-    "mtime": 1792878410.9854534,
-    "seen": 1792878510.5826612,
-    "ast_hash": "8f52ac5dca6de5aa6b9890ea41b2111d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/mobile-page-01.jpg": {
-    "mtime": 1792878419.9709666,
-    "seen": 1792878510.5826619,
-    "ast_hash": "aecdf60bcbadeb89e5102c236dedd2e3",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/mobile-page-02.jpg": {
-    "mtime": 1792878420.0156467,
-    "seen": 1792878510.5826619,
-    "ast_hash": "5ed794459a1973219100496b19f57285",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/tablet-fold.jpg": {
-    "mtime": 1792878402.1096041,
-    "seen": 1792878510.5826628,
-    "ast_hash": "9da399a719a462bc7aac676a67af411d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/tablet-page-01.jpg": {
-    "mtime": 1792878408.804044,
-    "seen": 1792878510.582664,
-    "ast_hash": "aa86c51672feb5f70437a13d3682a26b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/index/tablet-page-02.jpg": {
-    "mtime": 1792878408.8452091,
-    "seen": 1792878510.582664,
-    "ast_hash": "6ac419d078198fbcbc75f21dea8fc4bb",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/desktop-fold.jpg": {
-    "mtime": 1792878160.9949946,
-    "seen": 1792878510.582665,
-    "ast_hash": "2cb1ecb4294ca095b226e37e1bd0c1be",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/desktop-page-01.jpg": {
-    "mtime": 1792878170.0742302,
-    "seen": 1792878510.582666,
-    "ast_hash": "04a45cc5d7dc7726209935c93f580811",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/desktop-page-02.jpg": {
-    "mtime": 1792878170.1399436,
-    "seen": 1792878510.582666,
-    "ast_hash": "aac8bbcdd836c4d7bdf9764d97892569",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/desktop-page-03.jpg": {
-    "mtime": 1792878170.1872742,
-    "seen": 1792878510.582667,
-    "ast_hash": "dcfd3fdbdeb454cbf7d67ad4d0f11cef",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/mobile-fold.jpg": {
-    "mtime": 1792878183.5255165,
-    "seen": 1792878510.582668,
-    "ast_hash": "32f21adcc3295cd79a5e3ce2f79d99d5",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/mobile-page-01.jpg": {
-    "mtime": 1792878192.4094074,
-    "seen": 1792878510.582668,
-    "ast_hash": "5f0de1a171e153f2ce8a381a6324b03e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/mobile-page-02.jpg": {
-    "mtime": 1792878192.4579513,
-    "seen": 1792878510.582669,
-    "ast_hash": "79e78715f61aa9688825557bed5c6e36",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/tablet-fold.jpg": {
-    "mtime": 1792878172.3597634,
-    "seen": 1792878510.58267,
-    "ast_hash": "6727f063708ae6e41e581f63088bf606",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/tablet-page-01.jpg": {
-    "mtime": 1792878181.311344,
-    "seen": 1792878510.58267,
-    "ast_hash": "0fe218f171bf0d374696aa34b3fcb7a4",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/legal/tablet-page-02.jpg": {
-    "mtime": 1792878181.376134,
-    "seen": 1792878510.5826712,
-    "ast_hash": "73718fb145de25cde5aef4fe0e4186e7",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/desktop-fold.jpg": {
-    "mtime": 1792877965.03225,
-    "seen": 1792878510.5826719,
-    "ast_hash": "f22449df8f9a676ee3a37575e60726fc",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/desktop-page-01.jpg": {
-    "mtime": 1792877965.4969685,
-    "seen": 1792878510.5826719,
-    "ast_hash": "da4b260712866f51e4ec936c7be9e38d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/mobile-fold.jpg": {
-    "mtime": 1792877971.0432498,
-    "seen": 1792878510.5826728,
-    "ast_hash": "d01900da07874451b78d9de58f16922b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/mobile-page-01.jpg": {
-    "mtime": 1792877972.2518635,
-    "seen": 1792878510.582674,
-    "ast_hash": "2c41f66ba9df28c31ccbe6cb3f1679f7",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/tablet-fold.jpg": {
-    "mtime": 1792877967.6470277,
-    "seen": 1792878510.582674,
-    "ast_hash": "552624027ff5648144d42652e3684acc",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/login/tablet-page-01.jpg": {
-    "mtime": 1792877968.8829641,
-    "seen": 1792878510.582675,
-    "ast_hash": "5d5a045e273ffbebf5d3a650855d7a6e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/desktop-fold.jpg": {
-    "mtime": 1792877975.9057057,
-    "seen": 1792878510.582676,
-    "ast_hash": "75f9bd85fddfd1e763e0a329f9105781",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/desktop-page-01.jpg": {
-    "mtime": 1792877976.3634412,
-    "seen": 1792878510.582676,
-    "ast_hash": "dd5d8d4c198567586f9b25ad443f7be1",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/mobile-fold.jpg": {
-    "mtime": 1792877981.9461465,
-    "seen": 1792878510.582677,
-    "ast_hash": "b579828d61c53edc61e59ef04dce7cd2",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/mobile-page-01.jpg": {
-    "mtime": 1792877983.1649127,
-    "seen": 1792878510.582678,
-    "ast_hash": "01fc9a20a328e7bc4c48d10eafcdf0cb",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/tablet-fold.jpg": {
-    "mtime": 1792877978.5588286,
-    "seen": 1792878510.582678,
-    "ast_hash": "6460110952b5485207f1cdf83eb5239b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/mapa/tablet-page-01.jpg": {
-    "mtime": 1792877979.7484045,
-    "seen": 1792878510.582679,
-    "ast_hash": "a5db0db60ae0f3bfd78751ad5b7af1f1",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/desktop-fold.jpg": {
-    "mtime": 1792877938.899423,
-    "seen": 1792878510.58268,
-    "ast_hash": "cd67a6febbd2aa1845e1a955fe5ea289",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/desktop-page-01.jpg": {
-    "mtime": 1792877939.36263,
-    "seen": 1792878510.58268,
-    "ast_hash": "a005a87815f1b079a4a988bdce1cbb2e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/mobile-fold.jpg": {
-    "mtime": 1792877944.107269,
-    "seen": 1792878510.5826812,
-    "ast_hash": "320919ce04883cdee2bbbe6eb779f1e1",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/mobile-page-01.jpg": {
-    "mtime": 1792877944.5703335,
-    "seen": 1792878510.5826821,
-    "ast_hash": "24b55d5f97b8f7ae314e718e1ebe1588",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/tablet-fold.jpg": {
-    "mtime": 1792877941.5230222,
-    "seen": 1792878510.5826821,
-    "ast_hash": "380b70a56c5ebf84dd299e1c9a553365",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/motorista/tablet-page-01.jpg": {
-    "mtime": 1792877941.965383,
-    "seen": 1792878510.5826828,
-    "ast_hash": "39a0f414ef72cdaa6f59eae6ca7166f0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/desktop-fold.jpg": {
-    "mtime": 1792878306.5873601,
-    "seen": 1792878510.5826838,
-    "ast_hash": "908676a2906c9397d6ca7e4445acb1b4",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/desktop-page-01.jpg": {
-    "mtime": 1792878310.180881,
-    "seen": 1792878510.5826838,
-    "ast_hash": "4a9ad59a62bb763a7fd902e8f7611ffc",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/desktop-page-02.jpg": {
-    "mtime": 1792878310.2192883,
-    "seen": 1792878510.582686,
-    "ast_hash": "458b5c8242755c047622c8922be95b37",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/mobile-fold.jpg": {
-    "mtime": 1792878317.2763066,
-    "seen": 1792878510.582687,
-    "ast_hash": "e48780b71f0fa02207fc043bac68da79",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/mobile-page-01.jpg": {
-    "mtime": 1792878320.8224828,
-    "seen": 1792878510.582688,
-    "ast_hash": "2f54865360a641b91b7b0a370ce3773f",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/tablet-fold.jpg": {
-    "mtime": 1792878312.4034088,
-    "seen": 1792878510.582688,
-    "ast_hash": "7331ef88f1a3aad06141f582372dd999",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/preguntas/tablet-page-01.jpg": {
-    "mtime": 1792878315.1203191,
-    "seen": 1792878510.582689,
-    "ast_hash": "c22884f8af44763ef271eb145eba41b1",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/desktop-fold.jpg": {
-    "mtime": 1792878283.645764,
-    "seen": 1792878510.58269,
-    "ast_hash": "a56873263725de8dfff9bb0e2d7ff2f3",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/desktop-page-01.jpg": {
-    "mtime": 1792878287.9400473,
-    "seen": 1792878510.58269,
-    "ast_hash": "e771da34f1c0fe158d346d751112b238",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/desktop-page-02.jpg": {
-    "mtime": 1792878287.983214,
-    "seen": 1792878510.582691,
-    "ast_hash": "622124bfd73c901fb12a21b49322abad",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/mobile-fold.jpg": {
-    "mtime": 1792878296.731123,
-    "seen": 1792878510.5826921,
-    "ast_hash": "7e05651f45589465879159385b144a57",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/mobile-page-01.jpg": {
-    "mtime": 1792878301.837892,
-    "seen": 1792878510.5826921,
-    "ast_hash": "5c47367403650ea2068ea2fa93b9c8cb",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/tablet-fold.jpg": {
-    "mtime": 1792878290.1437042,
-    "seen": 1792878510.582693,
-    "ast_hash": "c0db644c14abb78eadea577367a3907b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/after/sensor/tablet-page-01.jpg": {
-    "mtime": 1792878294.5772998,
-    "seen": 1792878510.5826938,
-    "ast_hash": "e7f9004f386fb3614f5c73d09c2a027e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/desktop-fold.jpg": {
-    "mtime": 1792875986.2351258,
-    "seen": 1792878510.5826938,
-    "ast_hash": "4ea28ae0b069870c2531913e714ef890",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/desktop-page-01.jpg": {
-    "mtime": 1792875989.0908086,
-    "seen": 1792878510.582695,
-    "ast_hash": "b90344f258379de95256d5d2cb8d71ae",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/mobile-fold.jpg": {
-    "mtime": 1792875996.2695916,
-    "seen": 1792878510.582696,
-    "ast_hash": "14aaf5299191156d0cd70e452741ed18",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/mobile-page-01.jpg": {
-    "mtime": 1792876000.6899707,
-    "seen": 1792878510.582696,
-    "ast_hash": "3af13ee325315e890b165a89e2bac6be",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/tablet-fold.jpg": {
-    "mtime": 1792875991.2691658,
-    "seen": 1792878510.582697,
-    "ast_hash": "215b7e453089680d294c5d9edb5de726",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/index/tablet-page-01.jpg": {
-    "mtime": 1792875994.10911,
-    "seen": 1792878510.5826979,
-    "ast_hash": "b3d922d711186d59742baffdd67fe8d2",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/desktop-fold.jpg": {
-    "mtime": 1792875947.8765826,
-    "seen": 1792878510.5826979,
-    "ast_hash": "a994ebe85dcfcfffb10a5e1e8fc4f460",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/desktop-page-01.jpg": {
-    "mtime": 1792875956.7851756,
-    "seen": 1792878510.582699,
-    "ast_hash": "de38323b6f0b8fca6b10efc743e5318b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/desktop-page-02.jpg": {
-    "mtime": 1792875956.849687,
-    "seen": 1792878510.5827,
-    "ast_hash": "fedb8e3b71d89bea2bfb0a792d623ed7",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/desktop-page-03.jpg": {
-    "mtime": 1792875956.8976839,
-    "seen": 1792878510.5827,
-    "ast_hash": "54131f6d56015a3f3d0e1e54192d9f5b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/mobile-fold.jpg": {
-    "mtime": 1792875969.2300212,
-    "seen": 1792878510.582701,
-    "ast_hash": "0f2dc6a32ec98bc2723af26f92bbf7cd",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/mobile-page-01.jpg": {
-    "mtime": 1792875977.9847147,
-    "seen": 1792878510.5827022,
-    "ast_hash": "515e8b464b863bfb975c4933b22cdfac",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/mobile-page-02.jpg": {
-    "mtime": 1792875978.0339742,
-    "seen": 1792878510.5827022,
-    "ast_hash": "ceba08b7725ae14fd08e281b019fb475",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/tablet-fold.jpg": {
-    "mtime": 1792875959.0491366,
-    "seen": 1792878510.582703,
-    "ast_hash": "3a922d6a2d35c4e096da061cd680e87e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/tablet-page-01.jpg": {
-    "mtime": 1792875967.0228007,
-    "seen": 1792878510.582704,
-    "ast_hash": "45973c916ba2c7a4b3d3dcd4bab2e5a7",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/legal/tablet-page-02.jpg": {
-    "mtime": 1792875967.0872676,
-    "seen": 1792878510.582704,
-    "ast_hash": "b19b35292f30d31f66d5b3f8a709a7f3",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/desktop-fold.jpg": {
-    "mtime": 1792877798.8843777,
-    "seen": 1792878510.5827048,
-    "ast_hash": "840023dbe4951fe04a0e9f84c7aa20c0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/desktop-page-01.jpg": {
-    "mtime": 1792877799.3580768,
-    "seen": 1792878510.582706,
-    "ast_hash": "3a791ed6f168c3ac50a6f6181625ac68",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/mobile-fold.jpg": {
-    "mtime": 1792877804.867789,
-    "seen": 1792878510.582706,
-    "ast_hash": "c67bab012f0dbb0e20ee216f60c80719",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/mobile-page-01.jpg": {
-    "mtime": 1792877806.0824642,
-    "seen": 1792878510.582707,
-    "ast_hash": "62e8140542f8948ba8e531a068cc8857",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/tablet-fold.jpg": {
-    "mtime": 1792877801.510286,
-    "seen": 1792878510.582708,
-    "ast_hash": "9d7cf27f937854a684e2aeb1832417ff",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/login/tablet-page-01.jpg": {
-    "mtime": 1792877802.7077975,
-    "seen": 1792878510.582708,
-    "ast_hash": "47d1d71f18f6583e7093352b31b5cc89",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/desktop-fold.jpg": {
-    "mtime": 1792877809.6713889,
-    "seen": 1792878510.582709,
-    "ast_hash": "0b51526d2a462d2b80e670b6782e28e9",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/desktop-page-01.jpg": {
-    "mtime": 1792877810.1397681,
-    "seen": 1792878510.58271,
-    "ast_hash": "8d423e8659818b40192f9b24670677a2",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/mobile-fold.jpg": {
-    "mtime": 1792877815.7236478,
-    "seen": 1792878510.58271,
-    "ast_hash": "90f98be1a8afb8d399b18f0e5f02ca4e",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/mobile-page-01.jpg": {
-    "mtime": 1792877816.9082336,
-    "seen": 1792878510.582711,
-    "ast_hash": "44cf34f10db8a2ee6feca34a2df26960",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/tablet-fold.jpg": {
-    "mtime": 1792877812.3283825,
-    "seen": 1792878510.5827122,
-    "ast_hash": "e93c99d2fc887a422232f3c48a889e68",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/mapa/tablet-page-01.jpg": {
-    "mtime": 1792877813.5254738,
-    "seen": 1792878510.5827122,
-    "ast_hash": "2cb848ee14c59f724983a1a80dae1303",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/desktop-fold.jpg": {
-    "mtime": 1792877819.9161835,
-    "seen": 1792878510.5827131,
-    "ast_hash": "69bddf381d1c33aecf068932e7824da4",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/desktop-page-01.jpg": {
-    "mtime": 1792877820.3704762,
-    "seen": 1792878510.582714,
-    "ast_hash": "98a3b35ef06b56f36543293c936292c5",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/mobile-fold.jpg": {
-    "mtime": 1792877825.1587605,
-    "seen": 1792878510.582714,
-    "ast_hash": "6a3c971eeab6a2a7cff6491db1712f1d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/mobile-page-01.jpg": {
-    "mtime": 1792877825.6120155,
-    "seen": 1792878510.5827148,
-    "ast_hash": "76e49ae1ec474d2ad064184d0cdba84c",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/tablet-fold.jpg": {
-    "mtime": 1792877822.533054,
-    "seen": 1792878510.582716,
-    "ast_hash": "f81dacde608010ca621493f6f487bce4",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/motorista/tablet-page-01.jpg": {
-    "mtime": 1792877822.9927137,
-    "seen": 1792878510.582716,
-    "ast_hash": "b5d99a5ad11c4d124093aadb7ae59a5b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/desktop-fold.jpg": {
-    "mtime": 1792877828.9771311,
-    "seen": 1792878510.582717,
-    "ast_hash": "840023dbe4951fe04a0e9f84c7aa20c0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/desktop-page-01.jpg": {
-    "mtime": 1792877829.420515,
-    "seen": 1792878510.582718,
-    "ast_hash": "3a791ed6f168c3ac50a6f6181625ac68",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/mobile-fold.jpg": {
-    "mtime": 1792877834.9618232,
-    "seen": 1792878510.582718,
-    "ast_hash": "c67bab012f0dbb0e20ee216f60c80719",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/mobile-page-01.jpg": {
-    "mtime": 1792877836.1955085,
-    "seen": 1792878510.582719,
-    "ast_hash": "62e8140542f8948ba8e531a068cc8857",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/tablet-fold.jpg": {
-    "mtime": 1792877831.5909061,
-    "seen": 1792878510.58272,
-    "ast_hash": "9d7cf27f937854a684e2aeb1832417ff",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/panel/tablet-page-01.jpg": {
-    "mtime": 1792877832.8079991,
-    "seen": 1792878510.58272,
-    "ast_hash": "47d1d71f18f6583e7093352b31b5cc89",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/desktop-fold.jpg": {
-    "mtime": 1792875934.6086,
-    "seen": 1792878510.582721,
-    "ast_hash": "981e095be64da5f98e1a2ec1ff333530",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/desktop-page-01.jpg": {
-    "mtime": 1792875935.800676,
-    "seen": 1792878510.582722,
-    "ast_hash": "e74bcb045a06ee542587fdd976b59f2a",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/mobile-fold.jpg": {
-    "mtime": 1792875941.2924488,
-    "seen": 1792878510.582722,
-    "ast_hash": "064a33f784c3f6f2c47e90c61c3bfc8b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/mobile-page-01.jpg": {
-    "mtime": 1792875943.2534068,
-    "seen": 1792878510.5827231,
-    "ast_hash": "e918abb757b301ec4e24618b28cc2a58",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/tablet-fold.jpg": {
-    "mtime": 1792875937.9542968,
-    "seen": 1792878510.5827231,
-    "ast_hash": "fb9ef2f9aa4b2533e395e05f44ff994b",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/preguntas/tablet-page-01.jpg": {
-    "mtime": 1792875939.151845,
-    "seen": 1792878510.582724,
-    "ast_hash": "7e3e627175e1e939689e5e85e4ae151d",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/desktop-fold.jpg": {
-    "mtime": 1792875920.3798814,
-    "seen": 1792878510.582725,
-    "ast_hash": "d952ca3de85f2936eefd7853e4d607af",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/desktop-page-01.jpg": {
-    "mtime": 1792875922.3242946,
-    "seen": 1792878510.582725,
-    "ast_hash": "bb0a348928eadd65657953963d2979b5",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/mobile-fold.jpg": {
-    "mtime": 1792875927.9567409,
-    "seen": 1792878510.582726,
-    "ast_hash": "0f084a19f5098a250a93ec4e073fd728",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/mobile-page-01.jpg": {
-    "mtime": 1792875929.962512,
-    "seen": 1792878510.582727,
-    "ast_hash": "2c69b625c0b40edb8134d25804af38fa",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/tablet-fold.jpg": {
-    "mtime": 1792875924.5360305,
-    "seen": 1792878510.582727,
-    "ast_hash": "824b1a812bfdf9ba1e03dec99c7e69c0",
-    "semantic_hash": ""
-  },
-  ".taste-skill/before/sensor/tablet-page-01.jpg": {
-    "mtime": 1792875925.741749,
-    "seen": 1792878510.582728,
-    "ast_hash": "5fb17e2efe0b7754bb35b19087da8d09",
-    "semantic_hash": ""
-  },
   "public/img/fotos/bus-driver-7185450748.jpg": {
-    "mtime": 1792876145.0190501,
-    "seen": 1792878510.583429,
-    "ast_hash": "07b733c8513ebc7ed9fdee81cc590d7a",
+    "mtime": 1792883150.4502969,
+    "seen": 1792883581.482898,
+    "ast_hash": "928ce51bf4eaf35b5af690edbb34d2c3",
     "semantic_hash": ""
   },
   "public/img/fotos/centro-historico-san-salvador.jpg": {
-    "mtime": 1792876596.6558783,
-    "seen": 1792878510.583429,
-    "ast_hash": "b6c60d63fe2a39728457870376267b84",
+    "mtime": 1792883150.5843663,
+    "seen": 1792883581.4829,
+    "ast_hash": "5279d9d7639141b5dcfafcf40558a55e",
     "semantic_hash": ""
   },
   "public/img/fotos/el-salvador-bus-201.jpg": {
-    "mtime": 1792876596.75097,
-    "seen": 1792878510.5834298,
-    "ast_hash": "1fb495dfebbcc040a4b829e43eec51e3",
+    "mtime": 1792883150.6914797,
+    "seen": 1792883581.482901,
+    "ast_hash": "08dcadd164c458c3383cf0ea0dc815c0",
     "semantic_hash": ""
   },
   "public/img/fotos/el-salvador-bus.jpg": {
-    "mtime": 1792876596.523521,
-    "seen": 1792878510.583431,
-    "ast_hash": "20d9d984e5fb4cf96b7f924be50ae139",
+    "mtime": 1792883150.8186874,
+    "seen": 1792883581.482903,
+    "ast_hash": "2a1831db0f538d796463cb21c5c2e41d",
     "semantic_hash": ""
   },
   "public/img/fotos/entrada-de-colon-ll-el-salvador-2010.jpg": {
-    "mtime": 1792876596.72594,
-    "seen": 1792878510.583432,
-    "ast_hash": "671735f71ab3ee9cc80df962fb528431",
+    "mtime": 1792883150.949208,
+    "seen": 1792883581.4829051,
+    "ast_hash": "77a86df19e11e28e1bfb8338a09d765f",
     "semantic_hash": ""
   },
   "public/img/fotos/san-salvador-metrocentro.jpg": {
-    "mtime": 1792876160.4034247,
-    "seen": 1792878510.583432,
-    "ast_hash": "17876f52cbf3994e2ad82f8ad8408b86",
+    "mtime": 1792883151.0103173,
+    "seen": 1792883581.482906,
+    "ast_hash": "272435004996c8980c2d556805d312ef",
     "semantic_hash": ""
   },
   "public/img/fotos/sitramss-san-salvador.jpg": {
-    "mtime": 1792876596.5900142,
-    "seen": 1792878510.583433,
-    "ast_hash": "ba33f8d45ec721679f4a84bfb51d1c5e",
+    "mtime": 1792883151.1377504,
+    "seen": 1792883581.482908,
+    "ast_hash": "f84f6189c35090fb8cad76da24cc4722",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/bus-driver-7185450748-800.jpg": {
+    "mtime": 1792883150.450574,
+    "seen": 1792883581.4828968,
+    "ast_hash": "8498912e5cd908f2d1aebb41ab8721dd",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/centro-historico-san-salvador-800.jpg": {
+    "mtime": 1792883150.584672,
+    "seen": 1792883581.482899,
+    "ast_hash": "523514573159ca02d2733efc7dd2027c",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/el-salvador-bus-201-800.jpg": {
+    "mtime": 1792883150.6917884,
+    "seen": 1792883581.4829,
+    "ast_hash": "da20815afba5edc4fadd6f2833b16904",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/el-salvador-bus-800.jpg": {
+    "mtime": 1792883150.818947,
+    "seen": 1792883581.482902,
+    "ast_hash": "b2f814227539122eb96264ff963c77af",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/entrada-de-colon-ll-el-salvador-2010-800.jpg": {
+    "mtime": 1792883150.9494445,
+    "seen": 1792883581.482904,
+    "ast_hash": "be8f04b6c359d0d60094c5a64086f125",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/san-salvador-metrocentro-800.jpg": {
+    "mtime": 1792883151.0105627,
+    "seen": 1792883581.4829051,
+    "ast_hash": "1e601fd53d9b48ad20f943538566e231",
+    "semantic_hash": ""
+  },
+  "public/img/fotos/sitramss-san-salvador-800.jpg": {
+    "mtime": 1792883151.1381059,
+    "seen": 1792883581.4829068,
+    "ast_hash": "0d19b837167f8b54329599a23f7c41bd",
     "semantic_hash": ""
   }
 }

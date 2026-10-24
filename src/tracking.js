@@ -102,7 +102,11 @@ function handlePosition(busId, route, point, now) {
   const inside = near.distance <= STOP_RADIUS_M ? near.stop.id : null;
   const key = `${busId}:${route.id}`;
   const was = geofence[key] ?? null;
-  const entered = inside && inside !== was;
+  // Ya estaba dentro de la parada pero sin vuelta activa (se reinició el simulador o el sensor tras
+  // horas guardado en la terminal): cuenta como llegada, si no el bus no sale hasta la parada siguiente
+  const trip = trips[key];
+  const sinVuelta = !trip?.lastStopId || now - trip.updatedAt > TRIP_STALE_MS;
+  const entered = inside && (inside !== was || sinVuelta);
 
   geofence[key] = inside;
   if (was && was !== inside) registerExit(busId, route, was, now);

@@ -44,3 +44,17 @@ test("una hora en el futuro (reloj malo) se cambia por la de ahora", async () =>
   await send({ lat: 13.7059, lng: -89.2123, ts: new Date(Date.now() + 86400000).toISOString() });
   assert.ok(store.buses[BUS].updatedAt <= Date.now());
 });
+
+test("un bus que ya estaba en la parada, sin vuelta activa, cuenta desde esa parada", async () => {
+  // Lo que queda de una corrida anterior: el servidor recuerda que estaba en la terminal, con una vuelta vieja
+  const bus = "SIM-2";
+  store.geofence[`${bus}:101`] = "t-ori";
+  store.trips[`${bus}:101`] = { busId: bus, dir: "ida", passes: { "t-ori": 0 }, lastStopId: "t-ori", updatedAt: Date.now() - 3 * 3600000 };
+  await fetch(`${base}/api/telemetry`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ busId: bus, routeId: "101", lat: 13.7126, lng: -89.1643 }),
+  });
+  const trip = store.trips[`${bus}:101`];
+  assert.equal(trip.lastStopId, "t-ori");
+  assert.ok(Date.now() - trip.updatedAt < 60000, "la vuelta debe empezar ahora, no seguir la vieja");
+});

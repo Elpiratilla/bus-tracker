@@ -1,5 +1,5 @@
 // ¿Sale este bus en el mapa público (y en sus tiempos de llegada)?
-// Lo usan GET /api/buses y el cálculo de ETA (src/eta.js).
+// Lo usa el cálculo de llegadas (src/eta.js): un bus guardado no sale en el mapa ni da minutos.
 const APAGADO_MS = 5 * 60 * 1000; // motor apagado más de esto = bus guardado (no por apagarlo un rato en la terminal)
 
 function enMapa(bus, now = Date.now()) {

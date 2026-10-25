@@ -70,7 +70,7 @@ router.get("/:id", (req, res) => {
 
   // Sin sentido pedido: el del bus que se movió más reciente (así siempre se ve un bus si hay)
   const dir = pedido || pickDirection(route);
-  const { stops, legs, trip, lastIdx, times, current } = routeStatus(route, dir);
+  const { stops, legs, trip, lastIdx, times, current, sinSenal, ultimaSenal } = routeStatus(route, dir);
 
   res.json({
     ruta: route.id,
@@ -79,6 +79,9 @@ router.get("/:id", (req, res) => {
     sentidos: sentidos(route),
     actualizado: iso((trip && buses[trip.busId]?.updatedAt) || Date.now()),
     demo: isDemo(trip),
+    // El bus dejó de reportar: el mapa lo dice en lugar de dar minutos que ya no valen
+    sinSenal,
+    ultimaSenal: iso(ultimaSenal),
     // Por dónde pasa de verdad (dibujado o grabado por GPS). null: el mapa lo adivina por las calles
     trazo: shapes[`${route.id}:${dir}`]?.points ?? null,
     // Dónde va el bus: posición GPS real (enVivo) o null si no hay señal reciente

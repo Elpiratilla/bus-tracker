@@ -9,6 +9,7 @@ const { handlePosition } = require("../src/tracking");
 const { routeStatus } = require("../src/eta");
 
 const BUS = "T-101";
+store.units[BUS] = { busId: BUS, companyId: "empresa-1", routeId: "101" }; // solo los buses registrados guardan tramos
 const route = store.routes.find((r) => r.id === "101");
 const parada = (id) => route.stops.find((s) => s.id === id);
 const MIN = 60000;
@@ -32,6 +33,15 @@ test("las horas de llegada van en orden, después de ahora", () => {
     assert.ok(times[i] > now);
     assert.ok(times[i] > times[i - 1]);
   }
+});
+
+test("si el bus deja de mandar señal, no se dan minutos de llegada", () => {
+  // última señal en el minuto 11 (en el Centro); 9 minutos después sigue sin reportar
+  store.buses[BUS] = { busId: BUS, routeId: "101", ...parada("centro"), updatedAt: t0 + 11 * MIN };
+  const { lastIdx, times, sinSenal } = routeStatus(route, "ida", t0 + 20 * MIN);
+  assert.equal(sinSenal, true);
+  assert.ok(times.slice(lastIdx + 1).every((t) => t === null));
+  delete store.buses[BUS];
 });
 
 test("si vuelve hacia Terminal de Oriente, cambia a regreso", () => {

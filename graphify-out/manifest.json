@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792883538.3691924,
-    "seen": 1792883581.4814332,
-    "ast_hash": "eb1cd50e5c658e7c7fd8f7bedf7c4f6b",
+    "mtime": 1792885987.382875,
+    "seen": 1792886063.7087739,
+    "ast_hash": "67207be31df7105f631348cdd604f188",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -96,21 +96,21 @@
     "semantic_hash": "7d1ca9fbd03683be2d11bccdd1e9d514"
   },
   "src/alerts.js": {
-    "mtime": 1792343928.3742764,
-    "seen": 1792343959.4550421,
-    "ast_hash": "7f5d8befffa9263304011b7e58b27e3a",
+    "mtime": 1792885912.6158535,
+    "seen": 1792886063.709053,
+    "ast_hash": "7a3e10859d0592910a7995c33b1ac3eb",
     "semantic_hash": ""
   },
   "src/db.js": {
-    "mtime": 1792343857.8142357,
-    "seen": 1792343899.703947,
-    "ast_hash": "51b246c2490a7ff3af3aae0372e2881e",
+    "mtime": 1792885959.5165384,
+    "seen": 1792886063.709055,
+    "ast_hash": "d6f9bde95e0d1a787cb26d29b94e974e",
     "semantic_hash": ""
   },
   "src/eta.js": {
-    "mtime": 1792343857.8232677,
-    "seen": 1792343899.703999,
-    "ast_hash": "3c8b2298d15d5da6717e2b88261a7773",
+    "mtime": 1792885903.5857663,
+    "seen": 1792886063.7090912,
+    "ast_hash": "6bc2b7b1456841851c12c1eed56ad040",
     "semantic_hash": ""
   },
   "src/geo.js": {
@@ -132,10 +132,10 @@
     "semantic_hash": ""
   },
   "src/routes/alertas.js": {
-    "mtime": 1792343857.8366652,
-    "seen": 1792343899.704007,
-    "ast_hash": "197676d683ecc20a7d04319728b58f4f",
-    "semantic_hash": "197676d683ecc20a7d04319728b58f4f"
+    "mtime": 1792885936.1106746,
+    "seen": 1792886063.709196,
+    "ast_hash": "067fa02ccf5618c5230b046bc31cc086",
+    "semantic_hash": ""
   },
   "src/routes/clientes.js": {
     "mtime": 1792343857.839846,
@@ -144,8 +144,8 @@
     "semantic_hash": "636e652e717d405160ac4faa1e573c60"
   },
   "src/routes/empresa.js": {
-    "mtime": 1792343857.845913,
-    "seen": 1792343899.70401,
+    "mtime": 1792886032.388279,
+    "seen": 1792886063.709234,
     "ast_hash": "1edfd51b1121537d868172b22cc565c7",
     "semantic_hash": ""
   },
@@ -156,21 +156,21 @@
     "semantic_hash": ""
   },
   "src/routes/rutas.js": {
-    "mtime": 1792343857.857013,
-    "seen": 1792343899.704014,
-    "ast_hash": "382ba68040bd6c284b3fdfaa3384a4c5",
+    "mtime": 1792885912.615353,
+    "seen": 1792886063.709305,
+    "ast_hash": "c94215cfa6dc96e132a523fe657ba11f",
     "semantic_hash": ""
   },
   "src/routes/telemetry.js": {
-    "mtime": 1792343857.8615773,
-    "seen": 1792343899.704016,
-    "ast_hash": "5ced1764f1a1c24f8e1934acae243f52",
+    "mtime": 1792885953.4861023,
+    "seen": 1792886063.709307,
+    "ast_hash": "4356a28e16281acb33a6407cbe9220bb",
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1792346256.5937994,
-    "seen": 1792346849.337645,
-    "ast_hash": "c5b6bb6398f3e7e34d6ef7b547fab0db",
+    "mtime": 1792885950.349022,
+    "seen": 1792886063.709308,
+    "ast_hash": "cb5437d6c4b735270268f1dce26cd9c9",
     "semantic_hash": ""
   },
   "src/store.js": {
@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/tracking.js": {
-    "mtime": 1792884599.3427594,
-    "seen": 1792884632.3335822,
-    "ast_hash": "6e6dc5516246263b834d5eed2397bf59",
+    "mtime": 1792885928.6402705,
+    "seen": 1792886063.709342,
+    "ast_hash": "3b4a171bd3843b7606e20e2736d1c8ef",
     "semantic_hash": ""
   },
   "tools/admin.js": {
@@ -360,9 +360,9 @@
     "semantic_hash": ""
   },
   "test/motorista.test.js": {
-    "mtime": 1792303973.571453,
-    "seen": 1792304292.202451,
-    "ast_hash": "d9a7f614649aca9ff0c6e75ac400c788",
+    "mtime": 1792885950.3503838,
+    "seen": 1792886063.709413,
+    "ast_hash": "1841bf30fecf97c813ed4e977f1ff389",
     "semantic_hash": ""
   },
   "app/android/app/src/main/res/drawable-land-hdpi/splash.png": {
@@ -522,15 +522,15 @@
     "semantic_hash": ""
   },
   "src/enMapa.js": {
-    "mtime": 1792343857.8172467,
-    "seen": 1792343899.703976,
-    "ast_hash": "4f34ea5948fac284336df4b3be0cc3f6",
+    "mtime": 1792885959.4767594,
+    "seen": 1792886063.709056,
+    "ast_hash": "2eae0f240095747fb785f40d5ee6cb0e",
     "semantic_hash": ""
   },
   "test/encendido.test.js": {
-    "mtime": 1792305806.360819,
-    "seen": 1792305820.724809,
-    "ast_hash": "a6b6918441ba03769f2373dfe11b9fbf",
+    "mtime": 1792885950.3498569,
+    "seen": 1792886063.7094111,
+    "ast_hash": "3fe30b52d047b7f254b6e551b2c58056",
     "semantic_hash": ""
   },
   "test/claves.test.js": {
@@ -540,9 +540,9 @@
     "semantic_hash": ""
   },
   "test/recorrido.test.js": {
-    "mtime": 1792339091.0746176,
-    "seen": 1792339226.540729,
-    "ast_hash": "af335e55971ba2da1a0e66c106677b48",
+    "mtime": 1792886023.292195,
+    "seen": 1792886063.709414,
+    "ast_hash": "f35b512918e2505f05cced5b1505ec77",
     "semantic_hash": ""
   },
   "test/telemetria.test.js": {
@@ -570,9 +570,9 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792883363.9248836,
-    "seen": 1792883581.48212,
-    "ast_hash": "f1be875ad5ab7bb9feee9c77c28ec065",
+    "mtime": 1792885987.3833687,
+    "seen": 1792886063.709703,
+    "ast_hash": "5cb34af3875773e8c6b738fcf9ccdfff",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
@@ -705,6 +705,12 @@
     "mtime": 1792883151.1381059,
     "seen": 1792883581.4829068,
     "ast_hash": "0d19b837167f8b54329599a23f7c41bd",
+    "semantic_hash": ""
+  },
+  "test/empresa.test.js": {
+    "mtime": 1792886023.2969253,
+    "seen": 1792886063.709409,
+    "ast_hash": "e10a0387713e3112d8c89f00fa76b6dc",
     "semantic_hash": ""
   }
 }

@@ -23,7 +23,6 @@ test.before(async () => {
   const app = express();
   app.use(express.json());
   app.use("/api/telemetry", require("../src/routes/telemetry"));
-  app.use("/api/buses", require("../src/routes/telemetry"));
   app.use("/api/motorista", require("../src/routes/motorista"));
   await new Promise((ok) => { server = app.listen(0, ok); });
   base = `http://localhost:${server.address().port}`;
@@ -36,7 +35,8 @@ const post = (url, body, clave = CLAVE) => fetch(`${base}${url}`, {
 }).then(async (r) => ({ status: r.status, body: await r.json() }));
 const motorista = (path, body = {}, clave) => post(`/api/motorista/${path}`, body, clave);
 const gps = (lat, lng) => post("/api/telemetry", { lat, lng });
-const enMapa = async () => (await (await fetch(`${base}/api/buses`)).json()).some((b) => b.busId === BUS);
+// ¿Sale en el mapa público? La misma regla que usan los minutos de llegada (src/enMapa.js)
+const enMapa = async () => Boolean(store.buses[BUS]) && require("../src/enMapa").enMapa(store.buses[BUS]);
 
 test("sin la clave correcta el motorista no entra", async () => {
   assert.equal((await motorista("estado", {}, "otra")).status, 401);

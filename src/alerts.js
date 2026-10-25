@@ -42,7 +42,7 @@ function dropAlert(key, alert) {
 // Minutos que faltan para que el bus llegue a la parada (null si no viene ninguno)
 function minutesTo(status, stopId, now) {
   const idx = status.stops.findIndex((s) => s.id === stopId);
-  if (status.lastIdx < 0 || idx <= status.lastIdx) return null;
+  if (status.lastIdx < 0 || idx <= status.lastIdx || status.times[idx] == null) return null; // null: sin señal
   return (status.times[idx] - now) / 60000;
 }
 

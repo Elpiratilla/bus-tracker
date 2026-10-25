@@ -8,6 +8,7 @@ const RECENT_TRIPS = 10;                 // promedio con los últimos N pasos po
 const FALLBACK_SPEED_MS = 20 / 3.6;      // 20 km/h si un tramo aún no tiene mediciones
 const STALE_MS = 2 * 60 * 60 * 1000;     // vuelta sin actividad en 2 h = no hay bus
 const LIVE_MS = 60 * 1000;               // GPS sin reportar en 1 min = estimar por tiempo
+const SIN_SENAL_MS = 3 * 60 * 1000;      // sin reportar en 3 min = sin señal: ya no se estima
 
 // Segundos estimados de cada tramo de un sentido (índice i = de la parada i-1 a la i)
 function legSeconds(route, dir, stops) {
@@ -97,7 +98,12 @@ function routeStatus(route, dir = "ida", now = Date.now()) {
     for (let i = lastIdx + 2; i < stops.length; i++) times[i] = times[i - 1] + legs[i] * 1000;
   }
 
-  return { route, dir, stops, legs, trip, lastIdx, times, current };
+  // Sin señal hace rato: no se sabe si sigue andando, así que no hay hora de llegada que dar
+  const ultimaSenal = trip ? buses[trip.busId]?.updatedAt ?? null : null;
+  const sinSenal = Boolean(current && ultimaSenal && now - ultimaSenal > SIN_SENAL_MS);
+  if (sinSenal) times.fill(null, lastIdx + 1);
+
+  return { route, dir, stops, legs, trip, lastIdx, times, current, sinSenal, ultimaSenal };
 }
 
 module.exports = { routeStatus, pickDirection };

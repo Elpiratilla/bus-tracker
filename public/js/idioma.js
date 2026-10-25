@@ -90,7 +90,6 @@
     "; Metrocentro,": "; Metrocentro,",
     "go503: ¿ya viene el bus?": "go503: is the bus coming?",
     "¿Ya viene": "Is the",
-    "la": "",
     "Mira por dónde va el bus en San Salvador y cuántos minutos le faltan para llegar a tu parada.": "See where the bus is in San Salvador and how many minutes until it reaches your stop.",
     "Buscando el bus más cercano…": "Looking for the nearest bus…",
     "– min": "– min",
@@ -165,7 +164,6 @@
     "Para dueños de buses": "For bus owners",
     "¿Ya viene el": "Is the",
     "¿Ya viene la": "Is the",
-    "?": " coming?",
     "Es lo que todos preguntamos en la parada. Aquí ves por dónde va el bus y cuántos minutos le faltan para llegar a tu esquina.": "It's what everyone asks at the stop. See where the bus is and how many minutes until it reaches your corner.",
     "Ver dónde va mi bus": "Where's my bus?",
     "Avísame cuando venga": "Tell me when it's close",
@@ -847,7 +845,9 @@
   function doText(node) {
     if (skip(node.parentElement)) return;
     const v = node.nodeValue;
-    const out = t(v);
+    // data-en: traducción fija de un pedazo suelto ("la", "?") que con el diccionario cambiaría en toda la página
+    const fijo = node.parentElement.dataset.en;
+    const out = fijo == null ? t(v) : v.trim() === fijo.trim() ? v : v.replace(v.trim(), fijo);
     if (out !== v) node.nodeValue = out;
   }
   function doAttrs(el) {

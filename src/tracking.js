@@ -1,4 +1,4 @@
-const { segments, geofence, trips } = require("./store");
+const { segments, geofence, trips, units } = require("./store");
 const { nearestStop } = require("./geo");
 const { persist } = require("./db");
 const { track } = require("./trazos");
@@ -24,6 +24,8 @@ function toTime(ts) {
 }
 
 function saveSegment(busId, route, dir, from, to, seconds, now) {
+  // Solo buses reales: los del simulador van en línea recta y cambiarían los minutos de los de verdad
+  if (!units[busId]) return;
   const seg = { busId, routeId: route.id, dir, from, to, seconds, ts: now };
   segments.push(seg);
   const sameLeg = (s) => s.routeId === seg.routeId && s.dir === dir && s.from === from && s.to === to;
@@ -86,6 +88,7 @@ function registerExit(busId, route, stopId, now) {
 
 // Guarda en Supabase la vuelta actual y la parada en la que está el bus
 function saveTrip(busId, routeId) {
+  if (!units[busId]) return; // el simulador no se guarda: corre en tu Mac contra la misma base
   const key = `${busId}:${routeId}`;
   const trip = trips[key];
   const row = { bus_id: busId, route_id: routeId, geofence_stop: geofence[key] ?? null,

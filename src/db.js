@@ -104,7 +104,7 @@ async function loadState() {
 function saveBus(busId) {
   const bus = store.buses[busId];
   const unit = store.units[busId];
-  if (!bus) return;
+  if (!bus || !unit) return; // los buses del simulador viven solo en memoria
   const { busId: _id, routeId, lat, lng, atStop, updatedAt, ...live } = bus;
   persist("bus", (db) => db.from("buses").upsert({ id: busId, route_id: routeId ?? null,
     lat: lat ?? null, lng: lng ?? null, at_stop: atStop ?? null, data: live,
@@ -121,6 +121,9 @@ function limpiarHistorial() {
   // las vueltas grabadas sirven para escoger el recorrido: con 30 días alcanza
   const viejas = new Date(Date.now() - 30 * 86400000).toISOString();
   persist("limpiar grabaciones", (db) => db.from("route_recordings").delete().lt("ended_at", viejas));
+  // los reportes leen como mucho 90 días de tramos; sin borrar, la tabla y el arranque crecen sin fin
+  const tramos = new Date(Date.now() - 90 * 86400000).toISOString();
+  persist("limpiar tramos", (db) => db.from("segments").delete().lt("ts", tramos));
 }
 
 module.exports = { db, persist, flush, saveBus, loadState, select, unitFromRow, limpiarHistorial };

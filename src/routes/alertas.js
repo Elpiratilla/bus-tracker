@@ -2,6 +2,7 @@
 const router = require("express").Router();
 const { routes, alerts } = require("../store");
 const { enabled, ALERT_MIN, validSubscription, addAlert, removeAlert, listAlerts } = require("../alerts");
+const { rateLimit } = require("../middleware/empresa");
 
 const MAX_PER_DEVICE = 10;
 const MAX_TOTAL = 10000;
@@ -15,7 +16,7 @@ router.use((_req, res, next) => {
 router.get("/clave", (_req, res) => res.json({ clave: process.env.VAPID_PUBLIC_KEY, minutos: ALERT_MIN }));
 
 // Crear alerta: { suscripcion, ruta, sentido, parada }
-router.post("/", (req, res) => {
+router.post("/", rateLimit(20, 10 * 60 * 1000), (req, res) => { // sin límite, un script llenaba los 10,000 en segundos
   const { suscripcion, ruta, parada } = req.body;
   const sentido = req.body.sentido || "ida";
   const route = routes.find((r) => r.id === ruta);

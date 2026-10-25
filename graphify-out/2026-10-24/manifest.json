@@ -180,9 +180,9 @@
     "semantic_hash": ""
   },
   "src/tracking.js": {
-    "mtime": 1792343857.8710637,
-    "seen": 1792343899.704021,
-    "ast_hash": "db707837abf624daf6f30965517ebc18",
+    "mtime": 1792884599.3427594,
+    "seen": 1792884632.3335822,
+    "ast_hash": "6e6dc5516246263b834d5eed2397bf59",
     "semantic_hash": ""
   },
   "tools/admin.js": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "test/telemetria.test.js": {
-    "mtime": 1792339091.1061523,
-    "seen": 1792339226.540731,
-    "ast_hash": "51c22b8b204f810a3d3588c87f7c5f3e",
+    "mtime": 1792884613.6666398,
+    "seen": 1792884632.333746,
+    "ast_hash": "1b82e63a177a8aeb7813252c8e8a3a25",
     "semantic_hash": ""
   },
   "src/trazos.js": {

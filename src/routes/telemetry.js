@@ -4,7 +4,6 @@ const { routes, buses, units, retired } = require("../store");
 const { handlePosition, toTime } = require("../tracking");
 const { distanceM } = require("../geo");
 const { persist, saveBus } = require("../db");
-const { enMapa } = require("../enMapa");
 
 const LOG_EVERY_MS = 60 * 1000;      // historial de mantenimiento: un registro por minuto por bus
 const MAX_GAP_MS = 5 * 60 * 1000;    // más de 5 min sin señal: no se suman km ni horas de ese hueco
@@ -42,7 +41,7 @@ router.post("/", auth, (req, res) => {
 
   const unit = units[busId];
   const data = Object.fromEntries(CAMPOS.filter((k) => rest[k] !== undefined).map((k) => [k, rest[k]]));
-  const routeId = rest.routeId || unit?.routeId; // si el sensor no la manda, la que asignó la empresa
+  const routeId = unit?.routeId || rest.routeId; // la del panel manda: el sensor trae una fija de cuando lo programaron
   const now = toTime(ts);
   const prev = buses[busId];
   let position = null;
@@ -86,16 +85,10 @@ router.post("/", auth, (req, res) => {
 // Historial: un registro por minuto por bus. abs(): los mensajes atrasados (más viejos que el
 // último guardado) también entran, así no queda un hueco donde no hubo señal.
 function logHistory(busId, now, lat, lng, data) {
+  if (!units[busId]) return; // el historial es para el panel del dueño
   if (Math.abs(now - lastLog[busId]) < LOG_EVERY_MS) return;
   lastLog[busId] = now;
   persist("historial", (db) => db.from("telemetry").insert({ bus_id: busId, ts: new Date(now).toISOString(), lat, lng, data }));
 }
-
-// Posiciones públicas (sin datos del motor ni de la empresa). demo: bus del simulador, no una unidad registrada
-// No salen los buses guardados: el motorista tocó "Terminar trayecto" o el motor lleva rato apagado (src/enMapa.js)
-router.get("/", (_req, res) => res.json(Object.values(buses).filter((b) => enMapa(b)).map((b) => ({
-  busId: b.busId, routeId: b.routeId, lat: b.lat, lng: b.lng, atStop: b.atStop, updatedAt: b.updatedAt,
-  demo: !units[b.busId],
-}))));
 
 module.exports = router;

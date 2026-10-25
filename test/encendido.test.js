@@ -20,7 +20,6 @@ test.before(async () => {
   const app = express();
   app.use(express.json());
   app.use("/api/telemetry", require("../src/routes/telemetry"));
-  app.use("/api/buses", require("../src/routes/telemetry"));
   app.use("/api/motorista", require("../src/routes/motorista"));
   await new Promise((ok) => { server = app.listen(0, ok); });
   base = `http://localhost:${server.address().port}`;
@@ -34,7 +33,8 @@ const post = (url, body) => fetch(`${base}${url}`, {
 const hace = (min) => new Date(Date.now() - min * 60000).toISOString();
 // El sensor en la Terminal de Oriente, con el motor encendido o apagado, hace X minutos
 const sensor = (ignition, min = 0) => post("/api/telemetry", { lat: 13.7126, lng: -89.1643, ignition, ts: hace(min) });
-const enMapa = async () => (await (await fetch(`${base}/api/buses`)).json()).some((b) => b.busId === BUS);
+// ¿Sale en el mapa público? La misma regla que usan los minutos de llegada (src/enMapa.js)
+const enMapa = async () => Boolean(store.buses[BUS]) && require("../src/enMapa").enMapa(store.buses[BUS]);
 
 test("motor encendido: sale en el mapa", async () => {
   await sensor(true);

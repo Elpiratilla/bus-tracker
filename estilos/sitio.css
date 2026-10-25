@@ -426,8 +426,9 @@
   .roll__strip { position: absolute; left: 50%; top: 0; translate: -50% 0; transform: translateY(calc(var(--d) * -1em)); }
   .roll__strip::before { content: "0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9"; display: block; white-space: pre; line-height: 1; text-align: center; }
 
-  /* ---------- El pie: el nombre enorme, cortado por el borde de abajo ---------- */
-  .nombre-pie { display: block; font: 800 clamp(9rem, 30vw, 30rem)/.78 var(--font-display); letter-spacing: -.02em; white-space: nowrap; transform: translateY(18%); }
+  /* ---------- El pie: la calle de noche, el volcán detrás y el bus que llega a la parada ---------- */
+  .pie-calle { display: block; width: 100%; height: clamp(13rem, 24vw, 21rem); margin-top: clamp(2.5rem, 6vw, 5rem); }
+  .pie-rueda { transform-box: fill-box; transform-origin: center; }
 
 }
 
@@ -469,9 +470,10 @@
   /* Legal: solo el título de cada parte sube al llegar; el texto ya está ahí */
   .js .legal__body > section > h2 { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 850ms var(--ease-expo); }
   .js .legal__body > section.is-in > h2 { opacity: 1; transform: none; }
-  /* El nombre del pie sube a su sitio */
-  .js .nombre-pie { transform: translateY(60%); transition: transform 1200ms var(--ease-expo); }
-  .js .is-in .nombre-pie { transform: translateY(18%); }
+  /* El bus del pie entra por la derecha y frena en la parada */
+  .js [data-pie] .pie-bus { transform: translateX(1300px); }
+  .js [data-pie].is-in .pie-bus { transform: none; transition: transform 2400ms cubic-bezier(.2, .7, .25, 1) 200ms; }
+  .js [data-pie].is-in .pie-rueda { animation: rueda 2400ms cubic-bezier(.2, .7, .25, 1) 200ms both; }
 
   /* Fotos que se mueven con la página, poquito */
   @supports (animation-timeline: view()) {
@@ -483,6 +485,7 @@
 @keyframes carga { to { opacity: 1; transform: none; } }
 @keyframes abre { to { clip-path: inset(0); } }
 @keyframes asienta { to { transform: none; } }
+@keyframes rueda { from { transform: rotate(-1080deg); } }
 @keyframes deriva { from { transform: translateY(-5%) scale(1.08); } to { transform: translateY(5%) scale(1.08); } }
 @keyframes deriva-giro { from { translate: 0 18px; } to { translate: 0 -18px; } }
 

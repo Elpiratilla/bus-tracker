@@ -570,15 +570,15 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792885987.3833687,
-    "seen": 1792886063.709703,
-    "ast_hash": "5cb34af3875773e8c6b738fcf9ccdfff",
+    "mtime": 1792886736.195654,
+    "seen": 1792886882.6144938,
+    "ast_hash": "682da00568f378d37514a7a5f160eb6a",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792883363.9445543,
-    "seen": 1792883581.482121,
-    "ast_hash": "6453c51d7d903a09946c37be114901b7",
+    "mtime": 1792886736.1965187,
+    "seen": 1792886882.614496,
+    "ast_hash": "9d1ee392f17a6e99ed4bcb852ba890fa",
     "semantic_hash": ""
   },
   "public/html/login.html": {
@@ -606,15 +606,15 @@
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {
-    "mtime": 1792883363.9384577,
-    "seen": 1792883581.482125,
-    "ast_hash": "d136b4831393ad1d940debf2ac0d2ebf",
+    "mtime": 1792886736.1961057,
+    "seen": 1792886882.614649,
+    "ast_hash": "a97c8aa325f4e20bcb36c02d08ea6311",
     "semantic_hash": ""
   },
   "public/html/sensor.html": {
-    "mtime": 1792883363.932605,
-    "seen": 1792883581.482126,
-    "ast_hash": "516b153a39a96c920ac3ceb2254d561a",
+    "mtime": 1792886736.196749,
+    "seen": 1792886882.61465,
+    "ast_hash": "432c27013722d0fc7d082bb43e2fd449",
     "semantic_hash": ""
   },
   "public/img/fotos/credits.json": {

@@ -4,7 +4,7 @@ const { supa, authMessage, $, showMsg } = window.go503;
 const msg = $("#msg");
 const VIEWS = ["v-entrar", "v-crear", "v-olvide", "v-nueva", "v-correo"];
 // Versión de /legal.html que acepta quien crea la cuenta: si cambian los términos, subirla
-const TERMINOS_VERSION = "2026-10-18";
+const TERMINOS_VERSION = "2026-10-24";
 
 function show(view) {
   VIEWS.forEach((id) => { $(`#${id}`).hidden = id !== view; });

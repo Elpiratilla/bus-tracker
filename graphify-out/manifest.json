@@ -42,15 +42,15 @@
     "semantic_hash": ""
   },
   "public/js/acceso.js": {
-    "mtime": 1792346059.5615976,
-    "seen": 1792346163.155404,
-    "ast_hash": "a9bfe03feb040577d8db36dd0af6209d",
+    "mtime": 1792887497.4568288,
+    "seen": 1792887525.6848269,
+    "ast_hash": "3fdd2f6da49af141acab1f515e79e429",
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792887085.1761506,
-    "seen": 1792887115.281256,
-    "ast_hash": "8ba3687a2c5819d2d149a66eb0577a38",
+    "mtime": 1792887505.3307047,
+    "seen": 1792887525.684829,
+    "ast_hash": "ba53e5a5b50a971d1912d62ebcfc2bdc",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -576,9 +576,9 @@
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792887075.6623375,
-    "seen": 1792887115.2827652,
-    "ast_hash": "003880c44fad9e1d189748062e413c42",
+    "mtime": 1792887497.4558623,
+    "seen": 1792887525.686219,
+    "ast_hash": "a78a9fad1f038377b712d04b3db7f08a",
     "semantic_hash": ""
   },
   "public/html/login.html": {

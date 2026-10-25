@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792885987.382875,
-    "seen": 1792886063.7087739,
-    "ast_hash": "67207be31df7105f631348cdd604f188",
+    "mtime": 1792887085.1761506,
+    "seen": 1792887115.281256,
+    "ast_hash": "8ba3687a2c5819d2d149a66eb0577a38",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -570,15 +570,15 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792886736.195654,
-    "seen": 1792886882.6144938,
-    "ast_hash": "682da00568f378d37514a7a5f160eb6a",
+    "mtime": 1792887075.6608467,
+    "seen": 1792887115.282763,
+    "ast_hash": "b5cfe62d69b4c36734df98d60c03f3ab",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792886736.1965187,
-    "seen": 1792886882.614496,
-    "ast_hash": "9d1ee392f17a6e99ed4bcb852ba890fa",
+    "mtime": 1792887075.6623375,
+    "seen": 1792887115.2827652,
+    "ast_hash": "003880c44fad9e1d189748062e413c42",
     "semantic_hash": ""
   },
   "public/html/login.html": {
@@ -606,15 +606,15 @@
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {
-    "mtime": 1792886736.1961057,
-    "seen": 1792886882.614649,
-    "ast_hash": "a97c8aa325f4e20bcb36c02d08ea6311",
+    "mtime": 1792887075.6611216,
+    "seen": 1792887115.282926,
+    "ast_hash": "85fd49792537293dd7f1dbadad030a95",
     "semantic_hash": ""
   },
   "public/html/sensor.html": {
-    "mtime": 1792886736.196749,
-    "seen": 1792886882.61465,
-    "ast_hash": "432c27013722d0fc7d082bb43e2fd449",
+    "mtime": 1792887075.6619258,
+    "seen": 1792887115.2829282,
+    "ast_hash": "f43ffd0460a74030355e38f39ec05f6e",
     "semantic_hash": ""
   },
   "public/img/fotos/credits.json": {

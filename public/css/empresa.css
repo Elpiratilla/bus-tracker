@@ -42,10 +42,11 @@
 .auth__back { display: inline-flex; align-items: center; min-height: 2.75rem; color: var(--muted); font-weight: 700; text-decoration: none; }
 .auth__back:hover { color: var(--tinta); }
 .auth__box { width: 100%; max-width: 24rem; margin: 2.5rem auto auto; }
-.auth__box h2 { font-size: 2.6rem; text-transform: uppercase; }
+/* en las pantallas de trabajo los títulos van en la letra de texto: la de rótulo queda para la portada y los números de ruta */
+.auth__box h2 { font: 700 1.75rem/1.2 var(--sans); letter-spacing: -.01em; }
 .auth__motorista { width: 100%; max-width: 24rem; margin: 2rem auto 0; padding-top: 1.2rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .92rem; }
 .auth__motorista a { display: inline-block; padding-block: .6rem; color: var(--tinta); font-weight: 700; text-decoration-color: var(--maiz); text-decoration-thickness: 2px; text-underline-offset: 3px; }
-.auth__box > p { margin-top: .5rem; color: var(--muted); }
+.auth__box > p, .auth__box section > p { margin-top: .5rem; color: var(--muted); }
 
 .tabs { position: relative; display: flex; gap: .3rem; margin-bottom: 1.8rem; padding: 4px; background: var(--papel-2); border-radius: var(--r-md); }
 .tabs button {
@@ -171,14 +172,19 @@
 .nav a:hover { background: rgba(255, 255, 255, .06); color: #fff; }
 .nav a[aria-current="page"] { background: rgba(255, 255, 255, .08); color: #fff; box-shadow: inset 3px 0 0 var(--maiz); }
 .nav .badge { margin-left: auto; padding: .1rem .5rem; background: var(--alerta); border-radius: 999px; color: #fff; font-size: .78rem; }
-.side__foot { display: grid; gap: .8rem; margin-top: auto; padding: 1rem .6rem 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+.side__foot { display: grid; gap: .8rem; margin-top: auto; padding: 1rem .4rem 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+/* la cuenta: iniciales de la empresa, nombre y correo */
+.cuenta { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .7rem; }
+.cuenta__ini { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; background: var(--maiz); border-radius: 50%; color: var(--noche); font: 800 1rem/1 var(--sans); }
+.cuenta__ini:empty { display: none; }
+.side__salir { min-height: 2.75rem; padding: .4rem .6rem; background: none; border: 0; border-radius: var(--r-sm); color: #C9D0EE; font: 600 .92rem/1 var(--sans); text-align: left; cursor: pointer; }
+.side__salir:hover { background: rgba(255, 255, 255, .06); color: #fff; }
 .side__company { color: #fff; font-weight: 700; }
 .side__email { overflow: hidden; color: #8F98C2; font-size: .85rem; text-overflow: ellipsis; white-space: nowrap; }
-.side__foot .btn { min-height: 2.75rem; padding: .45rem .9rem; color: #C9D0EE; font-size: .9rem; box-shadow: none; }
 
 .main { min-width: 0; padding: 1.8rem clamp(1rem, 3vw, 2.4rem) 3rem; }
 .head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
-.head h1 { font-size: clamp(2.4rem, 4vw, 3.2rem); text-transform: uppercase; }
+.head h1 { font: 700 clamp(1.6rem, 2.6vw, 2rem)/1.2 var(--sans); letter-spacing: -.015em; }
 .head p { margin-top: .3rem; color: var(--muted); }
 .head__actions { display: flex; gap: .6rem; }
 
@@ -232,7 +238,7 @@
 /* Tablas */
 .table-wrap { overflow-x: auto; }
 .table { width: 100%; border-collapse: collapse; font-size: .95rem; }
-.table th { padding: .85rem .75rem .6rem; color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-align: left; text-transform: uppercase; white-space: nowrap; }
+.table th { padding: .85rem .75rem .6rem; color: var(--muted); font-size: .85rem; font-weight: 600; text-align: left; white-space: nowrap; }
 .table td { padding: .85rem .75rem; border-top: 1px solid var(--line); vertical-align: middle; }
 .table td.num, .table th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .table small { display: block; color: var(--muted); font-size: .82rem; }
@@ -266,7 +272,7 @@
 .filters .select { width: auto; min-height: 2.75rem; }
 .report { padding: 1.3rem 1.3rem 1.1rem; }
 .report + .report { margin-top: 1rem; }
-.report h2 { font-size: 1.8rem; text-transform: uppercase; }
+.report h2 { font: 700 1.2rem/1.3 var(--sans); }
 .report > p { margin-top: .3rem; color: var(--muted); font-size: .92rem; }
 .heat { margin-top: 1.1rem; overflow-x: auto; }
 .heat table { border-collapse: separate; border-spacing: 2px; font-size: .8rem; }
@@ -321,14 +327,14 @@
 }
 .drawer.open { transform: none; }
 .drawer__head { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
-.drawer__head h2 { font-size: 2.3rem; text-transform: uppercase; }
+.drawer__head h2 { font: 700 1.6rem/1.2 var(--sans); letter-spacing: -.01em; }
 .drawer__head p { margin-top: .2rem; color: var(--muted); }
 .close { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; flex: none; background: var(--papel-2); border: 0; border-radius: var(--r-sm); color: var(--tinta); font-size: 1.3rem; cursor: pointer; }
 .facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-top: 1.3rem; overflow: hidden; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-sm); }
 .facts div { padding: .8rem .9rem; background: var(--card); }
-.facts dt { color: var(--muted); font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.facts dt { color: var(--muted); font-size: .85rem; font-weight: 600; }
 .facts dd { margin: .15rem 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
-.drawer h3.sub { margin-top: 1.8rem; font: 800 1.5rem/1 var(--display); text-transform: uppercase; }
+.drawer h3.sub { margin-top: 1.8rem; font: 700 1.1rem/1.3 var(--sans); }
 .services { margin: .7rem 0 0; padding: 0; list-style: none; }
 .services li { padding: .6rem 0; border-top: 1px solid var(--line); font-size: .92rem; }
 
@@ -343,7 +349,7 @@ dialog {
   color: var(--tinta);
 }
 dialog::backdrop { background: rgba(14, 20, 56, .5); }
-dialog h2 { font-size: 2.2rem; text-transform: uppercase; }
+dialog h2 { font: 700 1.45rem/1.25 var(--sans); letter-spacing: -.01em; }
 dialog > p { margin-top: .4rem; color: var(--muted); }
 .dialog__actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.4rem; }
 .dialog__actions .btn { width: auto; }
@@ -353,7 +359,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 
 /* Vacío */
 .empty-state { display: grid; justify-items: start; gap: .8rem; padding: 2.4rem 1.6rem; }
-.empty-state h2 { font-size: 2rem; text-transform: uppercase; }
+.empty-state h2 { font: 700 1.4rem/1.25 var(--sans); }
 .empty-state p { max-width: 40ch; color: var(--muted); }
 
 /* ---------- Pantallas pequeñas ---------- */
@@ -375,7 +381,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
   .nav a .ico { width: 1rem; height: 1rem; }
   .nav a:last-child { margin-right: 2rem; }
   .side__foot { display: flex; justify-content: flex-end; gap: .5rem; margin: 0; padding: 0; border: 0; }
-  .side__company, .side__email { display: none; }
+  .cuenta { display: none; }
   .form__row { grid-template-columns: 1fr; }
 }
 .table .code { font-family: var(--mono); font-weight: 700; letter-spacing: .02em; }
@@ -448,7 +454,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 }
 @keyframes drop { from { opacity: 0; transform: translateY(-6px) scale(.97); } }
 .alerts__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .9rem 1rem .6rem; border-bottom: 1px solid var(--line); }
-.alerts__head h2 { font-size: 1.6rem; text-transform: uppercase; }
+.alerts__head h2 { font: 700 1.1rem/1.3 var(--sans); }
 .alerts__list { margin: 0; padding: .4rem; list-style: none; }
 .alert {
   display: flex; align-items: flex-start; gap: .7rem;
@@ -577,10 +583,8 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
     display: block;
     margin-bottom: .1rem;
     color: var(--muted);
-    font-size: .7rem;
-    font-weight: 700;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+    font-size: .82rem;
+    font-weight: 600;
   }
   /* acciones: abajo, a todo lo ancho */
   .table--cards td:last-child { grid-column: 1 / -1; padding-top: .6rem; }
@@ -675,7 +679,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .rec { display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: 1rem; }
 .rec__map { height: min(72vh, 680px); min-height: 400px; border: 1px solid var(--line-fuerte); border-radius: var(--r-md); overflow: hidden; cursor: crosshair; }
 .rec__side { display: grid; align-content: start; gap: .7rem; padding: 1.2rem; }
-.rec__side h2 { margin-top: .6rem; font-size: 1.5rem; text-transform: uppercase; }
+.rec__side h2 { margin-top: .6rem; font: 700 1.1rem/1.3 var(--sans); }
 .rec__side .muted { font-size: .9rem; }
 .rec__estado { padding: .7rem .8rem; border-radius: var(--r-sm); background: var(--papel); font-weight: 700; font-size: .92rem; }
 .rec__estado[data-estado="ok"] { background: color-mix(in srgb, var(--torogoz) 14%, var(--card)); color: var(--torogoz-texto); }

@@ -42,15 +42,15 @@
     "semantic_hash": ""
   },
   "public/js/acceso.js": {
-    "mtime": 1792346059.5615976,
-    "seen": 1792346163.155404,
-    "ast_hash": "a9bfe03feb040577d8db36dd0af6209d",
+    "mtime": 1792887497.4568288,
+    "seen": 1792887525.6848269,
+    "ast_hash": "3fdd2f6da49af141acab1f515e79e429",
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792885987.382875,
-    "seen": 1792886063.7087739,
-    "ast_hash": "67207be31df7105f631348cdd604f188",
+    "mtime": 1792887505.3307047,
+    "seen": 1792887525.684829,
+    "ast_hash": "ba53e5a5b50a971d1912d62ebcfc2bdc",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -570,15 +570,15 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792886736.195654,
-    "seen": 1792886882.6144938,
-    "ast_hash": "682da00568f378d37514a7a5f160eb6a",
+    "mtime": 1792888028.668956,
+    "seen": 1792888056.685236,
+    "ast_hash": "ee03285a72d51c5deb78f185ad170770",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792886736.1965187,
-    "seen": 1792886882.614496,
-    "ast_hash": "9d1ee392f17a6e99ed4bcb852ba890fa",
+    "mtime": 1792887497.4558623,
+    "seen": 1792887525.686219,
+    "ast_hash": "a78a9fad1f038377b712d04b3db7f08a",
     "semantic_hash": ""
   },
   "public/html/login.html": {
@@ -606,15 +606,15 @@
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {
-    "mtime": 1792886736.1961057,
-    "seen": 1792886882.614649,
-    "ast_hash": "a97c8aa325f4e20bcb36c02d08ea6311",
+    "mtime": 1792887075.6611216,
+    "seen": 1792887115.282926,
+    "ast_hash": "85fd49792537293dd7f1dbadad030a95",
     "semantic_hash": ""
   },
   "public/html/sensor.html": {
-    "mtime": 1792886736.196749,
-    "seen": 1792886882.61465,
-    "ast_hash": "432c27013722d0fc7d082bb43e2fd449",
+    "mtime": 1792887075.6619258,
+    "seen": 1792887115.2829282,
+    "ast_hash": "f43ffd0460a74030355e38f39ec05f6e",
     "semantic_hash": ""
   },
   "public/img/fotos/credits.json": {

@@ -13,6 +13,8 @@ let rutas = [];
 let flota = [];
 let timer = null;
 let selected = null;
+let empresa = "";
+let pendientes = 0; // unidades con el aceite vencido o por vencer (de updateBadge)
 
 // ---------- Utilidades ----------
 const km = (n) => `${fmt(n, n != null && n < 100 ? 1 : 0)} km`; // decimales solo cuando son pocos km
@@ -212,9 +214,14 @@ async function loadFlota() {
   } catch (err) { return fail(err); }
 
   const en = flota.filter((u) => u.enLinea).length;
-  $("#flota-resumen").textContent = flota.length
+  // Saludo y resumen en palabras: cuántas andan y si alguna necesita servicio
+  const h = new Date().getHours();
+  $("#flota-titulo").textContent = `${h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches"}, ${empresa}`;
+  const resumen = [el("span", null, flota.length
     ? `${en} de ${flota.length} ${flota.length === 1 ? "unidad" : "unidades"} en línea`
-    : "Todavía no tienes unidades registradas.";
+    : "Todavía no tienes unidades registradas.")];
+  if (flota.length && pendientes) resumen.push(". ", el("span", null, pendientes === 1 ? "1 unidad necesita servicio." : `${pendientes} unidades necesitan servicio.`));
+  $("#flota-resumen").replaceChildren(...resumen);
 
   $("#fleet").hidden = !flota.length;
   $("#fleet-vacio").hidden = Boolean(flota.length);
@@ -620,7 +627,7 @@ async function loadMantenimiento() {
 }
 
 function updateBadge(list) {
-  const n = list.filter((m) => m.estadoAceite === "vencido" || m.estadoAceite === "pronto").length;
+  const n = pendientes = list.filter((m) => m.estadoAceite === "vencido" || m.estadoAceite === "pronto").length;
   const badge = $("#badge-mant");
   badge.hidden = !n;
   badge.textContent = n;
@@ -1287,7 +1294,9 @@ $("#f-activar").addEventListener("submit", async (e) => {
       $("#a-empresa").value = session.user.user_metadata?.empresa || "";
       return;
     }
-    $("#company").textContent = yo.empresa.name;
+    empresa = yo.empresa.name;
+    $("#company").textContent = empresa;
+    $("#iniciales").textContent = empresa.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
     isAdmin = Boolean(yo.empresa.is_admin);
     $("#nav-codigos").hidden = !isAdmin;
     $("#nav-recorridos").hidden = !isAdmin;

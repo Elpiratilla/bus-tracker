@@ -51,13 +51,15 @@
         <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
       </nav>
       <div class="side__foot">
-        <p class="side__company" id="company"></p>
-        <p class="side__email" id="email"></p>
-        <button class="btn btn--line" type="button" id="logout">Cerrar sesión</button>
+        <div class="cuenta">
+          <span class="cuenta__ini" id="iniciales" aria-hidden="true"></span>
+          <div><p class="side__company" id="company"></p><p class="side__email" id="email"></p></div>
+        </div>
         <div class="side__prefs">
           <button class="lang lang--side" type="button" data-idioma>English</button>
           <button class="lang lang--side" type="button" id="tema">Oscuro</button>
         </div>
+        <button class="side__salir" type="button" id="logout">Cerrar sesión</button>
       </div>
     </aside>
 
@@ -96,7 +98,7 @@
       <!-- Flota en vivo -->
       <section class="view" id="v-flota" hidden>
         <div class="head">
-          <div><h1>Flota en vivo</h1><p id="flota-resumen">Cargando…</p></div>
+          <div><h1 id="flota-titulo">Flota en vivo</h1><p id="flota-resumen">Cargando…</p></div>
         </div>
         <div class="panel empty-state" id="fleet-vacio" hidden>
           <h2>Registra tu primera unidad</h2>

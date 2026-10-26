@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-25)
 
 ## Corpus Check
-- 74 files · ~146,254 words
+- 75 files · ~146,947 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 31 file(s) not represented in the graph (top: .xml 10, .css 7, .woff2 4)
+- Unclassified: 32 file(s) not represented in the graph (top: .xml 11, .css 7, .woff2 4)
 
 ## Summary
-- 720 nodes · 1219 edges · 58 communities (43 shown, 15 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 64 edges (avg confidence: 0.85)
+- 732 nodes · 1237 edges · 62 communities (47 shown, 15 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 66 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `da1bc204`
+- Built from commit: `2b0249c5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -49,7 +49,10 @@
 - motorista.test.js
 - recorrido.test.js
 - trazos.js
+- scripts
+- seguridad.js
 - idioma.js
+- copiar-web.js
 - server.js
 - claves.test.js
 - isDark
@@ -64,6 +67,7 @@
 - trazos.test.js
 - lineChart
 - simulator.js
+- dependencies
 
 ## God Nodes (most connected - your core abstractions)
 1. `persist()` - 15 edges
@@ -96,7 +100,7 @@
 - **CI gated deploy to Render** — github_workflows_ci, github_workflows_ci_smoke_test, render, render_autodeploy_checkspass, api_rutas_endpoint [EXTRACTED 1.00]
 - **Telemetry mobile-data saving strategy** — firmware_readme_adaptive_send_interval, firmware_readme_offline_queue, firmware_readme_data_usage, firmware_readme_proposed_backend_changes [INFERRED 0.85]
 
-## Communities (58 total, 15 thin omitted)
+## Communities (62 total, 15 thin omitted)
 
 ### Community 0 - "panel.js"
 Cohesion: 0.06
@@ -115,8 +119,8 @@ Cohesion: 0.05
 Nodes (48): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+40 more)
 
 ### Community 4 - "admin.js"
-Cohesion: 0.09
-Nodes (15): ARCHIVOS, fs, path, PUBLIC, WWW, @supabase/supabase-js, { createClient }, crypto (+7 more)
+Cohesion: 0.13
+Nodes (10): @supabase/supabase-js, { createClient }, crypto, db, email, ENV, fs, path (+2 more)
 
 ### Community 5 - "go503 sensor (ESP32 + 4G + GPS)"
 Cohesion: 0.09
@@ -143,8 +147,8 @@ Cohesion: 0.29
 Nodes (4): aGrados(), horaIso(), leerGps(), ponerHora()
 
 ### Community 11 - "tracking.js"
-Cohesion: 0.18
-Nodes (13): DIRS, endTrip(), { legKey, segments, geofence, trips, units }, { nearestStop }, other(), { persist }, registerExit(), registerPass() (+5 more)
+Cohesion: 0.19
+Nodes (15): DIRS, endTrip(), handlePosition(), { legKey, segments, geofence, trips, units }, { nearestStop }, other(), { persist }, registerExit() (+7 more)
 
 ### Community 12 - "Firmware: OBD-II"
 Cohesion: 0.39
@@ -195,12 +199,12 @@ Cohesion: 0.23
 Nodes (20): call(), conectar(), desarmarTerminar(), escribirCola(), gpsApp(), guardar(), keepAwake(), leerCola() (+12 more)
 
 ### Community 31 - "telemetry.js"
-Cohesion: 0.17
-Nodes (9): auth, CAMPOS, { distanceM }, { handlePosition, toTime }, lastLog, { persist, saveBus }, router, { routes, buses, units, retired } (+1 more)
+Cohesion: 0.12
+Nodes (15): limpiarHistorial(), persist(), saveBus(), auth, CAMPOS, { distanceM }, { handlePosition, toTime }, lastLog (+7 more)
 
 ### Community 32 - "package.json"
-Cohesion: 0.07
-Nodes (28): dependencies, cors, dotenv, express, @supabase/supabase-js, web-push, devDependencies, tailwindcss (+20 more)
+Cohesion: 0.14
+Nodes (13): devDependencies, tailwindcss, @tailwindcss/cli, engines, node, name, private, version (+5 more)
 
 ### Community 33 - "motorista.test.js"
 Cohesion: 0.24
@@ -208,23 +212,35 @@ Nodes (9): assert, enMapa(), express, gps(), { hashKey }, motorista(), post(), s
 
 ### Community 34 - "recorrido.test.js"
 Cohesion: 0.22
-Nodes (8): handlePosition(), assert, gps(), { handlePosition }, route, { routeStatus }, store, test
+Nodes (6): assert, { handlePosition }, route, { routeStatus }, store, test
 
 ### Community 35 - "trazos.js"
-Cohesion: 0.19
-Nodes (15): persist(), saveBus(), logHistory(), deleteShape(), { distanceM }, grabando, { persist }, pt() (+7 more)
+Cohesion: 0.24
+Nodes (10): { distanceM }, grabando, { persist }, pt(), round6(), saveRecording(), { shapes, recordings, trips, units }, simplify() (+2 more)
+
+### Community 36 - "scripts"
+Cohesion: 0.22
+Nodes (9): scripts, admin, codigo, css, css:watch, dev, simulate, start (+1 more)
+
+### Community 44 - "seguridad.js"
+Cohesion: 0.29
+Nodes (6): cabeceras(), crypto, fs, hashesEnLinea(), HTML, path
 
 ### Community 45 - "idioma.js"
 Cohesion: 0.48
 Nodes (4): doAttrs(), doText(), t(), walk()
 
+### Community 46 - "copiar-web.js"
+Cohesion: 0.29
+Nodes (5): ARCHIVOS, fs, path, PUBLIC, WWW
+
 ### Community 47 - "server.js"
-Cohesion: 0.25
-Nodes (7): express, limpiarHistorial(), app, cors, express, { loadState, limpiarHistorial }, path
+Cohesion: 0.20
+Nodes (8): compression, app, { cabeceras }, compression, cors, express, { loadState, limpiarHistorial }, path
 
 ### Community 48 - "claves.test.js"
 Cohesion: 0.25
-Nodes (5): assert, express, { hashKey }, store, test
+Nodes (6): express, assert, express, { hashKey }, store, test
 
 ### Community 49 - "isDark"
 Cohesion: 0.50
@@ -270,25 +286,29 @@ Nodes (7): cambiarModo(), hideTip(), hora(), lineChart(), loadVueltas(), renderT
 Cohesion: 0.33
 Nodes (8): distanceM(), nearestStop(), updateCounters(), buildPath(), { distanceM }, jitter(), post(), runBus()
 
+### Community 61 - "dependencies"
+Cohesion: 0.29
+Nodes (7): dependencies, compression, cors, dotenv, express, @supabase/supabase-js, web-push
+
 ## Knowledge Gaps
 - **24 isolated node(s):** `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core`, `@capacitor/cli`, `dotenv` (+19 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 331 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 339 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `@supabase/supabase-js` connect `admin.js` to `package.json`, `routes/empresa.js`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core` to the rest of the system?**
   _24 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `panel.js` be split into smaller, more focused modules?**
   _Cohesion score 0.06031746031746032 - nodes in this community are weakly interconnected._
-- **Why does `express` connect `server.js` to `package.json`, `empresa.test.js`, `motorista.test.js`, `claves.test.js`, `telemetria.test.js`, `encendido.test.js`, `trazos.test.js`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `express` connect `claves.test.js` to `package.json`, `empresa.test.js`, `motorista.test.js`, `server.js`, `telemetria.test.js`, `encendido.test.js`, `trazos.test.js`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **Should `empresa.test.js` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
-- **Why does `confirmar()` connect `renderClientes` to `panel.js`, `js/motorista.js`?**
+- **Why does `scripts` connect `scripts` to `package.json`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06093189964157706 - nodes in this community are weakly interconnected._

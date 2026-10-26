@@ -36,9 +36,9 @@
     "semantic_hash": "77ebfa38393cc74aaf08e3d032aac1f1"
   },
   "package.json": {
-    "mtime": 1792876592.6101096,
-    "seen": 1792878510.581271,
-    "ast_hash": "85a2e5dc37b495e15d1d02f74a079d61",
+    "mtime": 1792989541.280216,
+    "seen": 1792989699.4166348,
+    "ast_hash": "5c32a955bb4769c959195f47642f58bd",
     "semantic_hash": ""
   },
   "public/js/acceso.js": {
@@ -162,9 +162,9 @@
     "semantic_hash": ""
   },
   "src/server.js": {
-    "mtime": 1792988619.0452266,
-    "seen": 1792988712.1766028,
-    "ast_hash": "5cc2a709dd861cb262e0a1a6907e6df4",
+    "mtime": 1792989563.386288,
+    "seen": 1792989699.417541,
+    "ast_hash": "05580a6ed08722265320c82ea7773ecf",
     "semantic_hash": ""
   },
   "src/store.js": {
@@ -564,15 +564,15 @@
     "semantic_hash": ""
   },
   "public/html/index.html": {
-    "mtime": 1792888028.668956,
-    "seen": 1792888056.685236,
-    "ast_hash": "ee03285a72d51c5deb78f185ad170770",
+    "mtime": 1792989580.5247173,
+    "seen": 1792989699.418124,
+    "ast_hash": "bea85878712c500cdfbda19a9c7984e5",
     "semantic_hash": ""
   },
   "public/html/legal.html": {
-    "mtime": 1792887497.4558623,
-    "seen": 1792887525.686219,
-    "ast_hash": "a78a9fad1f038377b712d04b3db7f08a",
+    "mtime": 1792989580.5260737,
+    "seen": 1792989699.4181252,
+    "ast_hash": "a5fd6a9532c1ab625b3cfcb285020e40",
     "semantic_hash": ""
   },
   "public/html/login.html": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "public/html/mapa.html": {
-    "mtime": 1792883097.460288,
-    "seen": 1792883581.482123,
-    "ast_hash": "61bb8abc66fb5e9dabc5cfdd84dfd9c5",
+    "mtime": 1792989580.5263498,
+    "seen": 1792989699.418164,
+    "ast_hash": "c440af51f1e90b2c178eadc18a67dc64",
     "semantic_hash": ""
   },
   "public/html/motorista.html": {
@@ -600,15 +600,15 @@
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {
-    "mtime": 1792887075.6611216,
-    "seen": 1792887115.282926,
-    "ast_hash": "85fd49792537293dd7f1dbadad030a95",
+    "mtime": 1792989580.525674,
+    "seen": 1792989699.418238,
+    "ast_hash": "3e134f320c2030cb0149d564bcaf16f2",
     "semantic_hash": ""
   },
   "public/html/sensor.html": {
-    "mtime": 1792887075.6619258,
-    "seen": 1792887115.2829282,
-    "ast_hash": "f43ffd0460a74030355e38f39ec05f6e",
+    "mtime": 1792989580.5251498,
+    "seen": 1792989699.41824,
+    "ast_hash": "ca4dfe8128990903e6737444852b0448",
     "semantic_hash": ""
   },
   "public/img/fotos/credits.json": {
@@ -711,6 +711,18 @@
     "mtime": 1792988637.929853,
     "seen": 1792988712.176607,
     "ast_hash": "3c7c95e42961689174ee443b787abae7",
+    "semantic_hash": ""
+  },
+  "src/seguridad.js": {
+    "mtime": 1792989551.8161044,
+    "seen": 1792989699.4175391,
+    "ast_hash": "3399feb82c996e2190cd5827a19f5c34",
+    "semantic_hash": ""
+  },
+  "public/robots.txt": {
+    "mtime": 1792989580.532594,
+    "seen": 1792989699.418241,
+    "ast_hash": "0669019a24d885a7e7d28d6d917e9782",
     "semantic_hash": ""
   }
 }

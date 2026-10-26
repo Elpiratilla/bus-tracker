@@ -18,6 +18,7 @@
   "33": "motorista.test.js",
   "34": "recorrido.test.js",
   "35": "trazos.js",
+  "36": "scripts",
   "37": "gradlew",
   "38": "app/build.gradle",
   "39": "capacitor.build.gradle",
@@ -25,7 +26,9 @@
   "41": "capacitor.settings.gradle",
   "42": "settings.gradle",
   "43": "variables.gradle",
+  "44": "seguridad.js",
   "45": "idioma.js",
+  "46": "copiar-web.js",
   "47": "server.js",
   "48": "claves.test.js",
   "49": "isDark",
@@ -39,5 +42,6 @@
   "57": "go503",
   "58": "trazos.test.js",
   "59": "lineChart",
-  "60": "simulator.js"
+  "60": "simulator.js",
+  "61": "dependencies"
 }

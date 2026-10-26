@@ -8,17 +8,30 @@ if (require("./env").isProduction && !process.env.BUS_API_KEY) {
 
 const express = require("express");
 const cors = require("cors");
+const compression = require("compression");
 const path = require("path");
+const { cabeceras } = require("./seguridad");
 
 const app = express();
 // En Render las peticiones llegan por un proxy: así req.ip es la IP real (para los límites por IP)
 app.set("trust proxy", 1);
+app.disable("x-powered-by");
+app.use(cabeceras());
+app.use(compression()); // gzip: el HTML, CSS y JS viajan 3 a 4 veces más livianos
 app.use(cors());
 app.use(express.json({ limit: "300kb" })); // alcanza para un recorrido de 4,000 puntos
 // Las páginas viven juntas en public/html/, pero se abren en la raíz: /mapa.html, /panel.html...
 // El resto (css, js, img, fonts, sw.js, manifest) sale de public/ como siempre.
-app.use(express.static(path.join(__dirname, "..", "public", "html")));
-app.use(express.static(path.join(__dirname, "..", "public")));
+// Caché: los archivos no llevan versión en el nombre, así que el HTML y sw.js siempre se revisan
+// (el ETag hace que la revisión cueste casi nada), CSS y JS una hora, letras e imágenes un mes.
+function cache(res, archivo) {
+  const ext = path.extname(archivo);
+  if (ext === ".html" || path.basename(archivo) === "sw.js") res.set("Cache-Control", "no-cache");
+  else if (ext === ".css" || ext === ".js" || ext === ".webmanifest") res.set("Cache-Control", "public, max-age=3600");
+  else res.set("Cache-Control", "public, max-age=2592000");
+}
+app.use(express.static(path.join(__dirname, "..", "public", "html"), { setHeaders: cache }));
+app.use(express.static(path.join(__dirname, "..", "public"), { setHeaders: cache }));
 
 app.use("/api/telemetry", require("./routes/telemetry"));
 app.use("/api/rutas", require("./routes/rutas"));
@@ -35,6 +48,9 @@ app.get("/api/config", (_req, res) => res.json({
 
 // Cualquier error inesperado: mensaje claro en JSON (el detalle queda en la terminal)
 app.use((err, _req, res, _next) => {
+  // JSON mal escrito o cuerpo muy grande: el error es de quien manda, no del servidor
+  if (err.type === "entity.parse.failed") return res.status(400).json({ error: "El JSON no es válido" });
+  if (err.type === "entity.too.large") return res.status(413).json({ error: "Lo que mandaste es muy grande" });
   console.error(err);
   res.status(500).json({ error: "Algo falló en el servidor. Intenta de nuevo." });
 });

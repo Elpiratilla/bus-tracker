@@ -1,0 +1,8 @@
+# go503: las páginas públicas se pueden indexar; el panel, el login y la app del motorista no
+User-agent: *
+Disallow: /panel.html
+Disallow: /login.html
+Disallow: /motorista.html
+Disallow: /api/
+
+Sitemap: https://go503.onrender.com/sitemap.xml

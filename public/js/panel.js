@@ -3,8 +3,8 @@ const { supa, api, $, el, showMsg } = window.go503;
 
 const REFRESH_MS = 5000;
 const CARTO_KEY = "cb1_483z_1_4a6102fca3ea19c0048a0ded"; // la misma del mapa público
-const VIEWS = ["flota", "unidades", "mantenimiento", "reportes", "clientes", "codigos", "recorridos"];
-const ADMIN_VIEWS = ["clientes", "codigos", "recorridos"];
+const VIEWS = ["flota", "unidades", "rutas", "mantenimiento", "reportes", "clientes", "codigos"];
+const ADMIN_VIEWS = ["clientes", "codigos"];
 let isAdmin = false;
 const TIPOS = { autobus: "Autobús", microbus: "Microbús" };
 const SERVICIOS = { aceite: "Cambio de aceite", frenos: "Frenos", llantas: "Llantas", general: "Revisión general", otro: "Otro" };
@@ -135,7 +135,7 @@ function showRoute() {
   if (view === "reportes") loadReportes();
   if (view === "codigos") loadCodigos();
   if (view === "clientes") loadClientes();
-  if (view === "recorridos") loadRecorridos();
+  if (view === "rutas") loadRutas().then(() => { const p = rec.pedirNueva; rec.pedirNueva = null; if (p) nuevaRuta(p.aviso); });
 }
 addEventListener("hashchange", route);
 
@@ -153,8 +153,11 @@ function setTiles() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
   }).addTo(map);
 }
+// El Salvador con un margen: los mapas del panel no se salen de aquí ni alejan más allá del país
+const LIMITES_MAPA = { maxBounds: [[12.9, -90.4], [14.7, -87.4]], maxBoundsViscosity: 1, minZoom: 8 };
+
 function initMap() {
-  map = L.map("fleet-map", { zoomControl: false }).setView([13.699, -89.205], 12);
+  map = L.map("fleet-map", { zoomControl: false, ...LIMITES_MAPA }).setView([13.699, -89.205], 12);
   L.control.zoom({ position: "bottomright" }).addTo(map);
   setTiles();
 }
@@ -468,11 +471,17 @@ function openUnidad(u = null) {
   $("#u-titulo").textContent = u ? `Editar ${u.nombre}` : "Registrar unidad";
   $("#u-ayuda").textContent = u ? "Los cambios se aplican de inmediato." : "Al guardar te daremos la clave de su sensor.";
   $("#u-guardar").textContent = u ? "Guardar cambios" : "Registrar unidad";
-  $("#u-ruta").replaceChildren(...rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; }));
+  if (!u && !rutas.length) {
+    return nuevaRuta("Antes de registrar una unidad, crea la ruta que hace.");
+  }
+  // solo las rutas de la empresa (si la unidad ya tenía otra, se deja como está)
+  const opciones = rutas.map((r) => r.ruta);
+  if (u?.ruta && !opciones.includes(u.ruta)) opciones.push(u.ruta);
+  $("#u-ruta").replaceChildren(...opciones.map((id) => { const o = el("option", null, `Ruta ${id}`); o.value = id; return o; }));
   $("#u-nombre").value = u?.nombre ?? "";
   $("#u-placa").value = u?.placa ?? "";
   $("#u-ruta").value = u?.ruta ?? rutas[0]?.ruta ?? "";
-  $("#u-tipo").value = u?.tipo ?? "autobus";
+  $("#u-tipo").value = u?.tipo ?? rutas.find((r) => r.ruta === $("#u-ruta").value)?.tipo ?? "autobus";
   $("#u-km").value = u ? Math.round(u.odometroKm) : "";
   $("#u-aceite").value = u?.intervaloAceiteKm ?? 5000;
   showMsg($("#u-msg"), "");
@@ -1111,65 +1120,279 @@ $("#f-codigo").addEventListener("submit", async (e) => {
   } catch (err) { fail(err); }
 });
 
-// ---------- Recorridos (administradores) ----------
-// El trazo se arma con "tramos": cada toque en el mapa agrega un tramo desde el punto anterior
-// (pegado a las calles con OSRM, o en línea recta). Deshacer quita el último tramo.
+// ---------- Rutas de la empresa ----------
+// Dos modos sobre el mismo mapa:
+// - Paradas: cada toque agrega una parada al final del sentido; se arrastran para moverlas.
+// - Recorrido: el trazo se arma con "tramos": cada toque agrega un tramo desde el punto anterior
+//   (pegado a las calles con OSRM, o en línea recta). Deshacer quita el último tramo.
 const OSRM = "https://router.project-osrm.org";
-const rec = { rutas: [], ruta: null, sentido: "ida", tramos: [], fuente: "dibujado", cambios: false, map: null, capa: null, vista: null };
+const rec = { rutas: [], ruta: null, sentido: "ida", modo: "paradas", tramos: [], fuente: "dibujado", cambios: false,
+  map: null, capa: null, vista: null, borrador: null };
 
 const recPuntos = () => rec.tramos.flat();
-const recSentido = () => rec.rutas.find((r) => r.ruta === rec.ruta)?.sentidos.find((s) => s.id === rec.sentido);
+const recRuta = () => rec.rutas.find((r) => r.ruta === rec.ruta);
+const recSentido = () => recRuta()?.sentidos.find((s) => s.id === rec.sentido);
+const tr = (s) => (window.go503Idioma?.t || ((x) => x))(s);
 
-async function loadRecorridos() {
-  try { rec.rutas = await api("/admin/recorridos"); } catch (err) { return fail(err); }
-  const sel = $("#rec-ruta");
-  if (!sel.options.length) {
-    sel.replaceChildren(...rec.rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; }));
-    sel.addEventListener("change", () => cambiarRecorrido(sel.value, "ida"));
-  }
+// Copia editable de la ruta: { nueva, numero, nombre, tipo, reves, ida: [...], regreso: [...], cambios }
+function borradorDe(r) {
+  if (!r) return { nueva: true, numero: "", nombre: "", tipo: "autobus", reves: true, ida: [], regreso: [], cambios: false };
+  const [ida, regreso] = r.sentidos.map((s) => s.paradas.map((p) => ({ ...p })));
+  const reves = ida.length === regreso.length && ida.every((p, i) => p.id === regreso[regreso.length - 1 - i].id);
+  return { nueva: false, numero: r.ruta, nombre: r.nombre, tipo: r.tipo, reves, ida, regreso: reves ? [] : regreso, cambios: false };
+}
+// Paradas del sentido que se está viendo (el regreso "al revés" se arma de la ida y no se edita)
+const paradasDe = (b, d) => (d === "regreso" && b.reves ? [...b.ida].reverse() : b[d]);
+const hayCambios = () => rec.cambios || Boolean(rec.borrador?.cambios);
+
+async function loadRutas() {
+  try { rec.rutas = await api("/rutas"); } catch (err) { return fail(err); }
+  rutas = rec.rutas;
+  const hay = rec.rutas.length > 0;
+  $("#ru-vacio").hidden = hay || Boolean(rec.borrador?.nueva);
+  $("#ru-editor").hidden = !hay && !rec.borrador?.nueva;
+  if ($("#ru-editor").hidden) return resumenRecorridos();
+  initRecMap();
+  if (rec.borrador?.nueva) return pintarRuta();
+  const ruta = recRuta() ? rec.ruta : rec.rutas[0].ruta;
+  abrirRuta(ruta, rec.sentido, { encuadrar: ruta !== rec.ruta || !rec.borrador, forzar: true });
+}
+
+function initRecMap() {
   if (!rec.map) {
-    rec.map = L.map("rec-map", { zoomControl: false }).setView([13.699, -89.205], 13);
+    rec.map = L.map("rec-map", { zoomControl: false, ...LIMITES_MAPA }).setView([13.699, -89.205], 13);
     L.control.zoom({ position: "bottomright" }).addTo(rec.map);
     L.tileLayer(`https://basemaps.cartocdn.com/rastertiles/${isDark() ? "dark_all" : "light_all"}/{z}/{x}/{y}.png?key=${CARTO_KEY}`, {
       maxZoom: 20, detectRetina: true,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     }).addTo(rec.map);
     rec.capa = L.layerGroup().addTo(rec.map);
-    rec.map.on("click", (e) => agregarPunto([e.latlng.lat, e.latlng.lng]));
+    rec.map.on("click", (e) => (rec.modo === "paradas" ? agregarParada : agregarPunto)([e.latlng.lat, e.latlng.lng]));
   }
   setTimeout(() => rec.map.invalidateSize(), 50); // la sección estaba escondida al crear el mapa
-  cambiarRecorrido(rec.ruta || rec.rutas[0]?.ruta, rec.sentido, { encuadrar: !rec.ruta });
 }
 
-function cambiarRecorrido(ruta, sentido, { encuadrar = true } = {}) {
-  const t = window.go503Idioma?.t || ((x) => x);
-  if (rec.cambios && !confirm(t("Tienes cambios sin guardar en este recorrido. ¿Los dejas?"))) {
-    $("#rec-ruta").value = rec.ruta;
+function llenarSelector() {
+  const sel = $("#rec-ruta");
+  const opts = rec.rutas.map((r) => { const o = el("option", null, `Ruta ${r.ruta}`); o.value = r.ruta; return o; });
+  if (rec.borrador?.nueva) { const o = el("option", null, "Ruta nueva"); o.value = ""; opts.push(o); }
+  sel.replaceChildren(...opts);
+  sel.value = rec.borrador?.nueva ? "" : rec.ruta;
+}
+$("#rec-ruta").addEventListener("change", (e) => abrirRuta(e.target.value, "ida"));
+
+function abrirRuta(ruta, sentido, { encuadrar = true, forzar = false } = {}) {
+  if (!forzar && hayCambios() && !confirm(tr("Tienes cambios sin guardar en esta ruta. ¿Los dejas?"))) {
+    $("#rec-ruta").value = rec.borrador?.nueva ? "" : rec.ruta;
     return;
   }
   rec.ruta = ruta;
   rec.sentido = sentido;
-  $("#rec-ruta").value = ruta;
-  const r = rec.rutas.find((x) => x.ruta === ruta);
-  $("#rec-dir").replaceChildren(...r.sentidos.map((s) => {
-    const b = el("button", null, `Hacia ${s.destino}`);
-    b.type = "button";
-    b.setAttribute("aria-pressed", String(s.id === sentido));
-    b.addEventListener("click", () => { if (s.id !== rec.sentido) cambiarRecorrido(rec.ruta, s.id); });
-    return b;
-  }));
+  rec.borrador = borradorDe(recRuta());
+  cargarTrazo();
+  $("#ru-vacio").hidden = true;
+  $("#ru-editor").hidden = false;
+  pintarRuta();
+  if (encuadrar) encuadrarRuta();
+}
+
+// aviso: texto opcional para explicar por qué se abrió (ej. al querer registrar una unidad sin rutas)
+function nuevaRuta(aviso) {
+  if (hayCambios() && !confirm(tr("Tienes cambios sin guardar en esta ruta. ¿Los dejas?"))) return;
+  if (location.hash !== "#rutas") { rec.pedirNueva = { aviso }; location.hash = "#rutas"; return; }
+  if (typeof aviso === "string") showMsg(msg, aviso, "ok");
+  rec.borrador = borradorDe(null);
+  rec.ruta = null;
+  rec.sentido = "ida";
+  rec.modo = "paradas";
+  rec.tramos = [];
+  rec.cambios = false;
+  $("#ru-vacio").hidden = true;
+  $("#ru-editor").hidden = false;
+  initRecMap();
+  pintarRuta();
+  $("#ru-numero").focus();
+}
+document.querySelectorAll("[data-nueva-ruta]").forEach((b) => b.addEventListener("click", () => nuevaRuta()));
+
+function cargarTrazo() {
   const s = recSentido();
-  rec.tramos = s.trazo ? [s.trazo.puntos] : [];
-  rec.fuente = s.trazo?.fuente || "dibujado";
+  rec.tramos = s?.trazo ? [s.trazo.puntos] : [];
+  rec.fuente = s?.trazo?.fuente || "dibujado";
   rec.cambios = false;
   rec.vista = null;
-  dibujarRecorrido();
-  if (encuadrar) rec.map.fitBounds(L.latLngBounds(s.paradas.map((p) => [p.lat, p.lng])), { padding: [40, 40] });
-  loadVueltas();
 }
+
+function encuadrarRuta() {
+  const pts = paradasDe(rec.borrador, rec.sentido).map((p) => [p.lat, p.lng]).concat(recPuntos());
+  if (pts.length) rec.map.fitBounds(L.latLngBounds(pts), { padding: [40, 40], maxZoom: 16 });
+}
+
+function cambiarSentido(d) {
+  if (d === rec.sentido) return;
+  if (rec.modo === "recorrido" && rec.cambios && !confirm(tr("Tienes cambios sin guardar en este recorrido. ¿Los dejas?"))) return;
+  rec.sentido = d;
+  cargarTrazo();
+  pintarRuta();
+  if (rec.modo === "recorrido") loadVueltas();
+}
+
+function cambiarModo(m) {
+  if (m === rec.modo) return;
+  if (m === "recorrido" && rec.borrador.nueva) return showMsg(msg, "Guarda la ruta primero. Después dibujas por dónde pasa.");
+  rec.modo = m;
+  pintarRuta();
+  if (m === "recorrido") loadVueltas();
+}
+document.querySelectorAll("#ru-modo [data-modo]").forEach((b) => b.addEventListener("click", () => cambiarModo(b.dataset.modo)));
+
+// Todo lo que se ve depende del borrador, el sentido y el modo: se pinta de una vez
+function pintarRuta() {
+  const b = rec.borrador;
+  llenarSelector();
+  resumenRecorridos();
+  document.querySelectorAll("#ru-modo [data-modo]").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.modo === rec.modo)));
+  $("#ru-modo [data-modo='recorrido']").disabled = b.nueva;
+  const destino = (d) => paradasDe(b, d).at(-1)?.nombre;
+  $("#rec-dir").replaceChildren(...["ida", "regreso"].map((d) => {
+    const btn = el("button", null, destino(d) ? `Hacia ${destino(d)}` : d === "ida" ? "Ida" : "Regreso");
+    btn.type = "button";
+    btn.setAttribute("aria-pressed", String(d === rec.sentido));
+    btn.addEventListener("click", () => cambiarSentido(d));
+    return btn;
+  }));
+  $("#ru-paradas").hidden = rec.modo !== "paradas";
+  $("#ru-recorrido").hidden = rec.modo !== "recorrido";
+  if (rec.modo === "paradas") pintarParadas();
+  dibujarRecorrido();
+}
+
+function pintarParadas() {
+  const b = rec.borrador;
+  $("#ru-numero").value = b.numero;
+  $("#ru-numero").disabled = !b.nueva; // el número es la llave de la ruta: no cambia después
+  $("#ru-nombre").value = b.nombre;
+  $("#ru-tipo").value = b.tipo;
+  $("#ru-reves").checked = b.reves;
+  $("#ru-reves-box").hidden = rec.sentido !== "regreso";
+  const fija = rec.sentido === "regreso" && b.reves;
+  $("#ru-titulo-lista").textContent = rec.sentido === "ida" ? "Paradas de ida" : "Paradas de regreso";
+  $("#ru-ayuda").textContent = fija
+    ? "Son las de la ida en orden inverso. Desmarca la casilla si el regreso va por otras calles."
+    : "Toca el mapa donde está cada parada, en el orden en que pasa el bus. Arrastra una parada para moverla.";
+  const lista = paradasDe(b, rec.sentido);
+  $("#ru-lista").replaceChildren(...(lista.length ? lista.map((p, i) => paradaItem(p, i, lista, fija))
+    : [el("li", "muted", "Todavía no hay paradas: toca el mapa para poner la primera.")]));
+  $("#ru-eliminar").hidden = b.nueva;
+  $("#ru-descartar").textContent = b.nueva ? "Cancelar" : "Descartar cambios";
+  $("#ru-descartar").disabled = !b.nueva && !b.cambios;
+  const faltan = ["ida", "regreso"].find((d) => paradasDe(b, d).length < 2);
+  $("#ru-guardar").disabled = !b.cambios || Boolean(faltan);
+  $("#ru-estado").textContent = faltan
+    ? `La ${faltan} necesita al menos 2 paradas.`
+    : b.cambios ? "Cambios sin guardar." : `Guardada. Sale en el mapa público como Ruta ${b.numero}.`;
+  $("#ru-estado").dataset.estado = faltan || b.cambios ? "cambios" : "ok";
+}
+
+function paradaItem(p, i, lista, fija) {
+  const li = el("li", "ru-parada");
+  const num = el("span", `rec-parada${p.id ? "" : " rec-parada--nueva"}`, String(i + 1));
+  num.setAttribute("aria-hidden", "true");
+  li.append(num);
+  const input = el("input", "input");
+  input.value = p.nombre;
+  input.maxLength = 60;
+  input.disabled = fija;
+  input.setAttribute("aria-label", `Nombre de la parada ${i + 1}`);
+  input.addEventListener("input", () => { p.nombre = input.value; marcarCambio({ lista: false }); });
+  li.append(input);
+  const btns = el("div", "ru-parada__btns");
+  const mover = (texto, etiqueta, a, cls) => {
+    const btn = el("button", cls, texto);
+    btn.type = "button";
+    btn.setAttribute("aria-label", etiqueta);
+    btn.disabled = fija || (a !== null && (i + a < 0 || i + a >= lista.length));
+    btn.addEventListener("click", () => {
+      if (a === null) lista.splice(i, 1);
+      else [lista[i], lista[i + a]] = [lista[i + a], lista[i]];
+      marcarCambio();
+      $("#ru-lista").children[Math.min(i + (a ?? 0), lista.length - 1)]?.querySelector("input")?.focus();
+    });
+    return btn;
+  };
+  btns.append(mover("↑", `Subir ${p.nombre}`, -1), mover("↓", `Bajar ${p.nombre}`, 1), mover("×", `Quitar ${p.nombre}`, null, "ru-quitar"));
+  if (!fija) li.append(btns);
+  return li;
+}
+
+function marcarCambio({ lista = true } = {}) {
+  rec.borrador.cambios = true;
+  if (lista) pintarParadas();
+  else { $("#ru-guardar").disabled = ["ida", "regreso"].some((d) => paradasDe(rec.borrador, d).length < 2); $("#ru-descartar").disabled = false; $("#ru-estado").textContent = "Cambios sin guardar."; $("#ru-estado").dataset.estado = "cambios"; }
+  dibujarRecorrido();
+}
+
+$("#ru-nombre").addEventListener("input", (e) => { rec.borrador.nombre = e.target.value; marcarCambio({ lista: false }); });
+$("#ru-numero").addEventListener("input", (e) => { rec.borrador.numero = e.target.value.toUpperCase(); marcarCambio({ lista: false }); });
+$("#ru-tipo").addEventListener("change", (e) => { rec.borrador.tipo = e.target.value; marcarCambio({ lista: false }); });
+$("#ru-reves").addEventListener("change", (e) => {
+  const b = rec.borrador;
+  b.reves = e.target.checked;
+  // al separar el regreso se arranca con la ida al revés, para mover solo lo que cambia
+  if (!b.reves && !b.regreso.length) b.regreso = [...b.ida].reverse().map((p) => ({ ...p }));
+  marcarCambio();
+});
+
+function agregarParada(p) {
+  const b = rec.borrador;
+  if (rec.sentido === "regreso" && b.reves) return showMsg(msg, "El regreso usa las paradas de la ida al revés. Desmarca la casilla para poner otras.");
+  const lista = b[rec.sentido];
+  lista.push({ nombre: `Parada ${lista.length + 1}`, lat: p[0], lng: p[1] });
+  marcarCambio();
+  const input = $("#ru-lista").lastElementChild?.querySelector("input");
+  if (input) { input.focus(); input.select(); }
+}
+
+$("#ru-descartar").addEventListener("click", () => {
+  if (rec.borrador.nueva) {
+    rec.borrador = null;
+    if (!rec.rutas.length) { $("#ru-editor").hidden = true; $("#ru-vacio").hidden = false; return; }
+    return abrirRuta(rec.rutas[0].ruta, "ida", { forzar: true });
+  }
+  abrirRuta(rec.ruta, rec.sentido, { encuadrar: false, forzar: true });
+});
+
+$("#ru-guardar").addEventListener("click", async () => {
+  const b = rec.borrador;
+  const limpia = (l) => l.map(({ id, nombre, lat, lng }) => ({ id, nombre, lat, lng }));
+  const body = { nombre: b.nombre.trim() || `Ruta ${b.numero}`, tipo: b.tipo, ida: limpia(b.ida), regreso: b.reves ? "al-reves" : limpia(b.regreso) };
+  const btn = $("#ru-guardar");
+  btn.disabled = true;
+  try {
+    const r = b.nueva
+      ? await api("/rutas", { method: "POST", body: { ...body, numero: b.numero } })
+      : await api(`/rutas/${encodeURIComponent(b.numero)}`, { method: "PUT", body });
+    rec.borrador = null;
+    rec.ruta = r.ruta;
+    await loadRutas();
+    showMsg(msg, `Ruta ${r.ruta} guardada. Ya aparece en el mapa público.`, "ok");
+  } catch (err) { fail(err); btn.disabled = false; }
+});
+
+$("#ru-eliminar").addEventListener("click", () => {
+  const r = recRuta();
+  if (r.unidades) return showMsg(msg, r.unidades === 1
+    ? `Una unidad usa la Ruta ${r.ruta}. Pásala a otra ruta antes de eliminarla.`
+    : `${r.unidades} unidades usan la Ruta ${r.ruta}. Pásalas a otra ruta antes de eliminarla.`);
+  confirmar(`Eliminar la Ruta ${r.ruta}`,
+    "Se borran sus paradas, su recorrido y sus tiempos. Deja de aparecer en el mapa público. Esto no se puede deshacer.",
+    "Eliminar ruta",
+    async () => { await api(`/rutas/${encodeURIComponent(r.ruta)}`, { method: "DELETE" }); rec.borrador = null; rec.ruta = null; await loadRutas(); });
+});
 
 function estadoRecorrido() {
   const s = recSentido();
+  if (!s) return;
   const n = recPuntos().length;
   $("#rec-estado").textContent = rec.cambios
     ? (n ? "Cambios sin guardar." : "Toca el mapa en la parada 1 para empezar.")
@@ -1187,29 +1410,39 @@ function estadoRecorrido() {
 function resumenRecorridos() {
   const todos = rec.rutas.flatMap((r) => r.sentidos);
   const listos = todos.filter((x) => x.trazo).length;
-  $("#rec-resumen").textContent = listos === todos.length
-    ? `Los ${todos.length} recorridos están guardados.`
+  $("#rec-resumen").textContent = !todos.length ? ""
+    : listos === todos.length ? `Los ${todos.length} recorridos están guardados.`
     : !listos ? "Ningún recorrido guardado todavía: el mapa público los adivina por las calles."
     : `${listos} de ${todos.length} recorridos guardados. Los demás el mapa los adivina por las calles.`;
 }
 
 function dibujarRecorrido() {
-  resumenRecorridos();
-  const s = recSentido();
+  if (!rec.capa) return;
   rec.capa.clearLayers();
+  const editando = rec.modo === "paradas";
   // la vuelta GPS que se está viendo, punteada debajo
   if (rec.vista) rec.capa.addLayer(L.polyline(rec.vista, { className: "rec-vista", weight: 5, dashArray: "2 9", interactive: false }));
   const pts = recPuntos();
   if (pts.length > 1) {
     rec.capa.addLayer(L.polyline(pts, { className: "rec-borde", weight: 10, interactive: false }));
-    rec.capa.addLayer(L.polyline(pts, { className: "rec-linea", weight: 5, interactive: false }));
+    rec.capa.addLayer(L.polyline(pts, { className: "rec-linea", weight: 5, interactive: false, opacity: editando ? 0.45 : 1 }));
   }
-  if (pts.length) rec.capa.addLayer(L.circleMarker(pts.at(-1), { radius: 6, className: "rec-fin", interactive: false }));
-  // paradas numeradas en el orden del sentido
-  s.paradas.forEach((p, i) => rec.capa.addLayer(L.marker([p.lat, p.lng], {
-    icon: L.divIcon({ className: "", html: `<span class="rec-parada">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
-    title: p.nombre, keyboard: false,
-  }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] })));
+  if (pts.length && !editando) rec.capa.addLayer(L.circleMarker(pts.at(-1), { radius: 6, className: "rec-fin", interactive: false }));
+  const lista = paradasDe(rec.borrador, rec.sentido);
+  const fija = rec.sentido === "regreso" && rec.borrador.reves;
+  // sin recorrido dibujado, una línea punteada une las paradas en orden (para ver si van bien)
+  if (editando && pts.length < 2 && lista.length > 1) {
+    rec.capa.addLayer(L.polyline(lista.map((p) => [p.lat, p.lng]), { className: "rec-camino", weight: 3, dashArray: "4 8", interactive: false }));
+  }
+  // paradas numeradas en el orden del sentido; en modo Paradas se arrastran para moverlas
+  lista.forEach((p, i) => {
+    const m = L.marker([p.lat, p.lng], {
+      icon: L.divIcon({ className: "", html: `<span class="rec-parada${p.id ? "" : " rec-parada--nueva"}">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
+      title: p.nombre, keyboard: false, draggable: editando && !fija,
+    }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] });
+    m.on("dragend", () => { const ll = m.getLatLng(); p.lat = ll.lat; p.lng = ll.lng; marcarCambio({ lista: false }); });
+    rec.capa.addLayer(m);
+  });
   estadoRecorrido();
 }
 
@@ -1260,7 +1493,7 @@ function simplificar(points, tol = 4) {
 $("#rec-guardar").addEventListener("click", async () => {
   const puntos = simplificar(recPuntos()).map(([a, b]) => [Math.round(a * 1e6) / 1e6, Math.round(b * 1e6) / 1e6]);
   try {
-    await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}`, { method: "PUT", body: { puntos, fuente: rec.fuente } });
+    await api(`/rutas/${encodeURIComponent(rec.ruta)}/${rec.sentido}/recorrido`, { method: "PUT", body: { puntos, fuente: rec.fuente } });
     recSentido().trazo = { puntos, fuente: rec.fuente, actualizado: new Date().toISOString() };
     rec.tramos = [puntos];
     rec.cambios = false;
@@ -1274,7 +1507,7 @@ $("#rec-auto").addEventListener("click", () => confirmar(
   "El mapa público volverá a adivinar el camino por las calles, parada por parada. Puedes dibujarlo otra vez cuando quieras.",
   "Quitar recorrido",
   async () => {
-    await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}`, { method: "DELETE" });
+    await api(`/rutas/${encodeURIComponent(rec.ruta)}/${rec.sentido}/recorrido`, { method: "DELETE" });
     recSentido().trazo = null;
     rec.tramos = [];
     rec.cambios = false;
@@ -1285,7 +1518,7 @@ async function loadVueltas() {
   const root = $("#rec-vueltas");
   root.replaceChildren(el("li", "muted", "Buscando vueltas…"));
   let vueltas;
-  try { vueltas = await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}/grabaciones`); } catch (err) {
+  try { vueltas = await api(`/rutas/${encodeURIComponent(rec.ruta)}/${rec.sentido}/grabaciones`); } catch (err) {
     return root.replaceChildren(el("li", "muted", err.message));
   }
   if (!vueltas.length) return root.replaceChildren(el("li", "muted", "Todavía no hay vueltas completas en este sentido."));
@@ -1358,14 +1591,13 @@ $("#f-activar").addEventListener("submit", async (e) => {
     $("#iniciales").textContent = empresa.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
     isAdmin = Boolean(yo.empresa.is_admin);
     $("#nav-codigos").hidden = !isAdmin;
-    $("#nav-recorridos").hidden = !isAdmin;
     $("#nav-clientes").hidden = !isAdmin;
     $("#nav-admin").hidden = !isAdmin;
     if (isAdmin) loadClientes({ soloContar: true });
     $("#alertas").hidden = false;
     loadAlertas();
     setInterval(loadAlertas, ALERTAS_MS);
-    rutas = await fetch("/api/rutas").then((r) => r.json());
+    rutas = await api("/rutas");
     route();
     api("/mantenimiento").then(updateBadge).catch(() => {});
   } catch (err) { fail(err); }

@@ -1,17 +1,17 @@
 # Graph Report - bus-tracker  (2026-10-25)
 
 ## Corpus Check
-- 73 files · ~141,667 words
+- 74 files · ~145,661 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 31 file(s) not represented in the graph (top: .xml 10, .css 7, .woff2 4)
 
 ## Summary
-- 683 nodes · 1125 edges · 61 communities (46 shown, 15 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 61 edges (avg confidence: 0.85)
+- 719 nodes · 1211 edges · 61 communities (46 shown, 15 thin omitted)
+- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 62 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3786aac1`
+- Built from commit: `ef14c35f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -49,22 +49,22 @@
 - motorista.test.js
 - recorrido.test.js
 - trazos.js
-- db.js
-- trazos.test.js
+- middleware/empresa.js
+- validStops
 - idioma.js
-- routes/motorista.js
+- db.js
 - server.js
 - claves.test.js
 - isDark
 - telemetria.test.js
-- middleware/empresa.js
+- routes/motorista.js
 - sesion.js
 - loadFlota
 - fail
 - renderClientes
-- dibujarRecorrido
+- pintarRuta
 - go503
-- clientes.js
+- trazos.test.js
 - lineChart
 - simulator.js
 
@@ -76,9 +76,9 @@
 5. `loadFlota()` - 11 edges
 6. `openDetalle()` - 11 edges
 7. `loadMantenimiento()` - 11 edges
-8. `renderChips()` - 10 edges
-9. `fmt()` - 10 edges
-10. `handlePosition()` - 10 edges
+8. `pintarRuta()` - 11 edges
+9. `renderChips()` - 10 edges
+10. `fmt()` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Rediseño 2026-10-18: "rótulo y parada" (sigue en las pantallas de app)` --references--> `cards()`  [INFERRED]
@@ -103,19 +103,19 @@
 
 ### Community 0 - "panel.js"
 Cohesion: 0.06
-Nodes (33): ADMIN_VIEWS, alertas, clientes, closeAlertas(), codigos, darkQuery, dlgCliente, dlgCodigo (+25 more)
+Nodes (34): ADMIN_VIEWS, alertas, clientes, closeAlertas(), codigos, darkQuery, dlgCliente, dlgCodigo (+26 more)
 
 ### Community 1 - "empresa.test.js"
-Cohesion: 0.18
-Nodes (6): assert, { db }, empresas, express, store, test
+Cohesion: 0.11
+Nodes (9): assert, comoA, comoB, { db }, empresas, express, IDA, store (+1 more)
 
 ### Community 2 - "Mapa de pasajeros"
 Cohesion: 0.06
 Nodes (62): ALTOS, animateVehicle(), api(), applyTheme(), b64ToBytes(), bearing(), bellButton(), buscar (+54 more)
 
 ### Community 3 - "routes/empresa.js"
-Cohesion: 0.08
-Nodes (13): ALERT, crypto, { db, select, flush, unitFromRow }, { hashKey }, KINDS, LEAD_STATES, { requireUser, requireCompany, requireAdmin, forgetToken, rateLimit }, router (+5 more)
+Cohesion: 0.10
+Nodes (13): ALERT, crypto, { db, select, flush, unitFromRow }, { hashKey }, iso(), KINDS, LEAD_STATES, { requireUser, requireCompany, requireAdmin, forgetToken, rateLimit } (+5 more)
 
 ### Community 4 - "admin.js"
 Cohesion: 0.09
@@ -126,7 +126,7 @@ Cohesion: 0.09
 Nodes (14): GET /api/rutas (health check), go503 sensor firmware README, POST /api/telemetry, BUS_API_KEY, Local test tunnel (cloudflared/ngrok), go503 sensor (ESP32 + 4G + GPS), GPS odometer, J1939 (heavy diesel, planned) (+6 more)
 
 ### Community 6 - "alerts.js"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (39): addAlert(), alertKey(), checkAlerts(), dropAlert(), enabled, listAlerts(), minutesTo(), { persist } (+31 more)
 
 ### Community 7 - "Firmware: cola y red"
@@ -146,7 +146,7 @@ Cohesion: 0.29
 Nodes (4): aGrados(), horaIso(), leerGps(), ponerHora()
 
 ### Community 11 - "tracking.js"
-Cohesion: 0.18
+Cohesion: 0.19
 Nodes (15): DIRS, endTrip(), handlePosition(), { nearestStop }, other(), { persist }, registerExit(), registerPass() (+7 more)
 
 ### Community 12 - "Firmware: OBD-II"
@@ -217,21 +217,21 @@ Nodes (6): assert, { handlePosition }, route, { routeStatus }, store, test
 Cohesion: 0.24
 Nodes (10): { distanceM }, grabando, { persist }, pt(), round6(), saveRecording(), { shapes, recordings, trips, units }, simplify() (+2 more)
 
-### Community 36 - "db.js"
-Cohesion: 0.33
-Nodes (8): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow()
+### Community 36 - "middleware/empresa.js"
+Cohesion: 0.18
+Nodes (11): cache, { db }, forgetToken(), lookup(), rateLimit(), requireAdmin(), requireCompany(), requireUser() (+3 more)
 
-### Community 44 - "trazos.test.js"
-Cohesion: 0.25
-Nodes (6): assert, { handlePosition }, route, { simplify, validPoints, setShape }, store, test
+### Community 44 - "validStops"
+Cohesion: 0.18
+Nodes (12): canEdit(), enSalvador(), myRoutes(), randomId(), round6(), routeFields(), routeOr404(), slug() (+4 more)
 
 ### Community 45 - "idioma.js"
 Cohesion: 0.48
 Nodes (4): doAttrs(), doText(), t(), walk()
 
-### Community 46 - "routes/motorista.js"
-Cohesion: 0.22
-Nodes (5): auth, router, { routes, buses, units, trips }, { saveBus }, { startTrip, endTrip }
+### Community 46 - "db.js"
+Cohesion: 0.29
+Nodes (9): { createClient }, flush(), loadState(), ms(), queues, select(), store, unitFromRow() (+1 more)
 
 ### Community 47 - "server.js"
 Cohesion: 0.25
@@ -239,47 +239,47 @@ Nodes (7): cors, limpiarHistorial(), app, cors, express, { loadState, limpiarHis
 
 ### Community 48 - "claves.test.js"
 Cohesion: 0.25
-Nodes (5): assert, express, { hashKey }, store, test
+Nodes (6): express, assert, express, { hashKey }, store, test
 
 ### Community 49 - "isDark"
-Cohesion: 0.67
-Nodes (4): applyTheme(), initMap(), isDark(), setTiles()
+Cohesion: 0.50
+Nodes (5): applyTheme(), initMap(), initRecMap(), isDark(), setTiles()
 
 ### Community 50 - "telemetria.test.js"
 Cohesion: 0.25
-Nodes (5): express, assert, express, store, test
+Nodes (4): assert, express, store, test
 
-### Community 51 - "middleware/empresa.js"
-Cohesion: 0.36
-Nodes (7): cache, { db }, forgetToken(), lookup(), requireAdmin(), requireCompany(), requireUser()
+### Community 51 - "routes/motorista.js"
+Cohesion: 0.25
+Nodes (5): auth, router, { routes, buses, units, trips }, { saveBus }, { startTrip, endTrip }
 
 ### Community 53 - "loadFlota"
-Cohesion: 0.21
-Nodes (17): closeDetalle(), estado(), fecha(), fmt(), hace(), icon(), km(), loadFlota() (+9 more)
+Cohesion: 0.23
+Nodes (14): closeDetalle(), estado(), fmt(), icon(), km(), loadFlota(), loadMantenimiento(), markerIcon() (+6 more)
 
 ### Community 54 - "fail"
 Cohesion: 0.38
 Nodes (7): fail(), loadClientes(), loadCodigos(), loadReportes(), renderVueltas(), route(), showRoute()
 
 ### Community 55 - "renderClientes"
-Cohesion: 0.22
-Nodes (15): Rediseño 2026-10-18: "rótulo y parada" (sigue en las pantallas de app), button(), cards(), cerrarMenu(), confirmar(), enEtapa(), loadUnidades(), moreMenu() (+7 more)
+Cohesion: 0.20
+Nodes (18): Rediseño 2026-10-18: "rótulo y parada" (sigue en las pantallas de app), button(), cards(), cerrarMenu(), confirmar(), enEtapa(), fecha(), hace() (+10 more)
 
-### Community 56 - "dibujarRecorrido"
-Cohesion: 0.39
-Nodes (9): agregarPunto(), cambiarRecorrido(), dibujarRecorrido(), estadoRecorrido(), loadRecorridos(), loadVueltas(), recPuntos(), recSentido() (+1 more)
+### Community 56 - "pintarRuta"
+Cohesion: 0.16
+Nodes (23): abrirRuta(), agregarParada(), agregarPunto(), borradorDe(), cambiarSentido(), cargarTrazo(), dibujarRecorrido(), encuadrarRuta() (+15 more)
 
 ### Community 57 - "go503"
 Cohesion: 0.20
 Nodes (9): Cuando algo cambie, Empezar, Estructura, go503, Legal, Para cuando go503 se inscriba, Publicar, Qué hace (+1 more)
 
-### Community 58 - "clientes.js"
-Cohesion: 0.29
-Nodes (4): rateLimit(), { db }, { rateLimit }, router
+### Community 58 - "trazos.test.js"
+Cohesion: 0.25
+Nodes (6): assert, { handlePosition }, route, { simplify, validPoints, setShape }, store, test
 
 ### Community 59 - "lineChart"
-Cohesion: 0.50
-Nodes (5): hideTip(), hora(), lineChart(), renderTramos(), showTip()
+Cohesion: 0.33
+Nodes (7): cambiarModo(), hideTip(), hora(), lineChart(), loadVueltas(), renderTramos(), showTip()
 
 ### Community 60 - "simulator.js"
 Cohesion: 0.33
@@ -287,23 +287,23 @@ Nodes (8): distanceM(), nearestStop(), updateCounters(), buildPath(), { distance
 
 ## Knowledge Gaps
 - **24 isolated node(s):** `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core`, `@capacitor/cli`, `dotenv` (+19 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 327 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 332 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `@supabase/supabase-js` connect `admin.js` to `package.json`, `db.js`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
 - **What connects `@capacitor-community/background-geolocation`, `@capacitor/android`, `@capacitor/core` to the rest of the system?**
   _24 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `panel.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.06218487394957983 - nodes in this community are weakly interconnected._
-- **Why does `express` connect `telemetria.test.js` to `package.json`, `empresa.test.js`, `motorista.test.js`, `trazos.test.js`, `server.js`, `claves.test.js`, `encendido.test.js`?**
+  _Cohesion score 0.06031746031746032 - nodes in this community are weakly interconnected._
+- **Why does `express` connect `claves.test.js` to `package.json`, `empresa.test.js`, `motorista.test.js`, `server.js`, `telemetria.test.js`, `encendido.test.js`, `trazos.test.js`?**
   _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Should `empresa.test.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
+- **Why does `confirmar()` connect `renderClientes` to `panel.js`, `js/motorista.js`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Should `Mapa de pasajeros` be split into smaller, more focused modules?**
   _Cohesion score 0.06093189964157706 - nodes in this community are weakly interconnected._
-- **Should `routes/empresa.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
-- **Should `admin.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.09057971014492754 - nodes in this community are weakly interconnected._

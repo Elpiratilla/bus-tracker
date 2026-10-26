@@ -730,6 +730,18 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .rec-vista { stroke: var(--maiz-hondo); fill: none; }
 .rec-fin { stroke: #fff; stroke-width: 3; fill: var(--torogoz); fill-opacity: 1; }
 .rec-parada { display: grid; place-items: center; width: 28px; height: 28px; background: var(--noche); border: 2px solid var(--maiz); border-radius: 50%; color: var(--maiz); font: 800 15px/1 var(--display); }
+/* lista de paradas de la ruta: número, nombre editable y botones para ordenar */
+.ru-lista { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; max-height: 42vh; overflow-y: auto; }
+.ru-parada { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .45rem; }
+.ru-parada .input { min-height: 2.5rem; padding: .35rem .6rem; }
+.ru-parada__btns { display: flex; gap: .2rem; }
+.ru-parada__btns button { display: grid; place-items: center; width: 2.25rem; height: 2.5rem; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--tinta); font: 700 1rem/1 var(--sans); cursor: pointer; }
+.ru-parada__btns button:hover:not(:disabled) { border-color: var(--tinta); }
+.ru-parada__btns button:disabled { opacity: .35; cursor: default; }
+.ru-parada__btns .ru-quitar { color: var(--alerta-texto); }
+.ru-lista .muted { padding: .5rem 0; }
+.rec-parada--nueva { border-color: var(--torogoz); color: #fff; }
+.rec-camino { stroke: var(--maiz-hondo); stroke-opacity: .9; fill: none; }
 @media (max-width: 1000px) {
   .rec { grid-template-columns: 1fr; }
   .rec__map { height: 60vh; min-height: 320px; }

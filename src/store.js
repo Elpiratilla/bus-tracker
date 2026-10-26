@@ -27,7 +27,8 @@ const routes = [
 
 // Cada ruta tiene dos sentidos. Sin datos propios, el regreso son las mismas paradas al revés.
 // route.stops queda como la lista de ida (y sirve para buscar cualquier parada de la ruta).
-for (const r of routes) r.directions = { ida: r.stops, regreso: [...r.stops].reverse() };
+// companyId: empresa dueña de la ruta (null = de go503, solo la editan los administradores).
+for (const r of routes) Object.assign(r, { companyId: null, directions: { ida: r.stops, regreso: [...r.stops].reverse() } });
 
 // geofence: en qué parada está cada bus ahora mismo (null si va entre paradas)
 // trips: vuelta actual de cada bus: sentido, hora de paso por cada parada y de salida de la última

@@ -2,7 +2,7 @@
 // Todas las rutas (menos /codigo) requieren sesión; cada empresa solo ve sus unidades.
 const crypto = require("crypto");
 const router = require("express").Router();
-const { routes, buses, units, retired, shapes, recordings } = require("../store");
+const { routes, buses, units, retired, shapes, recordings, trips, geofence, alerts } = require("../store");
 const { validPoints, setShape, deleteShape } = require("../trazos");
 const { db, select, flush, unitFromRow } = require("../db");
 const { hashKey } = require("../middleware/auth");
@@ -156,30 +156,174 @@ router.delete("/admin/clientes/:id", requireAdmin, async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
-// ---------- Recorridos (administradores): por dónde pasa cada ruta en el mapa ----------
+// ---------- Rutas de la empresa: número, paradas de cada sentido y recorrido en el mapa ----------
+// Cada empresa arma y edita solo sus rutas. Las de go503 (sin empresa: 101, 42, 29) solo las editan los administradores.
 const SENTIDOS = ["ida", "regreso"];
+const MAX_RUTAS = 30;
+const canEdit = (req, route) => route.companyId === req.company.id || (route.companyId == null && Boolean(req.company.is_admin));
+const myRoutes = (req) => routes.filter((r) => canEdit(req, r));
 const routeOr404 = (req, res) => {
   const route = routes.find((r) => r.id === req.params.ruta);
-  if (!route) res.status(404).json({ error: "Ruta no existe" });
+  if (!route || !canEdit(req, route)) res.status(404).json({ error: "Esa ruta no es de tu empresa" });
   else if (!SENTIDOS.includes(req.params.sentido ?? "ida")) res.status(400).json({ error: "El sentido es ida o regreso" });
   else return route;
   return null;
 };
 
-// Todas las rutas con sus paradas por sentido y el trazo guardado (si hay)
-router.get("/admin/recorridos", requireAdmin, (_req, res) => {
-  res.json(routes.map((r) => ({
-    ruta: r.id, nombre: r.name, tipo: r.type,
-    sentidos: SENTIDOS.map((d) => {
-      const sh = shapes[`${r.id}:${d}`];
-      return { id: d, destino: r.directions[d].at(-1)?.name ?? null,
-        paradas: r.directions[d].map((st) => ({ id: st.id, nombre: st.name, lat: st.lat, lng: st.lng })),
-        trazo: sh ? { puntos: sh.points, fuente: sh.source, actualizado: iso(sh.updatedAt) } : null };
-    }),
-  })));
+const routeOut = (r) => ({
+  ruta: r.id, nombre: r.name, tipo: r.type, deGo503: r.companyId == null,
+  unidades: Object.values(units).filter((u) => u.routeId === r.id).length,
+  sentidos: SENTIDOS.map((d) => {
+    const sh = shapes[`${r.id}:${d}`];
+    return { id: d, destino: r.directions[d].at(-1)?.name ?? null,
+      paradas: r.directions[d].map((st) => ({ id: st.id, nombre: st.name, lat: st.lat, lng: st.lng })),
+      trazo: sh ? { puntos: sh.points, fuente: sh.source, actualizado: iso(sh.updatedAt) } : null };
+  }),
 });
 
-router.put("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
+const enSalvador = (lat, lng) => lat > 12.5 && lat < 15 && lng > -91 && lng < -87;
+const slug = (t) => t.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 20);
+const round6 = (n) => Math.round(n * 1e6) / 1e6;
+
+// Paradas de un sentido como las manda el panel, en orden: [{ id?, nombre, lat, lng }].
+// Un id se respeta solo si ya es de esta ruta y ninguna ruta ajena lo usa (mover una parada
+// no debe mover la de otra empresa); si no, la parada es nueva.
+function validStops(req, route, lista, sentido) {
+  if (!Array.isArray(lista) || lista.length < 2 || lista.length > 80) return { error: `La ${sentido} necesita de 2 a 80 paradas` };
+  const propias = new Set(route ? route.stops.map((st) => st.id) : []);
+  const ajena = (id) => routes.some((r) => !canEdit(req, r) && r.stops.some((st) => st.id === id));
+  const paradas = [];
+  for (const [i, p] of lista.entries()) {
+    const name = text(p?.nombre, 1, 60);
+    const lat = Number(p?.lat), lng = Number(p?.lng);
+    if (!name) return { error: `La parada ${i + 1} de la ${sentido} necesita un nombre (hasta 60 letras)` };
+    if (!enSalvador(lat, lng)) return { error: `La parada ${i + 1} de la ${sentido} no está en El Salvador` };
+    const id = propias.has(p.id) && !ajena(p.id) ? p.id : `${slug(name) || "parada"}-${randomId(4).toLowerCase()}`;
+    if (paradas.some((x) => x.id === id)) return { error: `${name} está dos veces en la ${sentido}` };
+    paradas.push({ id, name, lat: round6(lat), lng: round6(lng) });
+  }
+  return { paradas };
+}
+
+// Ida y regreso del cuerpo: el regreso puede ser "al-reves" (las mismas paradas en orden inverso)
+function validDirections(req, route, body) {
+  const ida = validStops(req, route, body.ida, "ida");
+  if (ida.error) return ida;
+  if (body.regreso === "al-reves") return { ida: ida.paradas, regreso: [...ida.paradas].reverse() };
+  const regreso = validStops(req, route, body.regreso, "regreso");
+  if (regreso.error) return regreso;
+  // una parada nueva que está en los dos sentidos (mismo nombre y lugar) se guarda una sola vez
+  const mismo = (a, b) => a.name === b.name && a.lat === b.lat && a.lng === b.lng;
+  return { ida: ida.paradas, regreso: regreso.paradas.map((st) => ida.paradas.find((x) => mismo(x, st)) || st) };
+}
+
+async function saveStops(route, { ida, regreso }) {
+  const todas = [...new Map([...ida, ...regreso].map((st) => [st.id, st])).values()];
+  if (db) {
+    await select(db.from("stops").upsert(todas).select("id"));
+    await select(db.from("route_stops").delete().eq("route_id", route.id).select("route_id"));
+    await select(db.from("route_stops").insert([
+      ...ida.map((st, position) => ({ route_id: route.id, direction: "ida", position, stop_id: st.id })),
+      ...regreso.map((st, position) => ({ route_id: route.id, direction: "regreso", position, stop_id: st.id })),
+    ]).select("route_id"));
+  }
+  // La misma parada puede estar en otra ruta de la empresa (ej. una terminal): se mueve en todas
+  for (const r of routes) for (const d of SENTIDOS) {
+    r.directions[d].forEach((st) => { const n = todas.find((x) => x.id === st.id); if (n) Object.assign(st, n); });
+  }
+  route.directions = { ida: ida.map((st) => ({ ...st })), regreso: regreso.map((st) => ({ ...st })) };
+  route.stops = [...route.directions.ida, ...route.directions.regreso.filter((st) => !ida.some((x) => x.id === st.id))];
+  // vueltas en curso que iban por una parada que ya no está: se reinician con la siguiente parada que toquen
+  for (const [k, t] of Object.entries(trips)) {
+    if (k.endsWith(`:${route.id}`) && !route.directions[t.dir].some((st) => st.id === t.lastStopId)) delete trips[k];
+  }
+}
+
+function routeFields(body) {
+  const out = {};
+  if (body.nombre !== undefined) {
+    out.name = text(body.nombre, 1, 60);
+    if (!out.name) return { error: "El nombre de la ruta debe tener de 1 a 60 letras" };
+  }
+  if (body.tipo !== undefined) {
+    if (!["autobus", "microbus"].includes(body.tipo)) return { error: "El tipo debe ser autobús o microbús" };
+    out.type = body.tipo;
+  }
+  return { fields: out };
+}
+
+// Las rutas que esta empresa puede editar (y asignar a sus unidades)
+router.get("/rutas", requireCompany, (req, res) => res.json(myRoutes(req).map(routeOut)));
+
+// Nueva ruta: { numero, nombre, tipo, ida: [...paradas], regreso: [...paradas] | "al-reves" }
+router.post("/rutas", requireCompany, async (req, res, next) => {
+  try {
+    const numero = typeof req.body.numero === "string" ? req.body.numero.trim().toUpperCase().replace(/\s+/g, "") : "";
+    if (!/^[0-9A-Z][0-9A-Z-]{0,7}$/.test(numero)) {
+      return res.status(400).json({ error: "El número de ruta lleva de 1 a 8 letras o números (ej.: 15 o 15-A)" });
+    }
+    if (routes.some((r) => r.id.toUpperCase() === numero)) {
+      return res.status(409).json({ error: `La ruta ${numero} ya está en go503. Si también la manejas, escríbenos para compartirla.` });
+    }
+    if (routes.filter((r) => r.companyId === req.company.id).length >= MAX_RUTAS) {
+      return res.status(400).json({ error: `Llegaste al límite de ${MAX_RUTAS} rutas` });
+    }
+    const { error, fields } = routeFields({ nombre: req.body.nombre || `Ruta ${numero}`, tipo: req.body.tipo || "autobus" });
+    if (error) return res.status(400).json({ error });
+    const dirs = validDirections(req, null, req.body);
+    if (dirs.error) return res.status(400).json({ error: dirs.error });
+
+    const route = { id: numero, ...fields, companyId: req.company.id, stops: [], directions: { ida: [], regreso: [] } };
+    await select(db.from("routes").insert({ id: numero, ...fields, company_id: req.company.id, sort: 100 }).select("id"));
+    try {
+      await saveStops(route, dirs);
+    } catch (err) {
+      await db.from("routes").delete().eq("id", numero); // sin paradas la ruta no sirve: no dejarla a medias
+      throw err;
+    }
+    routes.push(route);
+    res.status(201).json(routeOut(route));
+  } catch (err) { next(err); }
+});
+
+// Cambiar nombre, tipo y paradas: { nombre?, tipo?, ida?, regreso? } (ida y regreso van juntos)
+router.put("/rutas/:ruta", requireCompany, async (req, res, next) => {
+  try {
+    const route = routeOr404(req, res);
+    if (!route) return;
+    const { error, fields } = routeFields(req.body);
+    if (error) return res.status(400).json({ error });
+    const dirs = req.body.ida !== undefined ? validDirections(req, route, req.body) : null;
+    if (dirs?.error) return res.status(400).json({ error: dirs.error });
+    if (Object.keys(fields).length) {
+      await select(db.from("routes").update(fields).eq("id", route.id).select("id"));
+      Object.assign(route, fields);
+    }
+    if (dirs) await saveStops(route, dirs);
+    res.json(routeOut(route));
+  } catch (err) { next(err); }
+});
+
+// Borrar una ruta que ya ninguna unidad usa (se van sus paradas, tiempos y recorridos)
+router.delete("/rutas/:ruta", requireCompany, async (req, res, next) => {
+  try {
+    const route = routeOr404(req, res);
+    if (!route) return;
+    const usan = Object.values(units).filter((u) => u.routeId === route.id).length;
+    if (usan) return res.status(409).json({ error: `Primero pasa a otra ruta las ${usan === 1 ? "unidad que la usa" : `${usan} unidades que la usan`}` });
+    await select(db.from("routes").delete().eq("id", route.id).select("id"));
+    routes.splice(routes.indexOf(route), 1);
+    for (const d of SENTIDOS) delete shapes[`${route.id}:${d}`];
+    for (const k of Object.keys(trips)) if (k.endsWith(`:${route.id}`)) delete trips[k];
+    for (const k of Object.keys(geofence)) if (k.endsWith(`:${route.id}`)) delete geofence[k];
+    for (const [k, a] of alerts) if (a.routeId === route.id) alerts.delete(k);
+    for (const [id, b] of Object.entries(buses)) if (b.routeId === route.id && !units[id]) delete buses[id]; // simulador
+    res.status(204).end();
+  } catch (err) { next(err); }
+});
+
+// Recorrido (por dónde pasa en el mapa) de un sentido
+router.put("/rutas/:ruta/:sentido/recorrido", requireCompany, (req, res) => {
   const route = routeOr404(req, res);
   if (!route) return;
   const puntos = validPoints(req.body?.puntos);
@@ -190,7 +334,7 @@ router.put("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
 });
 
 // Borrar el trazo: el mapa vuelve a adivinarlo por las calles
-router.delete("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
+router.delete("/rutas/:ruta/:sentido/recorrido", requireCompany, (req, res) => {
   const route = routeOr404(req, res);
   if (!route) return;
   deleteShape(route.id, req.params.sentido);
@@ -198,7 +342,7 @@ router.delete("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
 });
 
 // Vueltas completas grabadas por GPS (las 10 más recientes)
-router.get("/admin/recorridos/:ruta/:sentido/grabaciones", requireAdmin, async (req, res, next) => {
+router.get("/rutas/:ruta/:sentido/grabaciones", requireCompany, async (req, res, next) => {
   const route = routeOr404(req, res);
   if (!route) return;
   const dir = req.params.sentido;
@@ -241,7 +385,8 @@ router.get("/flota", requireCompany, (req, res) => {
 
 // ---------- Unidades ----------
 
-function validUnitFields(body, partial) {
+// La ruta de una unidad tiene que ser de la empresa (la que ya tenía se puede dejar igual)
+function validUnitFields(req, body, partial, unit = null) {
   const out = {};
   if (!partial || body.nombre !== undefined) {
     out.name = text(body.nombre, 1, 40);
@@ -253,7 +398,8 @@ function validUnitFields(body, partial) {
   }
   if (!partial || body.ruta !== undefined) {
     out.route_id = body.ruta;
-    if (!routes.some((r) => r.id === body.ruta)) return { error: "Escoge una ruta de la lista" };
+    const ok = body.ruta === unit?.routeId || myRoutes(req).some((r) => r.id === body.ruta);
+    if (!ok) return { error: myRoutes(req).length ? "Escoge una de tus rutas" : "Primero crea tu ruta en la sección Rutas" };
   }
   if (!partial || body.tipo !== undefined) {
     out.type = body.tipo;
@@ -275,7 +421,7 @@ function validUnitFields(body, partial) {
 // Registrar unidad: devuelve la clave del sensor UNA sola vez (solo se guarda su hash)
 router.post("/unidades", requireCompany, async (req, res, next) => {
   try {
-    const { error, fields } = validUnitFields(req.body, false);
+    const { error, fields } = validUnitFields(req, req.body, false);
     if (error) return res.status(400).json({ error });
     if (myUnits(req).length >= 200) return res.status(400).json({ error: "Llegaste al límite de 200 unidades" });
 
@@ -294,7 +440,7 @@ router.patch("/unidades/:id", requireCompany, async (req, res, next) => {
   try {
     const unit = myUnit(req);
     if (!unit) return res.status(404).json({ error: "Esa unidad no existe en tu flota" });
-    const { error, fields } = validUnitFields(req.body, true);
+    const { error, fields } = validUnitFields(req, req.body, true, unit);
     if (error) return res.status(400).json({ error });
     const row = await select(db.from("buses").update(fields).eq("id", unit.busId).select("*").single());
     units[unit.busId] = unitFromRow(row);

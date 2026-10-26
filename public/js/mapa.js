@@ -6,6 +6,8 @@ const CONFIG = {
   REFRESH_MS: 5000,   // cada cuánto se actualiza
   OSRM: "https://router.project-osrm.org", // pega la ruta a las calles (servicio de prueba)
   CENTER: [13.699, -89.205],               // San Salvador
+  LIMITES: [[12.9, -90.4], [14.7, -87.4]], // El Salvador con un margen: el mapa no se sale de aquí
+  ZOOM_MIN: 8,                              // no deja alejar más allá de ver todo el país
   CARTO_KEY: "cb1_483z_1_4a6102fca3ea19c0048a0ded",       // pega aquí tu llave gratis de https://carto.com/basemaps/apikey/
 };
 
@@ -111,7 +113,12 @@ function el(tag, cls, text) {
 }
 
 // ---------- Mapa ----------
-const map = L.map("map", { zoomControl: false }).setView(CONFIG.CENTER, 13);
+const map = L.map("map", {
+  zoomControl: false,
+  maxBounds: CONFIG.LIMITES,
+  maxBoundsViscosity: 1,
+  minZoom: CONFIG.ZOOM_MIN,
+}).setView(CONFIG.CENTER, 13);
 L.control.zoom({ position: "bottomright" }).addTo(map);
 
 // Tema: el del teléfono, salvo que la persona elija otro con el botón (se recuerda)

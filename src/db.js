@@ -47,9 +47,14 @@ async function select(query) {
 async function loadState() {
   if (!db) return;
 
-  const routes = await select(db.from("routes")
-    .select("id, name, type, route_stops(direction, position, stops(id, name, lat, lng))")
-    .eq("active", true).order("sort"));
+  // company_id: de qué empresa es la ruta (null = de go503). Sin la migración 20261026040000 la columna no existe todavía
+  const routeQuery = (cols) => select(db.from("routes")
+    .select(`id, name, type, ${cols}route_stops(direction, position, stops(id, name, lat, lng))`)
+    .eq("active", true).order("sort").order("id"));
+  const routes = await routeQuery("company_id, ").catch((err) => {
+    console.warn(`Supabase: rutas sin empresa (${err.message}). Corre la migración 20261026040000_rutas_por_empresa.sql`);
+    return routeQuery("");
+  });
   store.routes.splice(0, store.routes.length, ...routes.map((r) => {
     const dir = (d) => r.route_stops.filter((rs) => rs.direction === d)
       .sort((a, b) => a.position - b.position).map((rs) => rs.stops);
@@ -57,7 +62,7 @@ async function loadState() {
     const regreso = dir("regreso");
     // stops: todas las paradas de la ruta (las de ida y las que solo están en el regreso)
     const stops = [...ida, ...regreso.filter((s) => !ida.some((x) => x.id === s.id))];
-    return { id: r.id, name: r.name, type: r.type, stops,
+    return { id: r.id, name: r.name, type: r.type, companyId: r.company_id ?? null, stops,
       directions: { ida, regreso: regreso.length ? regreso : [...ida].reverse() } };
   }));
 

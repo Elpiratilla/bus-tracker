@@ -45,11 +45,11 @@
         <a href="#flota"><svg class="ico" aria-hidden="true"><use href="#i-map"/></svg>Flota en vivo</a>
         <a href="#unidades"><svg class="ico" aria-hidden="true"><use href="#i-bus"/></svg>Unidades</a>
         <a href="#mantenimiento"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Mantenimiento<span class="badge" id="badge-mant" hidden></span></a>
+        <a href="#rutas"><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg>Rutas</a>
         <a href="#reportes"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Reportes</a>
         <!-- lo de go503: solo lo ven los administradores -->
         <p class="nav__grupo" id="nav-admin" hidden>Administración</p>
         <a href="#clientes" id="nav-clientes" hidden><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg>Clientes<span class="badge" id="badge-clientes" hidden></span></a>
-        <a href="#recorridos" id="nav-recorridos" hidden><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg>Recorridos</a>
         <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
       </nav>
       <div class="side__foot">
@@ -192,36 +192,69 @@
         <div class="panel table-wrap" id="codigos" style="margin-top:.8rem"></div>
       </section>
 
-      <!-- Recorridos (solo administradores): por dónde pasa cada ruta en el mapa público -->
-      <section class="view" id="v-recorridos" hidden>
+      <!-- Rutas de la empresa: número, paradas de ida y regreso, y por dónde pasa en el mapa público -->
+      <section class="view" id="v-rutas" hidden>
         <div class="head">
-          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa. Dibújalo tocando el mapa, o usa una vuelta que grabó el GPS de un bus.</p><p class="atiende" id="rec-resumen"></p></div>
+          <div><h1>Rutas</h1><p>Tus rutas, sus paradas y por dónde pasan. Así las ve la gente en el mapa de go503.</p><p class="atiende" id="rec-resumen"></p></div>
+          <div class="head__actions"><button class="btn btn--anil" type="button" data-nueva-ruta>Nueva ruta</button></div>
         </div>
-        <div class="filters rec__pick">
-          <label for="rec-ruta" class="visually-hidden">Ruta</label>
-          <select class="select" id="rec-ruta"></select>
-          <div class="rec__dir" id="rec-dir" role="group" aria-label="Sentido"></div>
+        <div class="panel empty-state" id="ru-vacio" hidden>
+          <h2>Crea tu primera ruta</h2>
+          <p>Pon su número, toca el mapa donde están las paradas y guárdala. Después la escoges al registrar tus unidades.</p>
+          <button class="btn btn--anil" type="button" data-nueva-ruta>Nueva ruta</button>
         </div>
-        <div class="rec">
-          <div class="rec__map" id="rec-map" role="region" aria-label="Mapa para dibujar el recorrido"></div>
-          <div class="panel rec__side">
-            <p class="rec__estado" id="rec-estado" aria-live="polite"></p>
-
-            <h2>Dibujar</h2>
-            <p class="muted">Toca el mapa desde la parada 1 hasta la última, en el orden en que pasa el bus. Cada toque sigue las calles desde el anterior.</p>
-            <label class="rec__check"><input type="checkbox" id="rec-pegar" checked> Pegar a las calles</label>
-            <div class="rec__tools">
-              <button class="btn btn--ghost btn--sm" type="button" id="rec-deshacer">Deshacer</button>
-              <button class="btn btn--ghost btn--sm" type="button" id="rec-borrar">Empezar de nuevo</button>
+        <div id="ru-editor" hidden>
+          <div class="filters rec__pick">
+            <label for="rec-ruta" class="visually-hidden">Ruta</label>
+            <select class="select" id="rec-ruta"></select>
+            <div class="rec__dir" id="ru-modo" role="group" aria-label="Qué editar">
+              <button type="button" data-modo="paradas" aria-pressed="true">Paradas</button>
+              <button type="button" data-modo="recorrido" aria-pressed="false">Recorrido en el mapa</button>
             </div>
-            <div class="rec__save">
-              <button class="btn btn--anil" type="button" id="rec-guardar">Guardar recorrido</button>
-              <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="rec-auto">Quitar y usar el automático</button>
-            </div>
+            <div class="rec__dir" id="rec-dir" role="group" aria-label="Sentido"></div>
+          </div>
+          <div class="rec">
+            <div class="rec__map" id="rec-map" role="region" aria-label="Mapa de la ruta"></div>
+            <div class="panel rec__side">
+              <!-- Paradas: datos de la ruta y lista de paradas del sentido escogido -->
+              <div class="rec__side" id="ru-paradas" style="padding:0">
+                <p class="rec__estado" id="ru-estado" aria-live="polite"></p>
+                <div class="form__row">
+                  <div class="field"><label for="ru-numero">Número</label><input class="input" id="ru-numero" maxlength="8" placeholder="Ej.: 15" autocomplete="off" spellcheck="false"></div>
+                  <div class="field"><label for="ru-tipo">Tipo</label><select class="select" id="ru-tipo"><option value="autobus">Autobús</option><option value="microbus">Microbús</option></select></div>
+                </div>
+                <div class="field"><label for="ru-nombre">Nombre</label><input class="input" id="ru-nombre" maxlength="60" placeholder="Ej.: Ruta 15, Mejicanos a Centro"></div>
+                <h2 id="ru-titulo-lista">Paradas de ida</h2>
+                <label class="rec__check" id="ru-reves-box"><input type="checkbox" id="ru-reves"> El regreso pasa por las mismas paradas, al revés</label>
+                <p class="muted" id="ru-ayuda">Toca el mapa donde está cada parada, en el orden en que pasa el bus. Arrastra una parada para moverla.</p>
+                <ol class="ru-lista" id="ru-lista"></ol>
+                <div class="rec__save">
+                  <button class="btn btn--anil" type="button" id="ru-guardar">Guardar ruta</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="ru-descartar">Descartar cambios</button>
+                  <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="ru-eliminar">Eliminar ruta</button>
+                </div>
+              </div>
 
-            <h2>Vueltas grabadas por GPS</h2>
-            <p class="muted">Cuando una unidad va de la primera a la última parada, su recorrido queda aquí.</p>
-            <ul class="rec__vueltas" id="rec-vueltas"></ul>
+              <!-- Recorrido: por dónde pasa de verdad (dibujado o sacado de una vuelta GPS) -->
+              <div class="rec__side" id="ru-recorrido" style="padding:0" hidden>
+                <p class="rec__estado" id="rec-estado" aria-live="polite"></p>
+                <h2>Dibujar</h2>
+                <p class="muted">Toca el mapa desde la parada 1 hasta la última, en el orden en que pasa el bus. Cada toque sigue las calles desde el anterior.</p>
+                <label class="rec__check"><input type="checkbox" id="rec-pegar" checked> Pegar a las calles</label>
+                <div class="rec__tools">
+                  <button class="btn btn--ghost btn--sm" type="button" id="rec-deshacer">Deshacer</button>
+                  <button class="btn btn--ghost btn--sm" type="button" id="rec-borrar">Empezar de nuevo</button>
+                </div>
+                <div class="rec__save">
+                  <button class="btn btn--anil" type="button" id="rec-guardar">Guardar recorrido</button>
+                  <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="rec-auto">Quitar y usar el automático</button>
+                </div>
+
+                <h2>Vueltas grabadas por GPS</h2>
+                <p class="muted">Cuando una de tus unidades va de la primera a la última parada, su recorrido queda aquí.</p>
+                <ul class="rec__vueltas" id="rec-vueltas"></ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>

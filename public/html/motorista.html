@@ -21,8 +21,9 @@
       <img class="top__logo" src="/img/go503-logo-oscuro.svg" alt="" width="38" height="44">
       <span class="fascia" id="numero" hidden></span>
       <div class="top__nombre"><h1 id="titulo">go503 motorista</h1><small id="subtitulo">Tu celular es el GPS del bus</small></div>
-      <span class="gps" id="gps" hidden>GPS</span>
     </header>
+    <!-- En trayecto: si la gente ve el bus en el mapa. Verde si llega la ubicación, ámbar si busca GPS -->
+    <p class="gps" id="gps" aria-live="polite" hidden></p>
 
     <p class="msg" id="msg" role="alert" hidden></p>
     <!-- Solo en trayecto, cuando la ubicación deja de llegar: la gente ya no ve el bus -->
@@ -50,19 +51,23 @@
 
       <!-- En trayecto -->
       <section id="v-viaje" hidden>
-        <div class="proxima" aria-live="polite">
-          <small id="proxima-titulo">Próxima parada</small>
-          <p id="siguiente"></p>
+        <div class="viaje">
+          <div class="proxima" aria-live="polite">
+            <h2 id="proxima-titulo">Próxima parada</h2>
+            <p class="proxima__nombre" id="siguiente"></p>
+            <p class="proxima__luego" id="luego"></p>
+          </div>
+          <ol class="linea" id="paradas"></ol>
+          <p class="aviso" id="aviso-pantalla">No bloquees la pantalla y deja el celular en el cargador. Si se bloquea, la gente deja de ver el bus en el mapa.</p>
         </div>
-        <ol class="linea" id="paradas"></ol>
+        <!-- Abajo, donde llega el pulgar, aunque la lista de paradas sea larga -->
         <div class="acciones">
           <button class="btn grande btn--vuelta" type="button" id="vuelta"></button>
           <button class="btn grande btn--terminar" type="button" id="terminar">Terminar trayecto</button>
         </div>
-        <p class="aviso" id="aviso-pantalla">No bloquees la pantalla y deja el celular en el cargador. Si se bloquea, la gente deja de ver el bus en el mapa.</p>
       </section>
 
-      <footer class="pie">
+      <footer class="pie" id="pie">
         <button class="btn btn--quieto" type="button" id="cerrar">Cambiar de unidad</button>
       </footer>
     </div>

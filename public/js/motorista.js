@@ -85,19 +85,29 @@ function render() {
   $("subtitulo").textContent = s.enServicio ? `${s.unidad || "Ruta " + s.ruta}, en trayecto` : `Fuera de servicio, unidad ${cred.busId}`;
   $("v-salir").hidden = s.enServicio;
   $("v-viaje").hidden = !s.enServicio;
+  $("pie").hidden = s.enServicio; // en trayecto no se puede cambiar de unidad: ni se ofrece
   $("sentidos").replaceChildren(...s.sentidos.map((d) => rotulo(s.ruta, d)));
   if (s.enServicio) {
     const enTerminal = !s.siguiente;
+    const i = s.paradas.findIndex((p) => !p.paso); // la próxima
+    const faltan = s.paradas.length - i;            // de la próxima a la terminal, las dos cuentan
     $("proxima-titulo").textContent = enTerminal ? "Llegaste a la terminal" : "Próxima parada";
     $("siguiente").textContent = s.siguiente || actual.destino;
-    $("paradas").replaceChildren(...s.paradas.map((p) => {
+    $("luego").textContent = enTerminal ? `Toca Dar la vuelta para salir hacia ${otro.destino}.`
+      : faltan === 1 ? "Es la terminal. Ahí das la vuelta."
+      : `Después: ${s.paradas[i + 1].nombre}. Faltan ${faltan} paradas para ${actual.destino}.`;
+    // Las que ya pasó no hacen falta de un vistazo: queda la última y las demás en una línea
+    const pasadas = s.paradas.filter((p) => p.paso).length;
+    const resumen = pasadas > 2 ? [Object.assign(nuevo("li", `${pasadas - 1} paradas ya pasadas`), { className: "paso resumen" })] : [];
+    $("paradas").replaceChildren(...resumen, ...s.paradas.slice(resumen.length ? pasadas - 1 : 0).map((p) => {
       const li = nuevo("li", p.nombre);
       li.className = p.paso ? "paso" : p.nombre === s.siguiente ? "sigue" : "";
+      if (li.className === "sigue") li.setAttribute("aria-current", "step");
       return li;
     }));
-    // Dar la vuelta solo resalta al llegar a la terminal
+    // Dar la vuelta solo resalta al llegar a la terminal; antes es un botón callado
     $("vuelta").className = `btn grande ${enTerminal ? "btn--maiz" : "btn--vuelta"}`;
-    $("vuelta").replaceChildren(`Dar la vuelta hacia ${otro.destino}`, nuevo("small", enTerminal ? "Empieza el regreso" : "Al llegar a la terminal"));
+    $("vuelta").replaceChildren("Dar la vuelta", nuevo("small", `Regreso hacia ${otro.destino}`));
   }
   if (!s.enServicio) desarmarTerminar(); // se redibuja cada 5 s: no borrar el primer toque de Terminar
   renderDetalle();
@@ -110,13 +120,16 @@ function renderDetalle() {
   if (g.hidden) return;
   const s = lastOk ? Math.round((Date.now() - lastOk) / 1000) : null;
   const viejo = s != null && s > 30;
-  g.dataset.estado = gpsFalla || viejo ? "mal" : s == null ? "busca" : "ok";
-  g.textContent = gpsFalla ? "Sin GPS" : s == null ? "Buscando GPS" : viejo ? `Sin enviar ${s} s` : `GPS ${s} s`;
-  // el aviso grande: para que el motorista lo vea de un vistazo, no solo en la etiqueta chiquita
-  const p = $("perdido");
   const sinRed = !navigator.onLine;
+  const problema = gpsFalla || viejo || sinRed;
+  // Con problema manda el aviso rojo de abajo; la banda se esconde para no repetirlo
+  g.hidden = problema;
+  g.dataset.estado = s == null ? "busca" : "ok";
+  if (s == null) g.textContent = "Buscando GPS. Todavía no sales en el mapa.";
+  else g.replaceChildren("Sales en el mapa", nuevo("small", s < 3 ? "recién enviada" : `hace ${s} s`));
+  const p = $("perdido");
   const cola = leerCola().length ? " El recorrido se sigue guardando en el celular y se manda solo cuando vuelva." : "";
-  p.hidden = !(gpsFalla || viejo || sinRed);
+  p.hidden = !problema;
   p.textContent = sinRed ? `El celular no tiene internet. La gente no ve el bus en el mapa hasta que vuelva la señal.${cola}`
     : gpsFalla ? "El GPS no responde. Revisa que la ubicación del celular esté prendida."
     : viejo ? `Hace ${s} s que no se manda la ubicación. Revisa el internet del celular.${cola}` : "";

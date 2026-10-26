@@ -60,15 +60,15 @@
     "semantic_hash": ""
   },
   "public/js/mapa.js": {
-    "mtime": 1792343857.763401,
-    "seen": 1792343899.703934,
-    "ast_hash": "37fe82f5174c03c38921d43bd21c5383",
+    "mtime": 1792987134.024222,
+    "seen": 1792987178.175837,
+    "ast_hash": "d63a7b687fecb1c5d1942769b4d3c3d8",
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792986669.8302488,
-    "seen": 1792986839.577902,
-    "ast_hash": "b27d1ab30931a3d4ecbfef748d07a6d9",
+    "mtime": 1792987134.0247836,
+    "seen": 1792987178.175877,
+    "ast_hash": "adb7a2ea373e0d1d72bc941fbd0091b1",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {

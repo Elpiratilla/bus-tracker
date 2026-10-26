@@ -348,9 +348,9 @@
     "semantic_hash": ""
   },
   "public/js/motorista.js": {
-    "mtime": 1792343928.3702986,
-    "seen": 1792343959.455002,
-    "ast_hash": "e84f4c21d83da03c81ad10b9af828ec2",
+    "mtime": 1792987680.0032513,
+    "seen": 1792987750.643723,
+    "ast_hash": "db8cc43da98551b5aef5c40dd1412a5c",
     "semantic_hash": ""
   },
   "src/routes/motorista.js": {
@@ -594,9 +594,9 @@
     "semantic_hash": ""
   },
   "public/html/motorista.html": {
-    "mtime": 1792883103.2930586,
-    "seen": 1792883581.482123,
-    "ast_hash": "7bf6bcf014944538cdabfdedd98c599b",
+    "mtime": 1792987553.7018147,
+    "seen": 1792987750.645173,
+    "ast_hash": "00e8a9b8f1e178ddce2efaccfee59e7e",
     "semantic_hash": ""
   },
   "public/html/panel.html": {

@@ -23,17 +23,16 @@
 .top__nombre h1 { font-size: 2rem; text-transform: uppercase; overflow-wrap: anywhere; }
 .top__nombre small { display: block; color: var(--suave); font: 500 .9rem/1.3 var(--sans); }
 
-/* Estado del GPS: verde si manda (destella con cada envío), ámbar si busca, rojo si falla */
-.gps { display: inline-flex; align-items: center; gap: .45rem; flex: none; padding: .35rem .7rem;
-  min-height: 2.5rem; border: 1px solid var(--borde); border-radius: var(--r-sm); color: var(--suave); font: 600 .85rem/1 var(--sans); }
-.gps::before { content: ""; width: .6rem; height: .6rem; border-radius: 50%; background: var(--suave); }
-.gps[data-estado="ok"] { color: var(--texto); }
+/* ¿La gente ve el bus? Banda de ancho completo: torogoz si llega la ubicación (el punto destella con
+   cada envío), maíz si todavía busca GPS. Si falla, se esconde y manda el aviso rojo (.perdido). */
+.gps { display: flex; align-items: center; gap: .65rem; margin-bottom: 1.4rem; padding: .7rem 1rem;
+  min-height: 3rem; background: var(--panel); border-radius: var(--r-md); color: var(--texto); font: 700 1rem/1.3 var(--sans); }
+.gps::before { content: ""; flex: none; width: .75rem; height: .75rem; border-radius: 50%; background: var(--maiz); }
+.gps small { margin-left: auto; color: #A8DCD8; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gps[data-estado="ok"] { background: #10403F; }
 .gps[data-estado="ok"]::before { background: var(--torogoz); }
 .gps.envio::before { animation: envio .7s ease-out; }
-.gps[data-estado="busca"]::before { background: var(--maiz); }
-.gps[data-estado="mal"] { color: #FFB3B9; border-color: rgba(217, 67, 78, .5); }
-.gps[data-estado="mal"]::before { background: var(--alerta); }
-@keyframes envio { from { box-shadow: 0 0 0 0 rgba(15, 163, 156, .8); } to { box-shadow: 0 0 0 .6rem rgba(15, 163, 156, 0); } }
+@keyframes envio { from { box-shadow: 0 0 0 0 rgba(15, 163, 156, .9); } to { box-shadow: 0 0 0 .7rem rgba(15, 163, 156, 0); } }
 
 /* ---------- Mensajes ---------- */
 .msg { margin-bottom: 1.1rem; padding: .8rem 1rem; border-radius: var(--r-sm); font-weight: 600; line-height: 1.4; }
@@ -77,9 +76,11 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
 .rotulo[disabled], .btn[disabled] { opacity: .5; cursor: progress; }
 
 /* ---------- En trayecto ---------- */
-.proxima { margin-bottom: 1.4rem; }
-.proxima small { color: var(--suave); font-weight: 700; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
-.proxima p { margin-top: .2rem; color: var(--maiz); font: 800 clamp(3rem, 14vw, 4.4rem)/.92 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+/* Lo más grande es la respuesta: la próxima parada, en maíz, como el letrero de destino */
+.proxima { margin-bottom: 1.6rem; }
+.proxima h2 { color: var(--suave); font: 700 1rem/1.3 var(--sans); }
+.proxima__nombre { margin-top: .25rem; color: var(--maiz); font: 800 clamp(3.2rem, 15vw, 4.6rem)/.9 var(--display); text-transform: uppercase; overflow-wrap: anywhere; }
+.proxima__luego { margin-top: .7rem; font-size: 1.1rem; line-height: 1.4; }
 
 /* Línea de paradas: verde lo recorrido, maíz la próxima */
 .linea { list-style: none; margin: 0 0 1.6rem; padding: 0; }
@@ -94,18 +95,25 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
 .linea li.paso::after { background: var(--torogoz); border-color: var(--torogoz); }
 .linea li.sigue { color: var(--maiz); font-weight: 700; font-size: 1.1rem; }
 .linea li.sigue::after { left: .05rem; width: 1.25rem; height: 1.25rem; border-color: var(--maiz); background: var(--noche); }
+/* "3 paradas ya pasadas": el tramo recorrido, sin punto propio */
+.linea li.resumen { color: var(--suave); font-size: .95rem; }
+.linea li.resumen::after { display: none; }
+.linea li.resumen::before { top: 0; }
 
-/* Botones grandes */
-.acciones { display: grid; gap: .7rem; }
+/* Botones grandes, pegados abajo: siempre al alcance del pulgar, aunque la ruta tenga 30 paradas.
+   El fondo de noche tapa la lista que pasa por debajo (sin sombra ni degradado). */
+.acciones { position: sticky; bottom: 0; z-index: 2; display: grid; gap: .6rem;
+  margin-top: 1.4rem; padding: .9rem 0 max(.9rem, env(safe-area-inset-bottom)); background: var(--noche); }
 .grande { flex-direction: column; gap: .2rem; min-height: 4.4rem; border-radius: var(--r-md); font-size: 1.2rem; }
 .grande small { font-size: .9rem; font-weight: 500; opacity: .85; }
-.btn--vuelta { --edge: #070A22; background: var(--panel); border-color: var(--borde); color: var(--texto); }
+/* Antes de la terminal, Dar la vuelta es callado y bajo: el botón que importa es Terminar */
+.btn--vuelta { --edge: #070A22; min-height: 3.4rem; background: var(--panel); border-color: transparent; color: var(--texto); font-size: 1.05rem; }
 .btn--vuelta:hover { border-color: var(--suave); }
 .btn--terminar { --edge: #070A22; background: none; border-color: rgba(217, 67, 78, .6); color: #FFB3B9; }
 /* Segundo toque: ya en rojo lleno, para no terminar sin querer */
 .btn--terminar[data-confirmar] { background: var(--alerta); border-color: var(--alerta); color: #fff; }
 
-.aviso { margin-top: 1.2rem; color: var(--suave); font-size: .9rem; line-height: 1.5; }
+.aviso { margin-top: 1.2rem; color: var(--suave); font-size: .95rem; line-height: 1.5; }
 
 /* ---------- Entrar ---------- */
 .field { display: grid; gap: .4rem; margin-bottom: 1rem; }
@@ -115,10 +123,29 @@ h2.pregunta { margin-bottom: .9rem; font-size: 2.4rem; text-transform: uppercase
 .input::placeholder { color: var(--suave); opacity: .7; }
 .input:focus { outline: none; border-color: var(--maiz); }
 
-.pie { margin-top: 2.2rem; padding-top: 1rem; border-top: 1px solid var(--borde); }
+.pie { margin-top: 2.6rem; }
 .btn--quieto { min-height: 2.75rem; padding: .5rem 1rem; box-shadow: none; background: none; border-color: var(--borde); color: var(--suave); font-size: .9rem; }
 
 :focus-visible { outline-color: var(--maiz); }
+
+/* Celular acostado en el soporte del bus: a la izquierda la próxima parada y los dos botones lado a
+   lado; a la derecha la línea de paradas, que baja sola si es larga. Todo cabe sin mover la página. */
+@media (orientation: landscape) and (max-height: 540px) {
+  .app { width: min(940px, 100% - 2rem - env(safe-area-inset-left) - env(safe-area-inset-right)); padding: .8rem 0; }
+  .top { padding: 0 0 .6rem; }
+  .gps { min-height: 2.6rem; margin-bottom: .8rem; padding: .45rem .9rem; }
+  #v-viaje:not([hidden]) { display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: auto auto 1fr; gap: 0 2rem; }
+  .viaje { display: contents; }
+  .proxima { grid-column: 1; grid-row: 1; margin-bottom: 1rem; }
+  .proxima__nombre { font-size: clamp(2.8rem, 8vw, 4.4rem); }
+  .proxima__luego { font-size: 1rem; }
+  .acciones { grid-column: 1; grid-row: 2; grid-template-columns: 1fr 1fr; position: static; margin: 0; padding: 0; }
+  .acciones .grande { min-height: 3.6rem; }
+  .linea { grid-column: 2; grid-row: 1 / span 3; max-height: calc(100dvh - 7.5rem); margin: 0; overflow-y: auto; }
+  .linea li { min-height: 2.3rem; }
+  .aviso { grid-column: 1; grid-row: 3; }
+  .rotulos { grid-template-columns: 1fr 1fr; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .gps.envio::before { animation: none; }

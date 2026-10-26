@@ -62,6 +62,7 @@ Pedido por Mateo con libertad creativa. Hoy aplica al panel, el login, el mapa y
 - **Tablas en el teléfono:** se vuelven tarjetas (`cards()` en `panel.js`): cada celda muestra el nombre de su columna.
 - **Acciones poco usadas** van en un menú "Más" (`moreMenu()` en `panel.js`); borrar va al final, separado y en rojo.
 - **Modo oscuro** en todas las páginas, también en el panel y el login.
+- **Motorista (2026-10-25):** en trayecto responde dos preguntas, en este orden: la próxima parada (lo más grande, en maíz, con "Después: … Faltan N paradas") y si la gente ve el bus (banda torogoz "Sales en el mapa"; si falla, el aviso rojo toma su lugar). Las paradas ya pasadas se resumen en una línea. Los botones van pegados abajo, al alcance del pulgar; "Dar la vuelta" es callado hasta llegar a la terminal. Con el celular acostado (soporte del bus) la pantalla se parte en dos columnas y cabe sin bajar. "Cambiar de unidad" no se muestra en trayecto.
 
 ## Motivo de identidad
 

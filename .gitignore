@@ -16,3 +16,4 @@ app/www/
 
 # Capturas y medidas de la skill de diseño (se regeneran)
 .taste-skill/
+.graphify-out/

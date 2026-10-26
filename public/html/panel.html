@@ -40,7 +40,7 @@
 
   <div class="shell">
     <aside class="side">
-      <a class="logo" href="/" aria-label="go503, inicio"><img src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
+      <a class="logo" href="/" aria-label="go503, inicio"><img class="logo--claro" src="/img/go503-logo-claro.svg" alt="go503" width="38" height="44"><img class="logo--oscuro" src="/img/go503-logo-oscuro.svg" alt="go503" width="38" height="44"></a>
       <nav class="nav" aria-label="Panel">
         <a href="#flota"><svg class="ico" aria-hidden="true"><use href="#i-map"/></svg>Flota en vivo</a>
         <a href="#unidades"><svg class="ico" aria-hidden="true"><use href="#i-bus"/></svg>Unidades</a>
@@ -98,7 +98,7 @@
       <!-- Flota en vivo -->
       <section class="view" id="v-flota" hidden>
         <div class="head">
-          <div><h1 id="flota-titulo">Flota en vivo</h1><p id="flota-resumen">Cargando…</p></div>
+          <div><h1>Flota en vivo</h1><p id="flota-resumen">Cargando…</p></div>
         </div>
         <div class="panel empty-state" id="fleet-vacio" hidden>
           <h2>Registra tu primera unidad</h2>
@@ -257,8 +257,8 @@
     <form class="form" id="f-unidad" novalidate>
       <p class="msg" id="u-msg" role="alert" hidden></p>
       <div class="form__row">
-        <div class="field"><label for="u-nombre">Nombre</label><input class="input" id="u-nombre" maxlength="40" placeholder="Unidad 7"></div>
-        <div class="field"><label for="u-placa">Placa</label><input class="input" id="u-placa" maxlength="12" placeholder="AB 123-456"></div>
+        <div class="field"><label for="u-nombre">Nombre</label><input class="input" id="u-nombre" maxlength="40" placeholder="Ej.: Unidad 7"></div>
+        <div class="field"><label for="u-placa">Placa</label><input class="input" id="u-placa" maxlength="12" placeholder="Ej.: AB 123-456"></div>
       </div>
       <div class="form__row">
         <div class="field"><label for="u-ruta">Ruta</label><select class="select" id="u-ruta"></select></div>

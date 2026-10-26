@@ -48,9 +48,9 @@
     "semantic_hash": ""
   },
   "public/js/idioma.js": {
-    "mtime": 1792888948.3217769,
-    "seen": 1792888999.029582,
-    "ast_hash": "7df3f7722b36e1042e0eb2c2d9f90b8c",
+    "mtime": 1792981925.5286703,
+    "seen": 1792981960.1291678,
+    "ast_hash": "d2eeb5e48cd241c174b6a7338a2c89e5",
     "semantic_hash": ""
   },
   "public/js/landing.js": {
@@ -66,9 +66,9 @@
     "semantic_hash": ""
   },
   "public/js/panel.js": {
-    "mtime": 1792888941.3015618,
-    "seen": 1792888999.0296938,
-    "ast_hash": "c07e16cd6667fa3e43f86c395b6918bc",
+    "mtime": 1792981918.4879088,
+    "seen": 1792981960.1292899,
+    "ast_hash": "3da9c9cc39e8d99952507adecf88b35c",
     "semantic_hash": ""
   },
   "public/js/sensor.js": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "public/html/login.html": {
-    "mtime": 1792888932.9335158,
-    "seen": 1792888999.031017,
-    "ast_hash": "7dc0e8ee89f309a285e5098fe1e4647a",
+    "mtime": 1792979977.0300844,
+    "seen": 1792980054.842939,
+    "ast_hash": "a912445b84847b7108a6741c8c9ae638",
     "semantic_hash": ""
   },
   "public/html/mapa.html": {
@@ -600,9 +600,9 @@
     "semantic_hash": ""
   },
   "public/html/panel.html": {
-    "mtime": 1792888932.9344547,
-    "seen": 1792888999.03109,
-    "ast_hash": "3080163978d7273bc604b3dad9acb3ba",
+    "mtime": 1792981918.4871302,
+    "seen": 1792981960.130938,
+    "ast_hash": "45ea815962c33bb4cc4675aba61c29fc",
     "semantic_hash": ""
   },
   "public/html/preguntas.html": {

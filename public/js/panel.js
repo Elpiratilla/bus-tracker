@@ -13,8 +13,7 @@ let rutas = [];
 let flota = [];
 let timer = null;
 let selected = null;
-let empresa = "";
-let pendientes = 0; // unidades con el aceite vencido o por vencer (de updateBadge)
+let pendientes = []; // unidades con el aceite vencido o por vencer (de updateBadge)
 
 // ---------- Utilidades ----------
 const km = (n) => `${fmt(n, n != null && n < 100 ? 1 : 0)} km`; // decimales solo cuando son pocos km
@@ -208,20 +207,30 @@ function slideMarker(m, to) {
   m._slide = requestAnimationFrame(step);
 }
 
+// Resumen en palabras: saludo, cuántas andan y, si alguna necesita servicio, cuál y dónde atenderla
+function pintarResumen() {
+  const en = flota.filter((u) => u.enLinea).length;
+  const h = new Date().getHours();
+  const resumen = [el("span", null, h < 12 ? "Buenos días." : h < 19 ? "Buenas tardes." : "Buenas noches."), " ",
+    el("span", null, flota.length
+      ? `${en} de ${flota.length} ${flota.length === 1 ? "unidad" : "unidades"} en línea.`
+      : "Todavía no tienes unidades registradas.")];
+  if (flota.length && pendientes.length) {
+    const atiende = el("span", "atiende");
+    const ir = el("a", null, "Ver mantenimiento");
+    ir.href = "#mantenimiento";
+    atiende.append(el("span", null, pendientes.length === 1 ? `${pendientes[0]} necesita servicio.` : `${pendientes.length} unidades necesitan servicio.`), ir);
+    resumen.push(" ", atiende);
+  }
+  $("#flota-resumen").replaceChildren(...resumen);
+}
+
 async function loadFlota() {
   try {
     flota = await api("/flota");
   } catch (err) { return fail(err); }
 
-  const en = flota.filter((u) => u.enLinea).length;
-  // Saludo y resumen en palabras: cuántas andan y si alguna necesita servicio
-  const h = new Date().getHours();
-  $("#flota-titulo").textContent = `${h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches"}, ${empresa}`;
-  const resumen = [el("span", null, flota.length
-    ? `${en} de ${flota.length} ${flota.length === 1 ? "unidad" : "unidades"} en línea`
-    : "Todavía no tienes unidades registradas.")];
-  if (flota.length && pendientes) resumen.push(". ", el("span", null, pendientes === 1 ? "1 unidad necesita servicio." : `${pendientes} unidades necesitan servicio.`));
-  $("#flota-resumen").replaceChildren(...resumen);
+  pintarResumen();
 
   $("#fleet").hidden = !flota.length;
   $("#fleet-vacio").hidden = Boolean(flota.length);
@@ -240,7 +249,10 @@ async function loadFlota() {
       Object.assign(el("span"), { className: "", style: "display:grid" }),
       el("span", "unit__speed", speed));
     b.children[1].append(el("span", "unit__name", u.nombre), st);
-    b.append(el("span", "unit__meta", `${estado(u)}${u.placa ? `. Placa ${u.placa}` : ""}`));
+    // sin señal ya lo dice la etiqueta de arriba: aquí solo cuándo fue la última
+    const meta = el("span", "unit__meta", !u.enLinea && u.ultimaSenal ? `Última señal ${hace(u.ultimaSenal)}` : estado(u));
+    if (u.placa) meta.append(". ", el("span", "nowrap", `Placa ${u.placa}`)); // la placa no se parte en dos renglones
+    b.append(meta);
     b.addEventListener("click", () => openDetalle(u.id));
     // si cambió de estado (se conectó o perdió la señal) la fila se marca un momento
     const before = lastEstado.get(u.id);
@@ -340,7 +352,7 @@ function lineChart(rows, key, title, unit, digits = 0) {
   h.append(el("span", null, unit));
   box.append(h);
   const pts = rows.filter((r) => r[key] != null).map((r) => [new Date(r.ts).getTime(), r[key]]);
-  if (pts.length < 2) { box.append(el("p", "muted", "Sin datos todavía.")); return box; }
+  if (pts.length < 2) { box.append(el("p", "muted", "El sensor no mandó lecturas en las últimas 24 horas.")); return box; }
 
   const W = 460, H = 150, L = 38, R = 8, T = 8, B = 22;
   const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
@@ -627,7 +639,9 @@ async function loadMantenimiento() {
 }
 
 function updateBadge(list) {
-  const n = pendientes = list.filter((m) => m.estadoAceite === "vencido" || m.estadoAceite === "pronto").length;
+  pendientes = list.filter((m) => m.estadoAceite === "vencido" || m.estadoAceite === "pronto").map((m) => m.nombre);
+  const n = pendientes.length;
+  if (flota.length) pintarResumen(); // el aviso sale sin esperar la siguiente vuelta del mapa
   const badge = $("#badge-mant");
   badge.hidden = !n;
   badge.textContent = n;
@@ -859,7 +873,7 @@ function renderClientes() {
   const list = clientes.filter((c) =>
     (f === "todos" || (f === "activos" ? ["nuevo", "contactado"].includes(c.estado) : c.estado === f))
     && (!q || [c.nombre, c.empresa, c.telefono, c.ciudad, c.correo].some((t) => t && t.toLowerCase().includes(q))));
-  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún cliente coincide con el filtro."));
+  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún cliente coincide con el filtro. Borra la búsqueda o escoge «Todos»."));
 
   const table = el("table", "table");
   const head = el("tr");
@@ -983,7 +997,7 @@ function renderCodigos() {
   const list = codigos.filter((c) =>
     (estado === "todos" || (estado === "usados") === Boolean(c.usado))
     && (!q || [c.codigo, c.nota, c.empresa].some((t) => t && t.toLowerCase().includes(q))));
-  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún código coincide con la búsqueda."));
+  if (!list.length) return root.replaceChildren(el("div", "empty-state", "Ningún código coincide con la búsqueda. Borra la búsqueda o escoge «Todos»."));
 
   const table = el("table", "table");
   const head = el("tr");
@@ -1294,7 +1308,7 @@ $("#f-activar").addEventListener("submit", async (e) => {
       $("#a-empresa").value = session.user.user_metadata?.empresa || "";
       return;
     }
-    empresa = yo.empresa.name;
+    const empresa = yo.empresa.name;
     $("#company").textContent = empresa;
     $("#iniciales").textContent = empresa.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
     isAdmin = Boolean(yo.empresa.is_admin);

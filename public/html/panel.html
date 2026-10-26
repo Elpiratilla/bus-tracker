@@ -46,6 +46,8 @@
         <a href="#unidades"><svg class="ico" aria-hidden="true"><use href="#i-bus"/></svg>Unidades</a>
         <a href="#mantenimiento"><svg class="ico" aria-hidden="true"><use href="#i-wrench"/></svg>Mantenimiento<span class="badge" id="badge-mant" hidden></span></a>
         <a href="#reportes"><svg class="ico" aria-hidden="true"><use href="#i-chart"/></svg>Reportes</a>
+        <!-- lo de go503: solo lo ven los administradores -->
+        <p class="nav__grupo" id="nav-admin" hidden>Administración</p>
         <a href="#clientes" id="nav-clientes" hidden><svg class="ico" aria-hidden="true"><use href="#i-people"/></svg>Clientes<span class="badge" id="badge-clientes" hidden></span></a>
         <a href="#recorridos" id="nav-recorridos" hidden><svg class="ico" aria-hidden="true"><use href="#i-route"/></svg>Recorridos</a>
         <a href="#codigos" id="nav-codigos" hidden><svg class="ico" aria-hidden="true"><use href="#i-key"/></svg>Códigos</a>
@@ -156,20 +158,13 @@
       <!-- Clientes interesados: llegan del formulario "Pedir el sensor" (solo administradores) -->
       <section class="view" id="v-clientes" hidden>
         <div class="head">
-          <div><h1>Clientes interesados</h1><p>Las personas que pidieron el sensor desde la portada. Márcalas según avanza la venta.</p><p class="muted" id="cli-resumen"></p></div>
+          <div><h1>Clientes interesados</h1><p>Las personas que pidieron el sensor desde la portada. Márcalas según avanza la venta.</p></div>
         </div>
-        <div class="filters">
+        <!-- filtros por etapa, con cuántos hay en cada una (cli-estado los llena) -->
+        <div class="etapas" id="cli-estado" role="group" aria-label="Mostrar clientes"></div>
+        <div class="filters" style="margin-top:.8rem">
           <label for="cli-buscar" class="visually-hidden">Buscar cliente</label>
           <input class="input" id="cli-buscar" type="search" placeholder="Buscar por nombre, empresa, teléfono o ciudad" autocomplete="off" style="flex:1;min-width:14rem">
-          <label for="cli-estado" class="visually-hidden">Mostrar</label>
-          <select class="select" id="cli-estado" style="width:auto">
-            <option value="activos">Pendientes</option>
-            <option value="todos">Todos</option>
-            <option value="nuevo">Nuevos</option>
-            <option value="contactado">Contactados</option>
-            <option value="vendido">Vendidos</option>
-            <option value="descartado">Descartados</option>
-          </select>
         </div>
         <div class="panel table-wrap" id="clientes" style="margin-top:.8rem"></div>
       </section>
@@ -184,7 +179,7 @@
           <input class="input" id="cod-nota" maxlength="120" placeholder="Para quién es (ej. Transportes Pérez)" style="flex:1;min-width:14rem">
           <button class="btn btn--anil" type="submit">Crear código</button>
         </form>
-        <div class="filters" style="margin-top:1rem">
+        <div class="filters" id="cod-filtros" style="margin-top:1rem">
           <label for="cod-buscar" class="visually-hidden">Buscar código o empresa</label>
           <input class="input" id="cod-buscar" type="search" placeholder="Buscar por código, nota o empresa" autocomplete="off" style="flex:1;min-width:14rem">
           <label for="cod-estado" class="visually-hidden">Mostrar</label>
@@ -200,7 +195,7 @@
       <!-- Recorridos (solo administradores): por dónde pasa cada ruta en el mapa público -->
       <section class="view" id="v-recorridos" hidden>
         <div class="head">
-          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa. Dibújalo tocando el mapa, o usa una vuelta que grabó el GPS de un bus.</p></div>
+          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa y dónde están sus paradas. Dibújalo tocando el mapa, escríbelo, o usa una vuelta que grabó el GPS de un bus.</p><p class="atiende" id="rec-resumen"></p></div>
         </div>
         <div class="filters rec__pick">
           <label for="rec-ruta" class="visually-hidden">Ruta</label>
@@ -219,10 +214,29 @@
               <button class="btn btn--ghost btn--sm" type="button" id="rec-deshacer">Deshacer</button>
               <button class="btn btn--ghost btn--sm" type="button" id="rec-borrar">Empezar de nuevo</button>
             </div>
+            <!-- el recorrido escrito: lugares en orden, se buscan y se unen por las calles -->
+            <details class="rec__escribir">
+              <summary>O escríbelo: por dónde pasa</summary>
+              <p class="muted">Un lugar o una calle por renglón, en el orden en que pasa el bus. Ya están las paradas: agrega entre ellas las calles por donde va.</p>
+              <label for="rec-via-txt" class="visually-hidden">Lugares por donde pasa, uno por renglón</label>
+              <textarea class="textarea rec__txt" id="rec-via-txt" rows="7" spellcheck="false"></textarea>
+              <button class="btn btn--ghost btn--sm" type="button" id="rec-via-trazar">Trazar por estos lugares</button>
+              <ol class="rec__hallados" id="rec-via-lista"></ol>
+            </details>
             <div class="rec__save">
               <button class="btn btn--anil" type="button" id="rec-guardar">Guardar recorrido</button>
               <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="rec-auto">Quitar y usar el automático</button>
             </div>
+
+            <h2>Paradas</h2>
+            <p class="muted">Una por renglón, en el orden del sentido. Si el nombre no basta para encontrarla, pon el lugar después de una raya: <code>Parada del parque | Parque Cuscatlán</code>. También sirven coordenadas: <code>Metrocentro | 13.7059, -89.2123</code>.</p>
+            <label for="rec-paradas-txt" class="visually-hidden">Paradas, una por renglón</label>
+            <textarea class="textarea rec__txt" id="rec-paradas-txt" rows="7" spellcheck="false"></textarea>
+            <div class="rec__tools">
+              <button class="btn btn--ghost btn--sm" type="button" id="rec-paradas-buscar">Buscar en el mapa</button>
+              <button class="btn btn--anil btn--sm" type="button" id="rec-paradas-guardar" disabled>Guardar paradas</button>
+            </div>
+            <ol class="rec__hallados" id="rec-paradas-lista"></ol>
 
             <h2>Vueltas grabadas por GPS</h2>
             <p class="muted">Cuando una unidad va de la primera a la última parada, su recorrido queda aquí.</p>

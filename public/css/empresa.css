@@ -174,6 +174,8 @@
 .nav a:hover { background: color-mix(in srgb, var(--tinta) 5%, transparent); color: var(--tinta); }
 /* sección actual: una pastilla neutra y la letra en tinta, sin color de marca */
 .nav a[aria-current="page"] { background: var(--papel-2); color: var(--tinta); font-weight: 700; }
+/* título del grupo de administración: separa lo de go503 de lo de la empresa */
+.nav__grupo { margin: 1.1rem 0 .2rem; padding: 0 .75rem; color: var(--muted); font-size: .85rem; font-weight: 600; }
 .nav .badge { margin-left: auto; padding: .1rem .5rem; background: var(--alerta); border-radius: 999px; color: #fff; font-size: .78rem; }
 .side__foot { display: grid; gap: .8rem; margin-top: auto; padding: 1rem .4rem 0; border-top: 1px solid var(--line); }
 /* la cuenta: iniciales de la empresa, nombre y correo */
@@ -244,6 +246,13 @@
 }
 .fleet-mk--off { background: #D5DAEA; border-color: #8790B3; color: #4A537A; }
 .fleet-mk--sel { outline: 3px solid var(--torogoz); outline-offset: 2px; }
+/* la ruta de cada unidad, debajo de los marcadores */
+.fleet-borde { stroke: #fff; stroke-opacity: .85; fill: none; }
+.fleet-ruta { stroke: var(--torogoz); fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.fleet-parada { stroke: var(--noche); stroke-width: 2; fill: #fff; fill-opacity: 1; }
+.fleet-parada--fin { stroke: #fff; stroke-width: 3; fill: var(--noche); }
+.fleet-ruta--tenue { stroke-opacity: .3; fill-opacity: .3; }
+.fleet-borde.fleet-ruta--tenue { stroke-opacity: .25; }
 
 /* Tablas */
 .table-wrap { overflow-x: auto; }
@@ -391,6 +400,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
   .nav::-webkit-scrollbar { display: none; }
   .nav a { flex: none; min-height: 2.75rem; padding: .5rem .8rem; white-space: nowrap; scroll-snap-align: start; }
   .nav a .ico { width: 1rem; height: 1rem; }
+  .nav__grupo { display: none; }
   .nav a:last-child { margin-right: 2rem; }
   .side__foot { display: flex; justify-content: flex-end; gap: .5rem; margin: 0; padding: 0; border: 0; }
   .cuenta { display: none; }
@@ -403,6 +413,12 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .table td.sensor { min-width: 9.5rem; white-space: nowrap; }
 
 /* ---------- Clientes interesados ---------- */
+/* etapas: botones con cuántos hay; si no caben, bajan a otra línea */
+.etapas { display: flex; flex-wrap: wrap; gap: .4rem; }
+.etapa { display: inline-flex; align-items: center; gap: .45rem; min-height: 2.75rem; padding: .4rem .85rem; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-sm); color: var(--muted); font: 600 .92rem/1 var(--sans); cursor: pointer; transition: border-color var(--t-hover), color var(--t-hover); }
+.etapa:hover { border-color: var(--tinta); color: var(--tinta); }
+.etapa[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--card); }
+.etapa__n { font-variant-numeric: tabular-nums; opacity: .75; }
 .cli__msg { max-width: 38ch; margin-top: .35rem; color: var(--muted); font-size: .85rem; font-style: italic; }
 .cli__nota { max-width: 38ch; margin-top: .3rem; padding: .25rem .5rem; background: color-mix(in srgb, var(--maiz) 18%, transparent); border-radius: 6px; font-size: .82rem; }
 .cli__link { display: block; color: var(--anil); font-weight: 600; text-decoration: none; }
@@ -720,7 +736,16 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .rec-linea { stroke: var(--torogoz); fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .rec-vista { stroke: var(--maiz-hondo); fill: none; }
 .rec-fin { stroke: #fff; stroke-width: 3; fill: var(--torogoz); fill-opacity: 1; }
+.rec__escribir summary { min-height: 2.75rem; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
+.rec__escribir[open] { display: grid; gap: .6rem; }
+.rec__txt { min-height: 9rem; font-size: .92rem; line-height: 1.5; }
+.rec__hallados { display: grid; gap: .3rem; margin: 0; padding-left: 1.4rem; font-size: .9rem; }
+.rec__hallados:empty { display: none; }
+.rec__hallados small { display: block; color: var(--muted); }
+.rec__hallado--no small { color: var(--alerta-texto); font-weight: 600; }
+.rec__side code { font-size: .85em; }
 .rec-parada { display: grid; place-items: center; width: 28px; height: 28px; background: var(--noche); border: 2px solid var(--maiz); border-radius: 50%; color: var(--maiz); font: 800 15px/1 var(--display); }
+.rec-parada--nueva { background: var(--maiz); color: var(--noche); border-color: var(--noche); cursor: grab; }
 @media (max-width: 1000px) {
   .rec { grid-template-columns: 1fr; }
   .rec__map { height: 60vh; min-height: 320px; }

@@ -2,7 +2,7 @@
 // Todas las rutas (menos /codigo) requieren sesión; cada empresa solo ve sus unidades.
 const crypto = require("crypto");
 const router = require("express").Router();
-const { routes, buses, units, retired, shapes, recordings, trips } = require("../store");
+const { routes, buses, units, retired, shapes, recordings } = require("../store");
 const { validPoints, setShape, deleteShape } = require("../trazos");
 const { db, select, flush, unitFromRow } = require("../db");
 const { hashKey } = require("../middleware/auth");
@@ -197,82 +197,6 @@ router.delete("/admin/recorridos/:ruta/:sentido", requireAdmin, (req, res) => {
   res.status(204).end();
 });
 
-// Buscar un lugar por su nombre o dirección (para escribir paradas y recorridos en el panel).
-// Usa Nominatim de OpenStreetMap: pide máximo una búsqueda por segundo, así que van en fila.
-const NOMINATIM = "https://nominatim.openstreetmap.org/search";
-const lugares = new Map(); // búsqueda -> resultados (no cambian seguido)
-let filaLugares = Promise.resolve();
-function buscarLugar(q) {
-  if (lugares.has(q)) return Promise.resolve(lugares.get(q));
-  const run = filaLugares.then(async () => {
-    const url = `${NOMINATIM}?${new URLSearchParams({ q, format: "jsonv2", limit: "3", countrycodes: "sv",
-      "accept-language": "es", viewbox: "-89.45,13.85,-88.95,13.55" })}`; // da preferencia al Gran San Salvador
-    const r = await fetch(url, { headers: { "User-Agent": "go503-panel/1.0 (https://go503.onrender.com)" } });
-    await new Promise((ok) => setTimeout(ok, 1100));
-    if (!r.ok) throw new Error(`El buscador de lugares respondió ${r.status}`);
-    const out = (await r.json()).map((x) => ({ lugar: x.display_name.split(",").slice(0, 3).join(",").trim(),
-      lat: Number(x.lat), lng: Number(x.lon) }));
-    lugares.set(q, out);
-    return out;
-  });
-  filaLugares = run.catch(() => {});
-  return run;
-}
-
-router.get("/admin/lugares", requireAdmin, async (req, res, next) => {
-  const q = text(req.query.q, 2, 120);
-  if (!q) return res.status(400).json({ error: "Escribe el lugar que quieres buscar" });
-  try { res.json(await buscarLugar(q)); } catch (err) { next(err); }
-});
-
-// Cambiar las paradas de un sentido: { paradas: [{ id?, nombre, lat, lng }] } en orden.
-// Con id se actualiza esa parada (en todas las rutas que la usan); sin id se crea una nueva.
-const enSalvador = (lat, lng) => lat > 12.5 && lat < 15 && lng > -91 && lng < -87;
-const slug = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 20);
-router.put("/admin/recorridos/:ruta/:sentido/paradas", requireAdmin, async (req, res, next) => {
-  const route = routeOr404(req, res);
-  if (!route) return;
-  const dir = req.params.sentido;
-  const lista = req.body?.paradas;
-  if (!Array.isArray(lista) || lista.length < 2 || lista.length > 80) {
-    return res.status(400).json({ error: "Un sentido necesita de 2 a 80 paradas" });
-  }
-  const conocidas = new Map(routes.flatMap((r) => [...r.directions.ida, ...r.directions.regreso]).map((st) => [st.id, st]));
-  const paradas = [];
-  for (const [i, p] of lista.entries()) {
-    const name = text(p?.nombre, 1, 60);
-    const lat = Number(p?.lat), lng = Number(p?.lng);
-    if (!name) return res.status(400).json({ error: `La parada ${i + 1} necesita un nombre de 1 a 60 letras` });
-    if (!enSalvador(lat, lng)) return res.status(400).json({ error: `La parada ${i + 1} (${name}) no tiene una ubicación en El Salvador` });
-    const id = conocidas.has(p.id) ? p.id : `${slug(name) || "parada"}-${randomId(4).toLowerCase()}`;
-    if (paradas.some((x) => x.id === id)) return res.status(400).json({ error: `${name} está repetida en la lista` });
-    paradas.push({ id, name, lat: Math.round(lat * 1e6) / 1e6, lng: Math.round(lng * 1e6) / 1e6 });
-  }
-  try {
-    if (db) {
-      const r1 = await db.from("stops").upsert(paradas);
-      if (r1.error) throw new Error(r1.error.message);
-      const r2 = await db.from("route_stops").delete().eq("route_id", route.id).eq("direction", dir);
-      if (r2.error) throw new Error(r2.error.message);
-      const r3 = await db.from("route_stops").insert(paradas.map((st, position) =>
-        ({ route_id: route.id, direction: dir, position, stop_id: st.id })));
-      if (r3.error) throw new Error(r3.error.message);
-    }
-    // En memoria: la misma parada puede estar en otras rutas (ej. Terminal de Oriente): se mueve en todas
-    for (const r of routes) for (const d of SENTIDOS) {
-      r.directions[d].forEach((st) => { const n = paradas.find((x) => x.id === st.id); if (n) Object.assign(st, n); });
-    }
-    route.directions[dir] = paradas.map((st) => ({ ...st }));
-    const { ida, regreso } = route.directions;
-    route.stops = [...ida, ...regreso.filter((st) => !ida.some((x) => x.id === st.id))];
-    // vueltas en curso que iban por una parada que ya no está: se reinician con la siguiente parada que toquen
-    for (const [k, t] of Object.entries(trips)) {
-      if (k.endsWith(`:${route.id}`) && t.dir === dir && !paradas.some((st) => st.id === t.lastStopId)) delete trips[k];
-    }
-    res.json(paradas.map((st) => ({ id: st.id, nombre: st.name, lat: st.lat, lng: st.lng })));
-  } catch (err) { next(err); }
-});
-
 // Vueltas completas grabadas por GPS (las 10 más recientes)
 router.get("/admin/recorridos/:ruta/:sentido/grabaciones", requireAdmin, async (req, res, next) => {
   const route = routeOr404(req, res);
@@ -300,8 +224,6 @@ router.get("/flota", requireCompany, (req, res) => {
   const now = Date.now();
   res.json(myUnits(req).map((u) => {
     const live = buses[u.busId] || {};
-    // sentido: el que escogió el motorista; si no, el que dedujo el seguimiento por las paradas
-    const sentido = (live.enServicio && live.sentido) || trips[`${u.busId}:${u.routeId}`]?.dir || null;
     return {
       id: u.busId, nombre: u.name, placa: u.plate, tipo: u.type, ruta: u.routeId,
       enServicio: live.enServicio ?? null, // null: sensor sin app del motorista
@@ -311,7 +233,6 @@ router.get("/flota", requireCompany, (req, res) => {
       enLinea: Boolean(live.updatedAt && now - live.updatedAt < ONLINE_MS),
       ultimaSenal: iso(live.updatedAt),
       parada: live.atStop ? stopName(live.routeId, live.atStop) : null,
-      sentido, hacia: sentido ? routes.find((r) => r.id === u.routeId)?.directions[sentido].at(-1)?.name ?? null : null,
       odometroKm: round1(u.odometerKm), horasMotor: round1(u.engineHours), intervaloAceiteKm: u.oilIntervalKm,
       temperatura: live.engineTemp ?? null, combustible: live.fuel ?? null,
     };

@@ -26,12 +26,12 @@
   "41": "capacitor.settings.gradle",
   "42": "settings.gradle",
   "43": "variables.gradle",
-  "44": "eta.js",
+  "44": "trazos.test.js",
   "45": "idioma.js",
   "46": "routes/motorista.js",
   "47": "server.js",
   "48": "claves.test.js",
-  "49": "rutas.js",
+  "49": "isDark",
   "50": "telemetria.test.js",
   "51": "middleware/empresa.js",
   "52": "sesion.js",
@@ -41,7 +41,6 @@
   "56": "dibujarRecorrido",
   "57": "go503",
   "58": "clientes.js",
-  "59": "openDetalle",
-  "60": "simulator.js",
-  "61": "store.js"
+  "59": "lineChart",
+  "60": "simulator.js"
 }

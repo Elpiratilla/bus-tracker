@@ -246,13 +246,6 @@
 }
 .fleet-mk--off { background: #D5DAEA; border-color: #8790B3; color: #4A537A; }
 .fleet-mk--sel { outline: 3px solid var(--torogoz); outline-offset: 2px; }
-/* la ruta de cada unidad, debajo de los marcadores */
-.fleet-borde { stroke: #fff; stroke-opacity: .85; fill: none; }
-.fleet-ruta { stroke: var(--torogoz); fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.fleet-parada { stroke: var(--noche); stroke-width: 2; fill: #fff; fill-opacity: 1; }
-.fleet-parada--fin { stroke: #fff; stroke-width: 3; fill: var(--noche); }
-.fleet-ruta--tenue { stroke-opacity: .3; fill-opacity: .3; }
-.fleet-borde.fleet-ruta--tenue { stroke-opacity: .25; }
 
 /* Tablas */
 .table-wrap { overflow-x: auto; }
@@ -736,16 +729,7 @@ dialog > p { margin-top: .4rem; color: var(--muted); }
 .rec-linea { stroke: var(--torogoz); fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .rec-vista { stroke: var(--maiz-hondo); fill: none; }
 .rec-fin { stroke: #fff; stroke-width: 3; fill: var(--torogoz); fill-opacity: 1; }
-.rec__escribir summary { min-height: 2.75rem; display: flex; align-items: center; font-weight: 700; cursor: pointer; }
-.rec__escribir[open] { display: grid; gap: .6rem; }
-.rec__txt { min-height: 9rem; font-size: .92rem; line-height: 1.5; }
-.rec__hallados { display: grid; gap: .3rem; margin: 0; padding-left: 1.4rem; font-size: .9rem; }
-.rec__hallados:empty { display: none; }
-.rec__hallados small { display: block; color: var(--muted); }
-.rec__hallado--no small { color: var(--alerta-texto); font-weight: 600; }
-.rec__side code { font-size: .85em; }
 .rec-parada { display: grid; place-items: center; width: 28px; height: 28px; background: var(--noche); border: 2px solid var(--maiz); border-radius: 50%; color: var(--maiz); font: 800 15px/1 var(--display); }
-.rec-parada--nueva { background: var(--maiz); color: var(--noche); border-color: var(--noche); cursor: grab; }
 @media (max-width: 1000px) {
   .rec { grid-template-columns: 1fr; }
   .rec__map { height: 60vh; min-height: 320px; }

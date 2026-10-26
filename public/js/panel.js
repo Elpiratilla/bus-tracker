@@ -187,8 +187,7 @@ function estado(u) {
   if (!u.enLinea) return `Sin señal, última ${hace(u.ultimaSenal)}`;
   if (u.enServicio === false) return "Fuera de servicio";
   if (u.motorApagado) return u.parada ? `Motor apagado en ${u.parada}` : "Motor apagado";
-  const va = u.hacia ? ` hacia ${u.hacia}` : "";
-  return u.parada ? `En ${u.parada}${va}` : `En ruta${va}`;
+  return u.parada ? `En ${u.parada}` : "En ruta";
 }
 
 const lastEstado = new Map();
@@ -206,55 +205,6 @@ function slideMarker(m, to) {
     if (k < 1) m._slide = requestAnimationFrame(step);
   };
   m._slide = requestAnimationFrame(step);
-}
-
-// Rutas en el mapa: por dónde debe ir cada unidad, en el sentido que lleva, con sus paradas.
-// Con una unidad escogida su ruta queda al frente y las demás se aclaran.
-// Sin recorrido guardado se unen las paradas en línea recta punteada: solo de referencia.
-const rutasMapa = new Map(); // "101:ida" -> respuesta de /api/rutas/101?sentido=ida
-let rutasCapa = null;
-let rutasFirma = "";
-const claveRuta = (u) => `${u.ruta}:${u.sentido || "ida"}`;
-async function pintarRutas() {
-  if (!map) return;
-  const claves = [...new Set(flota.filter((u) => u.ruta).map(claveRuta))];
-  const sel = flota.find((u) => u.id === selected && u.ruta);
-  const principal = sel ? claveRuta(sel) : null;
-  const firma = `${claves.join(",")}|${principal}`;
-  if (firma === rutasFirma) return;
-  try {
-    await Promise.all(claves.filter((k) => !rutasMapa.has(k)).map(async (k) => {
-      const [ruta, sentido] = k.split(":");
-      const r = await fetch(`/api/rutas/${encodeURIComponent(ruta)}?sentido=${sentido}`);
-      if (r.ok) rutasMapa.set(k, await r.json());
-    }));
-  } catch (err) { return console.error(err); }
-  rutasFirma = firma;
-  if (!rutasCapa) rutasCapa = L.layerGroup().addTo(map);
-  rutasCapa.clearLayers();
-  // la principal al final para que quede encima
-  [...claves.filter((k) => k !== principal), ...(principal ? [principal] : [])].forEach((k) => {
-    const r = rutasMapa.get(k);
-    if (!r?.paradas.length) return;
-    const tenue = principal && k !== principal ? " fleet-ruta--tenue" : "";
-    const puntos = r.trazo?.length > 1 ? r.trazo : r.paradas.map((p) => [p.lat, p.lng]);
-    const recta = r.trazo?.length > 1 ? null : "4 10";
-    rutasCapa.addLayer(L.polyline(puntos, { className: `fleet-borde${tenue}`, weight: 8, interactive: false }));
-    rutasCapa.addLayer(L.polyline(puntos, { className: `fleet-ruta${tenue}`, weight: 4, dashArray: recta, interactive: false }));
-    const fin = r.paradas.length - 1;
-    r.paradas.forEach((p, i) => rutasCapa.addLayer(L.circleMarker([p.lat, p.lng], {
-      radius: i === fin ? 7 : 4.5, className: `fleet-parada${i === fin ? " fleet-parada--fin" : ""}${tenue}`,
-    }).bindTooltip(i === fin ? `Ruta ${r.ruta}, termina en ${p.nombre}` : `${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -6] })));
-  });
-  // la primera vez se encuadran las rutas completas y los buses
-  const b = L.latLngBounds([]);
-  rutasCapa.eachLayer((l) => b.extend(l.getBounds?.() ?? l.getLatLng()));
-  markers.forEach((m) => b.extend(m.getLatLng()));
-  if (!fitted && b.isValid()) {
-    fitted = true;
-    map.invalidateSize();
-    map.fitBounds(b, { padding: [30, 30], maxZoom: 15 });
-  }
 }
 
 // Resumen en palabras: saludo, cuántas andan y, si alguna necesita servicio, cuál y dónde atenderla
@@ -331,7 +281,11 @@ async function loadFlota() {
     }
   });
   markers.forEach((m, id) => { if (!seen.has(id)) { m.remove(); markers.delete(id); } });
-  pintarRutas();
+  const pts = flota.filter((u) => u.lat != null).map((u) => [u.lat, u.lng]);
+  if (!fitted && pts.length) {
+    fitted = true;
+    map.fitBounds(pts, { padding: [60, 60], maxZoom: 15 });
+  }
   setTimeout(() => map.invalidateSize(), 0);
 }
 
@@ -344,7 +298,6 @@ async function openDetalle(id) {
   if (!u) return;
   if (u.lat != null && map) map.panTo([u.lat, u.lng]);
   markers.forEach((m, mid) => { const f = flota.find((x) => x.id === mid); if (f) m.setIcon(markerIcon(f)); });
-  pintarRutas();
 
   $("#d-nombre").textContent = u.nombre;
   $("#d-sub").textContent = `Ruta ${u.ruta}, ${TIPOS[u.tipo] || "unidad"}${u.placa ? `, placa ${u.placa}` : ""}`;
@@ -388,7 +341,6 @@ function closeDetalle() {
   selected = null;
   setTimeout(() => { drawer.hidden = true; }, 250);
   markers.forEach((m, id) => { const f = flota.find((x) => x.id === id); if (f) m.setIcon(markerIcon(f)); });
-  pintarRutas();
 }
 $("#d-cerrar").addEventListener("click", closeDetalle);
 addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden && !document.querySelector("dialog[open]")) closeDetalle(); });
@@ -1163,8 +1115,7 @@ $("#f-codigo").addEventListener("submit", async (e) => {
 // El trazo se arma con "tramos": cada toque en el mapa agrega un tramo desde el punto anterior
 // (pegado a las calles con OSRM, o en línea recta). Deshacer quita el último tramo.
 const OSRM = "https://router.project-osrm.org";
-const rec = { rutas: [], ruta: null, sentido: "ida", tramos: [], fuente: "dibujado", cambios: false, map: null, capa: null, vista: null,
-  nuevas: null }; // nuevas: paradas escritas y ya buscadas, sin guardar
+const rec = { rutas: [], ruta: null, sentido: "ida", tramos: [], fuente: "dibujado", cambios: false, map: null, capa: null, vista: null };
 
 const recPuntos = () => rec.tramos.flat();
 const recSentido = () => rec.rutas.find((r) => r.ruta === rec.ruta)?.sentidos.find((s) => s.id === rec.sentido);
@@ -1192,7 +1143,7 @@ async function loadRecorridos() {
 
 function cambiarRecorrido(ruta, sentido, { encuadrar = true } = {}) {
   const t = window.go503Idioma?.t || ((x) => x);
-  if ((rec.cambios || rec.nuevas) && !confirm(t("Tienes cambios sin guardar en este recorrido. ¿Los dejas?"))) {
+  if (rec.cambios && !confirm(t("Tienes cambios sin guardar en este recorrido. ¿Los dejas?"))) {
     $("#rec-ruta").value = rec.ruta;
     return;
   }
@@ -1212,10 +1163,6 @@ function cambiarRecorrido(ruta, sentido, { encuadrar = true } = {}) {
   rec.fuente = s.trazo?.fuente || "dibujado";
   rec.cambios = false;
   rec.vista = null;
-  rec.nuevas = null;
-  $("#rec-paradas-txt").value = $("#rec-via-txt").value = s.paradas.map((p) => p.nombre).join("\n");
-  $("#rec-paradas-lista").replaceChildren();
-  $("#rec-via-lista").replaceChildren();
   dibujarRecorrido();
   if (encuadrar) rec.map.fitBounds(L.latLngBounds(s.paradas.map((p) => [p.lat, p.lng])), { padding: [40, 40] });
   loadVueltas();
@@ -1234,7 +1181,6 @@ function estadoRecorrido() {
   $("#rec-deshacer").disabled = !rec.tramos.length;
   $("#rec-borrar").disabled = !rec.tramos.length;
   $("#rec-auto").hidden = !s.trazo;
-  $("#rec-paradas-guardar").disabled = !rec.nuevas || rec.nuevas.some((p) => p.error);
 }
 
 // Cuántos sentidos ya tienen recorrido guardado; los demás el mapa público los adivina por las calles
@@ -1259,20 +1205,11 @@ function dibujarRecorrido() {
     rec.capa.addLayer(L.polyline(pts, { className: "rec-linea", weight: 5, interactive: false }));
   }
   if (pts.length) rec.capa.addLayer(L.circleMarker(pts.at(-1), { radius: 6, className: "rec-fin", interactive: false }));
-  // paradas numeradas en el orden del sentido; las escritas sin guardar van en amarillo y se pueden arrastrar
-  (rec.nuevas || s.paradas).forEach((p, i) => {
-    if (p.error) return;
-    const m = L.marker([p.lat, p.lng], {
-      icon: L.divIcon({ className: "", html: `<span class="rec-parada${rec.nuevas ? " rec-parada--nueva" : ""}">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
-      title: p.nombre, keyboard: false, draggable: Boolean(rec.nuevas),
-    }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] });
-    m.on("dragend", () => {
-      const { lat, lng } = m.getLatLng();
-      Object.assign(p, { lat, lng, lugar: "Movida a mano en el mapa" });
-      pintarHallados($("#rec-paradas-lista"), rec.nuevas);
-    });
-    rec.capa.addLayer(m);
-  });
+  // paradas numeradas en el orden del sentido
+  s.paradas.forEach((p, i) => rec.capa.addLayer(L.marker([p.lat, p.lng], {
+    icon: L.divIcon({ className: "", html: `<span class="rec-parada">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
+    title: p.nombre, keyboard: false,
+  }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] })));
   estadoRecorrido();
 }
 
@@ -1343,114 +1280,6 @@ $("#rec-auto").addEventListener("click", () => confirmar(
     rec.cambios = false;
     dibujarRecorrido();
   }));
-
-// ---- Escribir paradas y recorrido como texto ----
-// Cada renglón es "Nombre", "Nombre | lugar a buscar" o "Nombre | 13.70, -89.20".
-// Las paradas que ya existen se reconocen por su nombre y conservan su ubicación sin buscarlas.
-const COORD = /^(-?\d{1,2}(?:\.\d+)?)\s*,\s*(-?\d{1,3}(?:\.\d+)?)$/;
-const norm = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
-const renglones = (id) => $(id).value.split("\n").map((x) => x.trim()).filter(Boolean);
-
-async function resolverRenglon(linea) {
-  const [nombre, extra] = linea.split("|").map((x) => x.trim());
-  const busca = extra || nombre;
-  const c = busca.match(COORD);
-  if (c) return { nombre, lat: Number(c[1]), lng: Number(c[2]), lugar: "Coordenadas escritas" };
-  // primero las de esta ruta; luego las de otras (así una terminal compartida sigue siendo una sola parada)
-  const todas = [rec.rutas.find((x) => x.ruta === rec.ruta), ...rec.rutas.filter((x) => x.ruta !== rec.ruta)]
-    .flatMap((r) => r.sentidos.flatMap((x) => x.paradas));
-  const ya = !extra && todas.find((p) => norm(p.nombre) === norm(nombre));
-  if (ya) return { ...ya, lugar: "Ya es parada de go503" };
-  const [hit] = await api(`/admin/lugares?q=${encodeURIComponent(busca)}`);
-  return hit ? { nombre, lat: hit.lat, lng: hit.lng, lugar: hit.lugar } : { nombre, error: true };
-}
-
-// Busca los renglones uno por uno (el buscador de lugares acepta uno por segundo) y va mostrando el avance
-async function resolverTodos(lineas, lista, boton) {
-  boton.disabled = true;
-  const out = [];
-  try {
-    for (const [i, l] of lineas.entries()) {
-      lista.replaceChildren(el("li", "muted", `Buscando ${i + 1} de ${lineas.length}: ${l}`));
-      out.push(await resolverRenglon(l));
-    }
-  } finally { boton.disabled = false; }
-  pintarHallados(lista, out);
-  return out;
-}
-
-function pintarHallados(lista, items) {
-  lista.replaceChildren(...items.map((x) => {
-    const li = el("li", x.error ? "rec__hallado rec__hallado--no" : "rec__hallado");
-    li.append(el("b", null, x.nombre), el("small", null, x.error
-      ? "No lo encontré. Pon el lugar más completo después de una raya, o sus coordenadas."
-      : x.lugar));
-    return li;
-  }));
-}
-
-$("#rec-paradas-buscar").addEventListener("click", async () => {
-  const lineas = renglones("#rec-paradas-txt");
-  if (lineas.length < 2) return showMsg(msg, "Escribe al menos 2 paradas, una por renglón.");
-  try {
-    rec.nuevas = await resolverTodos(lineas, $("#rec-paradas-lista"), $("#rec-paradas-buscar"));
-  } catch (err) { return fail(err); }
-  dibujarRecorrido();
-  const ok = rec.nuevas.filter((p) => !p.error);
-  if (ok.length) rec.map.fitBounds(L.latLngBounds(ok.map((p) => [p.lat, p.lng])), { padding: [40, 40] });
-  showMsg(msg, ok.length < rec.nuevas.length
-    ? "Algunas paradas no aparecieron: corrígelas y vuelve a buscar."
-    : "Revisa las paradas amarillas en el mapa. Si alguna quedó mal, arrástrala a su lugar y guarda.", ok.length < rec.nuevas.length ? "error" : "ok");
-});
-// si cambia el texto, lo buscado ya no corresponde
-$("#rec-paradas-txt").addEventListener("input", () => {
-  if (!rec.nuevas) return;
-  rec.nuevas = null;
-  $("#rec-paradas-lista").replaceChildren();
-  dibujarRecorrido();
-});
-
-$("#rec-paradas-guardar").addEventListener("click", async () => {
-  const s = recSentido();
-  try {
-    const paradas = await api(`/admin/recorridos/${rec.ruta}/${rec.sentido}/paradas`, { method: "PUT",
-      body: { paradas: rec.nuevas.map(({ id, nombre, lat, lng }) => ({ id, nombre, lat, lng })) } });
-    // una parada que se movió puede estar en otras rutas: se recargan todas
-    rec.rutas = await api("/admin/recorridos");
-    rec.nuevas = null;
-    $("#rec-paradas-lista").replaceChildren();
-    cambiarRecorrido(rec.ruta, rec.sentido, { encuadrar: false });
-    showMsg(msg, s.trazo
-      ? `Paradas de la ${rec.ruta} guardadas (${paradas.length}). Revisa que el recorrido dibujado siga pasando por ellas.`
-      : `Paradas de la ${rec.ruta} guardadas (${paradas.length}). Ya se ven así en el mapa público.`, "ok");
-  } catch (err) { fail(err); }
-});
-
-$("#rec-via-trazar").addEventListener("click", async () => {
-  const lineas = renglones("#rec-via-txt");
-  if (lineas.length < 2) return showMsg(msg, "Escribe al menos 2 lugares, uno por renglón.");
-  let pts;
-  try {
-    pts = await resolverTodos(lineas, $("#rec-via-lista"), $("#rec-via-trazar"));
-  } catch (err) { return fail(err); }
-  if (pts.some((p) => p.error)) return showMsg(msg, "Algunos lugares no aparecieron: corrígelos y vuelve a trazar.");
-  let linea = pts.map((p) => [p.lat, p.lng]);
-  if ($("#rec-pegar").checked) {
-    try {
-      const r = await fetch(`${OSRM}/route/v1/driving/${pts.map((p) => `${p.lng},${p.lat}`).join(";")}?overview=full&geometries=geojson`);
-      const c = (await r.json()).routes?.[0]?.geometry.coordinates;
-      if (c?.length) linea = c.map(([x, y]) => [y, x]);
-    } catch {
-      showMsg(msg, "No se pudo pegar a las calles: el recorrido quedó en líneas rectas.");
-    }
-  }
-  rec.tramos = [linea];
-  rec.fuente = "dibujado";
-  rec.cambios = true;
-  rec.vista = null;
-  dibujarRecorrido();
-  rec.map.fitBounds(L.latLngBounds(linea), { padding: [40, 40] });
-});
 
 async function loadVueltas() {
   const root = $("#rec-vueltas");

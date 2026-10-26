@@ -195,7 +195,7 @@
       <!-- Recorridos (solo administradores): por dónde pasa cada ruta en el mapa público -->
       <section class="view" id="v-recorridos" hidden>
         <div class="head">
-          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa y dónde están sus paradas. Dibújalo tocando el mapa, escríbelo, o usa una vuelta que grabó el GPS de un bus.</p><p class="atiende" id="rec-resumen"></p></div>
+          <div><h1>Recorridos</h1><p>Por dónde pasa cada ruta en el mapa. Dibújalo tocando el mapa, o usa una vuelta que grabó el GPS de un bus.</p><p class="atiende" id="rec-resumen"></p></div>
         </div>
         <div class="filters rec__pick">
           <label for="rec-ruta" class="visually-hidden">Ruta</label>
@@ -214,29 +214,10 @@
               <button class="btn btn--ghost btn--sm" type="button" id="rec-deshacer">Deshacer</button>
               <button class="btn btn--ghost btn--sm" type="button" id="rec-borrar">Empezar de nuevo</button>
             </div>
-            <!-- el recorrido escrito: lugares en orden, se buscan y se unen por las calles -->
-            <details class="rec__escribir">
-              <summary>O escríbelo: por dónde pasa</summary>
-              <p class="muted">Un lugar o una calle por renglón, en el orden en que pasa el bus. Ya están las paradas: agrega entre ellas las calles por donde va.</p>
-              <label for="rec-via-txt" class="visually-hidden">Lugares por donde pasa, uno por renglón</label>
-              <textarea class="textarea rec__txt" id="rec-via-txt" rows="7" spellcheck="false"></textarea>
-              <button class="btn btn--ghost btn--sm" type="button" id="rec-via-trazar">Trazar por estos lugares</button>
-              <ol class="rec__hallados" id="rec-via-lista"></ol>
-            </details>
             <div class="rec__save">
               <button class="btn btn--anil" type="button" id="rec-guardar">Guardar recorrido</button>
               <button class="btn btn--ghost btn--quitar btn--sm" type="button" id="rec-auto">Quitar y usar el automático</button>
             </div>
-
-            <h2>Paradas</h2>
-            <p class="muted">Una por renglón, en el orden del sentido. Si el nombre no basta para encontrarla, pon el lugar después de una raya: <code>Parada del parque | Parque Cuscatlán</code>. También sirven coordenadas: <code>Metrocentro | 13.7059, -89.2123</code>.</p>
-            <label for="rec-paradas-txt" class="visually-hidden">Paradas, una por renglón</label>
-            <textarea class="textarea rec__txt" id="rec-paradas-txt" rows="7" spellcheck="false"></textarea>
-            <div class="rec__tools">
-              <button class="btn btn--ghost btn--sm" type="button" id="rec-paradas-buscar">Buscar en el mapa</button>
-              <button class="btn btn--anil btn--sm" type="button" id="rec-paradas-guardar" disabled>Guardar paradas</button>
-            </div>
-            <ol class="rec__hallados" id="rec-paradas-lista"></ol>
 
             <h2>Vueltas grabadas por GPS</h2>
             <p class="muted">Cuando una unidad va de la primera a la última parada, su recorrido queda aquí.</p>

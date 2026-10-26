@@ -1,4 +1,4 @@
-const { segments, geofence, trips, units } = require("./store");
+const { legKey, segments, geofence, trips, units } = require("./store");
 const { nearestStop } = require("./geo");
 const { persist } = require("./db");
 const { track } = require("./trazos");
@@ -26,10 +26,11 @@ function toTime(ts) {
 function saveSegment(busId, route, dir, from, to, seconds, now) {
   // Solo buses reales: los del simulador van en línea recta y cambiarían los minutos de los de verdad
   if (!units[busId]) return;
-  const seg = { busId, routeId: route.id, dir, from, to, seconds, ts: now };
-  segments.push(seg);
-  const sameLeg = (s) => s.routeId === seg.routeId && s.dir === dir && s.from === from && s.to === to;
-  if (segments.filter(sameLeg).length > KEEP_PER_LEG) segments.splice(segments.findIndex(sameLeg), 1);
+  const k = legKey(route.id, dir, from, to);
+  const leg = segments.get(k) || [];
+  leg.push({ busId, seconds, ts: now });
+  if (leg.length > KEEP_PER_LEG) leg.shift();
+  segments.set(k, leg);
   persist("tramo", (db) => db.from("segments").insert({ bus_id: busId, route_id: route.id, direction: dir,
     from_stop: from, to_stop: to, seconds, ts: new Date(now).toISOString() }));
 }

@@ -21,7 +21,6 @@ app.use(express.static(path.join(__dirname, "..", "public", "html")));
 app.use(express.static(path.join(__dirname, "..", "public")));
 
 app.use("/api/telemetry", require("./routes/telemetry"));
-app.use("/api/routes", require("./routes/routes"));
 app.use("/api/rutas", require("./routes/rutas"));
 app.use("/api/alertas", require("./routes/alertas"));
 app.use("/api/empresa", require("./routes/empresa"));

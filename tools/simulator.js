@@ -41,7 +41,7 @@ function buildPath(stops, speedKmh) {
 // startAtReturn: empieza en la terminal donde arranca el regreso (para que haya bus en los dos sentidos)
 function runBus(busId, route, speedKmh, startAtReturn = false) {
   // Ida completa y luego el regreso (sin repetir la terminal donde da la vuelta); al final vuelve a empezar
-  const { ida, regreso } = route.directions || { ida: route.stops, regreso: [...route.stops].reverse() };
+  const { ida, regreso } = route.directions;
   const sameStop = (a, b) => a && b && a.id === b.id;
   const loop = [...ida, ...(sameStop(ida.at(-1), regreso[0]) ? regreso.slice(1) : regreso)];
   if (sameStop(loop.at(-1), loop[0])) loop.pop(); // la terminal inicial ya está al principio
@@ -78,10 +78,16 @@ function runBus(busId, route, speedKmh, startAtReturn = false) {
 }
 
 (async () => {
-  const routes = await fetch(API + "/routes").then((r) => r.json()).catch(() => {
+  const get = (url) => fetch(API + url).then((r) => r.json());
+  const lista = await get("/rutas").catch(() => {
     console.error(`No hay servidor en ${API}. Enciéndelo primero con: npm run dev`);
     process.exit(1);
   });
+  // Paradas de cada sentido, con coordenadas (GET /api/rutas/:id?sentido=)
+  const sentido = (id, d) => get(`/rutas/${encodeURIComponent(id)}?sentido=${d}`)
+    .then((r) => r.paradas.map((p) => ({ id: p.id, lat: p.lat, lng: p.lng })));
+  const routes = await Promise.all(lista.map(async ({ ruta }) =>
+    ({ id: ruta, directions: { ida: await sentido(ruta, "ida"), regreso: await sentido(ruta, "regreso") } })));
   if (process.env.SIM_BUS) {
     const route = routes.find((r) => r.id === process.env.SIM_ROUTE) || routes[0];
     runBus(process.env.SIM_BUS, route, SPEED_KMH);

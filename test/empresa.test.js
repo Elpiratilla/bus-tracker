@@ -17,6 +17,9 @@ db.from = () => ({ select() { return this; }, eq(_k, v) { this.v = v; return thi
   insert() { return this; }, update() { return this; }, upsert() { return this; }, delete() { return this; },
   then(ok) { ok({ data: [], error: null }); },
   maybeSingle() { return Promise.resolve({ data: empresas[this.v] || null }); } });
+// Guardar paradas (reemplazar_paradas): falla cuando la prueba lo pide
+let rpcFalla = false;
+db.rpc = async () => (rpcFalla ? { data: null, error: { message: "sin red" } } : { data: null, error: null });
 
 store.units["U-AAAAAA"] = { busId: "U-AAAAAA", companyId: "empresa-a", name: "Bus de A", routeId: "101", odometerKm: 0, engineHours: 0 };
 
@@ -70,6 +73,19 @@ test("la empresa B no ve, no edita ni usa las rutas de A ni las de go503", async
   assert.equal((await comoB("POST", "/unidades", { nombre: "X", ruta: "15A", tipo: "autobus" })).status, 400);
   assert.equal((await comoB("POST", "/unidades", { nombre: "X", ruta: "101", tipo: "autobus" })).status, 400);
   assert.equal(store.routes.find((r) => r.id === "15A").name, "Ruta 15-A");
+});
+
+test("si la base falla al guardar las paradas, la ruta conserva las que tenía", async () => {
+  rpcFalla = true;
+  const otra = [{ nombre: "Otra", lat: 13.72, lng: -89.22 }, { nombre: "Más", lat: 13.73, lng: -89.23 }];
+  assert.equal((await comoA("PUT", "/rutas/15A", { ida: otra, regreso: "al-reves" })).status, 500);
+  rpcFalla = false;
+  const ruta = store.routes.find((r) => r.id === "15A");
+  assert.deepEqual(ruta.directions.ida.map((s) => s.name), ["Terminal Norte", "Parque Central"]);
+});
+
+test("una unidad nueva necesita una ruta de la empresa", async () => {
+  assert.equal((await comoA("POST", "/unidades", { nombre: "Sin ruta", tipo: "autobus" })).status, 400);
 });
 
 test("una ruta que usa una unidad no se borra; sin unidades sí", async () => {

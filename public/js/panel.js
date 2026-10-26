@@ -1439,7 +1439,7 @@ function dibujarRecorrido() {
     const m = L.marker([p.lat, p.lng], {
       icon: L.divIcon({ className: "", html: `<span class="rec-parada${p.id ? "" : " rec-parada--nueva"}">${i + 1}</span>`, iconSize: [28, 28], iconAnchor: [14, 14] }),
       title: p.nombre, keyboard: false, draggable: editando && !fija,
-    }).bindTooltip(`${i + 1}. ${p.nombre}`, { direction: "top", offset: [0, -14] });
+    }).bindTooltip(document.createTextNode(`${i + 1}. ${p.nombre}`), { direction: "top", offset: [0, -14] });
     m.on("dragend", () => { const ll = m.getLatLng(); p.lat = ll.lat; p.lng = ll.lng; marcarCambio({ lista: false }); });
     rec.capa.addLayer(m);
   });

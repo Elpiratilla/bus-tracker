@@ -1,6 +1,6 @@
 // Cálculo de horas de paso y llegada estimada (ETA) de una ruta.
 // Lo usan GET /api/rutas/:id y las notificaciones.
-const { segments, trips, buses } = require("./store");
+const { legKey, segments, trips, buses } = require("./store");
 const { distanceM } = require("./geo");
 const { enMapa } = require("./enMapa");
 
@@ -15,9 +15,7 @@ function legSeconds(route, dir, stops) {
   return stops.map((stop, i) => {
     if (i === 0) return null;
     const from = stops[i - 1];
-    const list = segments
-      .filter((s) => s.routeId === route.id && (s.dir || "ida") === dir && s.from === from.id && s.to === stop.id)
-      .slice(-RECENT_TRIPS);
+    const list = (segments.get(legKey(route.id, dir, from.id, stop.id)) || []).slice(-RECENT_TRIPS);
     if (list.length) return list.reduce((a, s) => a + s.seconds, 0) / list.length;
     return distanceM(from, stop) / FALLBACK_SPEED_MS;
   });

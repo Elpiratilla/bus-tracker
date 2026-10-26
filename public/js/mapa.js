@@ -435,7 +435,8 @@ async function drawMap(data, lastIdx, nextIdx) {
     const state = i <= lastIdx ? "done" : i === nextIdx ? "next" : "todo";
     const html = (state === "next" ? '<span class="pulse"></span>' : "") + `<span class="cp cp--${state}"></span>`;
     const m = L.marker([p.lat, p.lng], { icon: icon(html, [22, 22]), keyboard: false, title: p.nombre });
-    m.bindTooltip(p.nombre, {
+    // texto, no HTML: el nombre lo escribe la empresa y Leaflet mete los strings como HTML
+    m.bindTooltip(document.createTextNode(p.nombre), {
       permanent: true,
       direction: i % 2 ? "bottom" : "top",
       offset: [0, i % 2 ? 12 : -12],

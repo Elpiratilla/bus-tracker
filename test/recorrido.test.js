@@ -21,7 +21,7 @@ test("sale de Terminal de Oriente y llega al Centro: va de ida y guarda el tramo
   gps({ lat: 13.7060, lng: -89.1780 }, 1);   // salió de la terminal (entre las dos paradas)
   const r = gps(parada("centro"), 11);
   assert.equal(r.direction, "ida");
-  const tramo = store.segments.find((s) => s.busId === BUS && s.from === "t-ori" && s.to === "centro");
+  const tramo = store.segments.get(store.legKey("101", "ida", "t-ori", "centro")).find((s) => s.busId === BUS);
   assert.equal(tramo.seconds, 600);            // cuenta desde que salió, no desde que llegó a la terminal
 });
 

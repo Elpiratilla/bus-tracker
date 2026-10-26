@@ -3,14 +3,10 @@
 const router = require("express").Router();
 const { db } = require("../db");
 const { rateLimit } = require("../middleware/empresa");
+const { text } = require("../texto");
 
-function text(v, min, max) {
-  if (v == null || v === "") return min === 0 ? null : undefined;
-  if (typeof v !== "string") return undefined;
-  const t = v.trim().replace(/\s+/g, " ");
-  if (!t && min === 0) return null;
-  return t.length >= min && t.length <= max ? t : undefined;
-}
+// Campo opcional: vacío = null; si trae algo, tiene que cumplir el largo (undefined si no)
+const opcional = (v, max) => (v == null || String(v).trim() === "" ? null : text(v, 1, max) ?? undefined);
 
 router.post("/", rateLimit(5, 10 * 60 * 1000), async (req, res, next) => {
   try {
@@ -21,11 +17,11 @@ router.post("/", rateLimit(5, 10 * 60 * 1000), async (req, res, next) => {
 
     const lead = {
       name: text(b.nombre, 2, 80),
-      company: text(b.empresa, 0, 80),
+      company: opcional(b.empresa, 80),
       phone: text(b.telefono, 7, 30),
-      email: text(b.correo, 0, 120),
-      city: text(b.ciudad, 0, 80),
-      message: text(b.mensaje, 0, 600),
+      email: opcional(b.correo, 120),
+      city: opcional(b.ciudad, 80),
+      message: opcional(b.mensaje, 600),
       units: b.unidades == null || b.unidades === "" ? null : Number(b.unidades),
     };
     if (!lead.name) return res.status(400).json({ error: "Escribe tu nombre", campo: "nombre" });

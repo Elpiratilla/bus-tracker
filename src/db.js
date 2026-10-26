@@ -47,14 +47,10 @@ async function select(query) {
 async function loadState() {
   if (!db) return;
 
-  // company_id: de qué empresa es la ruta (null = de go503). Sin la migración 20261026040000 la columna no existe todavía
-  const routeQuery = (cols) => select(db.from("routes")
-    .select(`id, name, type, ${cols}route_stops(direction, position, stops(id, name, lat, lng))`)
+  // company_id: de qué empresa es la ruta (null = de go503)
+  const routes = await select(db.from("routes")
+    .select("id, name, type, company_id, route_stops(direction, position, stops(id, name, lat, lng))")
     .eq("active", true).order("sort").order("id"));
-  const routes = await routeQuery("company_id, ").catch((err) => {
-    console.warn(`Supabase: rutas sin empresa (${err.message}). Corre la migración 20261026040000_rutas_por_empresa.sql`);
-    return routeQuery("");
-  });
   store.routes.splice(0, store.routes.length, ...routes.map((r) => {
     const dir = (d) => r.route_stops.filter((rs) => rs.direction === d)
       .sort((a, b) => a.position - b.position).map((rs) => rs.stops);
@@ -62,14 +58,17 @@ async function loadState() {
     const regreso = dir("regreso");
     // stops: todas las paradas de la ruta (las de ida y las que solo están en el regreso)
     const stops = [...ida, ...regreso.filter((s) => !ida.some((x) => x.id === s.id))];
-    return { id: r.id, name: r.name, type: r.type, companyId: r.company_id ?? null, stops,
+    return { id: r.id, name: r.name, type: r.type, companyId: r.company_id, stops,
       directions: { ida, regreso: regreso.length ? regreso : [...ida].reverse() } };
   }));
 
   const segments = await select(db.from("recent_segments").select("*").order("ts"));
-  store.segments.splice(0, store.segments.length, ...segments.map((s) => ({
-    busId: s.bus_id, routeId: s.route_id, dir: s.direction, from: s.from_stop, to: s.to_stop, seconds: s.seconds, ts: ms(s.ts),
-  })));
+  store.segments.clear();
+  for (const s of segments) {
+    const k = store.legKey(s.route_id, s.direction, s.from_stop, s.to_stop);
+    if (!store.segments.has(k)) store.segments.set(k, []);
+    store.segments.get(k).push({ busId: s.bus_id, seconds: s.seconds, ts: ms(s.ts) });
+  }
 
   for (const t of await select(db.from("bus_trips").select("*"))) {
     const k = `${t.bus_id}:${t.route_id}`;
@@ -97,10 +96,10 @@ async function loadState() {
       store.shapes[`${s.route_id}:${s.direction}`] = { points: s.points, source: s.source, updatedAt: ms(s.updated_at) };
     }
   } catch (err) {
-    console.warn(`Supabase: sin recorridos guardados (${err.message}). Corre la migración 20261018150000_recorridos.sql`);
+    console.warn(`Supabase: sin recorridos guardados (${err.message}). Corre la migración 20261018164717_recorridos.sql`);
   }
 
-  console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${store.segments.length} tiempos de tramo, `
+  console.log(`Supabase: ${Object.keys(store.units).length} unidades registradas, ${store.routes.length} rutas, ${segments.length} tiempos de tramo, `
     + `${Object.keys(store.trips).length} vueltas, ${Object.keys(store.buses).length} buses, ${store.alerts.size} alertas, `
     + `${Object.keys(store.shapes).length} recorridos`);
 }

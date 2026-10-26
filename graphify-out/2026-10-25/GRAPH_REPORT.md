@@ -1,7 +1,7 @@
 # Graph Report - bus-tracker  (2026-10-25)
 
 ## Corpus Check
-- 74 files · ~145,661 words
+- 74 files · ~145,839 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 31 file(s) not represented in the graph (top: .xml 10, .css 7, .woff2 4)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ef14c35f`
+- Built from commit: `719117f4`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

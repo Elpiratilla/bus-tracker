@@ -185,7 +185,7 @@ bits a 250 kbps, con mensajes que se escuchan en vez de preguntarse). Queda plan
 1. En la carpeta `go503_sensor/`, copia `config_ejemplo.h` y nómbralo **`config.h`**.
 2. Llena tus datos en `config.h`:
    - `BUS_ID`: un nombre único por bus, por ejemplo `"BUS-07"`.
-   - `ROUTE_ID`: tiene que existir en el servidor. Revisa la lista en `GET /api/routes`.
+   - `ROUTE_ID`: tiene que existir en el servidor. Revisa la lista en `GET /api/rutas`.
    - `API_BASE` y `BUS_API_KEY`: la dirección del servidor y la misma clave del `.env` del servidor.
    - `MODEM_SIM7600` o `MODEM_A7670`: deja sin comentar solo el que tengas.
    - `APN`: prueba primero con `""`. Si no conecta, búscalo en un celular con un chip del mismo

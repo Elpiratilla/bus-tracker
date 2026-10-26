@@ -6,6 +6,7 @@ const { routes, buses, units, retired, shapes, recordings, trips, geofence, aler
 const { validPoints, setShape, deleteShape } = require("../trazos");
 const { db, select, flush, unitFromRow } = require("../db");
 const { hashKey } = require("../middleware/auth");
+const { text } = require("../texto");
 const { requireUser, requireCompany, requireAdmin, forgetToken, rateLimit } = require("../middleware/empresa");
 
 const ONLINE_MS = 60 * 1000; // sin señal en 1 min = fuera de línea
@@ -14,12 +15,6 @@ const round1 = (n) => Math.round((n || 0) * 10) / 10;
 const stopName = (routeId, stopId) =>
   routes.find((r) => r.id === routeId)?.stops.find((s) => s.id === stopId)?.name ?? null;
 
-// Texto limpio dentro de un largo permitido (null si no cumple)
-function text(v, min, max) {
-  if (typeof v !== "string") return null;
-  const t = v.trim().replace(/\s+/g, " ");
-  return t.length >= min && t.length <= max ? t : null;
-}
 const normCode = (c) => (typeof c === "string" ? c.trim().toUpperCase() : "");
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // sin 0/O ni 1/I para no confundirlos
@@ -219,13 +214,12 @@ function validDirections(req, route, body) {
 
 async function saveStops(route, { ida, regreso }) {
   const todas = [...new Map([...ida, ...regreso].map((st) => [st.id, st])).values()];
+  // Todo en una transacción (supabase/migrations/20261026042752): si falla, la ruta conserva sus paradas
   if (db) {
-    await select(db.from("stops").upsert(todas).select("id"));
-    await select(db.from("route_stops").delete().eq("route_id", route.id).select("route_id"));
-    await select(db.from("route_stops").insert([
-      ...ida.map((st, position) => ({ route_id: route.id, direction: "ida", position, stop_id: st.id })),
-      ...regreso.map((st, position) => ({ route_id: route.id, direction: "regreso", position, stop_id: st.id })),
-    ]).select("route_id"));
+    await select(db.rpc("reemplazar_paradas", { p_route: route.id, p_stops: todas, p_route_stops: [
+      ...ida.map((st, position) => ({ direction: "ida", position, stop_id: st.id })),
+      ...regreso.map((st, position) => ({ direction: "regreso", position, stop_id: st.id })),
+    ] }));
   }
   // La misma parada puede estar en otra ruta de la empresa (ej. una terminal): se mueve en todas
   for (const r of routes) for (const d of SENTIDOS) {
@@ -398,7 +392,7 @@ function validUnitFields(req, body, partial, unit = null) {
   }
   if (!partial || body.ruta !== undefined) {
     out.route_id = body.ruta;
-    const ok = body.ruta === unit?.routeId || myRoutes(req).some((r) => r.id === body.ruta);
+    const ok = (unit && body.ruta === unit.routeId) || myRoutes(req).some((r) => r.id === body.ruta);
     if (!ok) return { error: myRoutes(req).length ? "Escoge una de tus rutas" : "Primero crea tu ruta en la sección Rutas" };
   }
   if (!partial || body.tipo !== undefined) {

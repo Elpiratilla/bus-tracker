@@ -8,7 +8,7 @@
 
 // ---------- Identidad del bus ----------
 #define BUS_ID   "BUS-07"   // único por bus
-#define ROUTE_ID "101"      // debe existir en el servidor (GET /api/routes)
+#define ROUTE_ID "101"      // debe existir en el servidor (GET /api/rutas)
 
 // ---------- Servidor ----------
 // Sin "/" al final. El ESP32 NO puede usar localhost: usa un túnel (ver README).

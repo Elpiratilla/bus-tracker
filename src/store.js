@@ -1,4 +1,4 @@
-// Datos en memoria. Aquí se cambia después por la base de datos (Supabase).
+// Datos en memoria. Con Supabase, src/db.js los carga al arrancar y guarda cada cambio.
 // lat/lng son aproximadas: ajústalas a la ubicación real de cada parada.
 // type: "autobus" o "microbus"
 const routes = [
@@ -30,6 +30,7 @@ const routes = [
 // companyId: empresa dueña de la ruta (null = de go503, solo la editan los administradores).
 for (const r of routes) Object.assign(r, { companyId: null, directions: { ida: r.stops, regreso: [...r.stops].reverse() } });
 
+// segments: últimos tiempos de cada tramo, por tramo (legKey -> [{ busId, seconds, ts }]); los usa src/eta.js
 // geofence: en qué parada está cada bus ahora mismo (null si va entre paradas)
 // trips: vuelta actual de cada bus: sentido, hora de paso por cada parada y de salida de la última
 // alerts: avisos "tu bus está cerca" pendientes (src/alerts.js)
@@ -38,5 +39,8 @@ for (const r of routes) Object.assign(r, { companyId: null, directions: { ida: r
 // retired: unidades eliminadas; si su sensor sigue transmitiendo se rechaza (no se vuelve a crear)
 // shapes: trazo aprobado de cada ruta y sentido ("101:ida" -> { points, source, updatedAt }); sin trazo, el mapa lo adivina
 // recordings: últimas vueltas completas grabadas por GPS (sin Supabase; con Supabase se leen de la base)
-module.exports = { routes, segments: [], buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map(),
+// Clave de un tramo: ruta, sentido y las dos paradas
+const legKey = (routeId, dir, from, to) => `${routeId}|${dir}|${from}|${to}`;
+
+module.exports = { legKey, routes, segments: new Map(), buses: {}, units: {}, retired: new Set(), geofence: {}, trips: {}, alerts: new Map(),
   shapes: {}, recordings: [] };

@@ -1,10 +1,5 @@
 # Dirección de diseño de go503
 
-> Escrito por Claude el 2026-10-14, a pedido de Mateo ("tú decides la dirección").
-> No es una dirección inventada desde cero: describe la identidad que el sitio ya tenía en el código
-> (colores, letras, rótulo de ruta, el bus dibujado) para que se mantenga en los cambios que vengan.
-> Aviso honesto: una dirección escrita por un agente tiende al gusto por defecto de la IA.
-> Si algo de aquí no te representa, cámbialo: este archivo es tuyo.
 
 ## Identidad
 
